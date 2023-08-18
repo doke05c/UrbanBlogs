@@ -11,7 +11,6 @@ description: "Using Python, SQL, and ZoLa, I made a map of NYC's housing density
 ##### Using Python, SQL, and ZoLa, I made a map of NYC's housing density by the block, with some interesting results. See my creation process and methodology!
 
 ##### [Skip Here for the Maps](/posts/densitymapper/#the-results)
-##### <a href="/posts/densitymapper/#the-results" >Skip Here for the Maps</a>
 
 It all began when I was reading Vishaan Chakrabarti's _A Country of Cities_ and saw a passage from his talk of hyperdensity that piqued my interest. It went something along the lines of "strong cities with reliable metro transit cannot work unless they achieve a density of 30 residential units per acre", and of course, on the other side of the page was a cute graphic of what 30 units per acre could look like on a city block. 
 
@@ -262,7 +261,7 @@ By the way, I am not very good at making this process efficient, so each borough
 
 This is why the following images are by the borough. I regret to inform that combining all the boroughs into one large image breaks most computers' image rendering software before it makes it to the screen.
 
-### The Results
+<h3 id="the-results">The Results</h3>
 
 ![Manhattan](/assets/images/2_manhattan.png)
 ![Bronx](/assets/images/2_bronx.png)
