@@ -45,6 +45,13 @@ From the Statement:
 Hopefully this will bring about a quick change to many of the failing 24-hour neighborhoods of New York City, giving them the housing opportunities, and the night life that they deserve.
 
 ##### SoHo - Cast in Iron
+
+Beautiful SoHo, the land of transplants, rich tourists, NYU students who don't know any better, and buildings that cost millions to own. After all, it is the vaunted Cast-Iron Historic District! What else could you expect? Except what if I told you that there was a way to own or rent some of these buildings' spaces with almost the exact same interior quality, with identical buildings, identical street culture, in the same exact neighborhood? You would call me insane, until I told you an underrated part of SoHo, the Sullivan-Thompson Historic District.
+
+Let's start with a strange pattern I noticed in the density map in Lower Manhattan. 
+
+![SoHo Density Split, DensityMap](/assets/images/3_sohorender.png)
+
 -Interesting density split in SoHo appears along West Broadway (show render 1)
 -https://sohobroadway.org/soho-castironhistoricdistrict-landmarks/
 -https://en.wikipedia.org/wiki/MacDougal%E2%80%93Sullivan_Gardens_Historic_District
