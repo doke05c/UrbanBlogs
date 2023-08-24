@@ -119,6 +119,40 @@ Concerns of the rich and their property values are mostly moot and inexcusable w
 In sum, while its solution is **_NOWHERE_** near enough to fix the housing and housing affordability crises, the situation belying the two districts of SoHo shows how arbitrary housing price differences are. While this can be bleak, it is also a positive message in some way: we can just as arbitrarily lower these prices by reintroducing density into the equation. Densification almost always allows for greater affordability. Towards that end, there is a more exceptional tale I must tell...
 
 ##### East Side Story
+
+Similarly to SoHo, one can find a strange split in density between the two parts of the Upper East Side.
+
+![UES Split Render](/assets/images/3_uesrendernohist.png)
+
+What we're essentially seeing is a 100% increase in density just by jumping one block. Once again, one street, 3rd Avenue in our case, serves as the defacto border between two differing regions of density. Though the orientation is reversed, the story is the same. West of 3rd Avenue, and especially below 79th Street, the housing density is around 100 to 180 units per acre on average. East of 3rd Avenue, and especially below 79th Street, the housing density is around 220 to 360 units per acre on average. You once again might be wondering: "These two blocks must have different types and sizes of buildings, right?"
+
+Here, things are a little more clear. Try to guess which photo is from the UES west of 3rd Avenue (we'll call this WUES for convenience), and which photo is from the UES east of 3rd Avenue (we'll call this EUES for convenience).
+
+![1](/assets/images/3_ues1.jpg)
+![2](/assets/images/3_ues2.jpg)
+
+If you guessed that 1 was EUES and that 2 was WUES, and that you thought this was comically easy, you'd be double right! The built environment of these two parts of the Upper East Side are **VERY** different. While WUES has a consistent, uniform building height of around 12-16 stories, EUES is sporadic and chaotic in its building heights, with buildings ranging from three to a whopping 50 or more stories tall. This was no accident. Much like in SoHo, this difference in density was the result of deliberate zoning decisions. UES takes it up a notch by adding political and zoning battles that to this day represent the ongoing war between history and progress, preservation and density, NIMBYs and YIMBYs.
+
+Let's quickly make something clear. As we're going to see later, the border between skyscraper EUES and uniform WUES isn't clear cut, and it's definitely not always going to be 3rd Avenue. The reason it appears this way on the density map render is because of a limitation in the categorization of blocks in New York City's zoning code. 
+
+The block between 5th Avenue and Park Avenue, Madison Avenue, and the block between Park Avenue and 3rd Avenue, Lexington Avenue, were built through Manhattan a while after the original 1810 grid plan in an attempt to boost retail potential on the east side. This resulted in two new up/down avenues, new buildings, and eventually led the way for the Lexington Avenue Subway decades later. However, all of this progress in Manhattan's street system was never picked up by the taxonomy of NYC's zoning code, which to this day refuses to recognize these two new avenues as legitimate separations between blocks, instead treating 5th to Park and Park to 3rd each as one super long block. 
+
+![5toPark](/assets/images/3_5parkblock.png)
+![Parkto3](/assets/images/3_3parkblock.png)
+#### A representation of two sample blocks in the Upper East Side according to NYC's zoning code. Madison and Lexington Avenues fail to separate these two blocks in the code, and thus they stretch across from 5th Avenue to Park Avenue, and Park Avenue to 3rd Avenue respectively.
+
+My program takes this data, lack of specificities and all, and produces a map of density by the block assuming that Madison and Lexington don't exist. Any changes in density between Park Avenue and 3rd Avenue are muddled out and the average is taken. If the density between Lexington and 3rd on a given block is double that of one between Park and Lexington on the same cross-street, the map will regardless show the two blocks as equally dense, because they are considered the same block by the NYC zoning code.
+
+This is important to keep in mind as we head to the reason why EUES and WUES are so different, that being the Upper East Side Historic District.
+
+![Historic District Map](/assets/images/3_ueshdmap.png)
+
+This is the up to date map of the Upper East Side Historic District, with its 2010 expansion. It stretches to Lexington from 61st Street up to 69th Street, and straddles mid-block between Lexington and 3rd Avenues from 69th Street up to 76th Street, before retreating back to Lexington for its last three blocks uptown. As you can see, the eastern boundary of the district varies depending on the cross-street, so just saying "3rd Avenue" as the boundary does not do this complex border justice. Saying that the border is "somewhere between Park and 3rd Avenues" would be more accurate, which is why Lexington Avenue can vary greatly in character depending on where one is located in the Upper East Side. 
+
+This district was first considered for establishment in 1979, and was passed in 1981, with a national registration in 1984. During the 1980s, while the district was just finishing up making its way through the legal pipeline, development of apartment buildings in the Upper East Side was beginning to reach higher and higher into the sky. With the recent establishment of this historic district in the WUES, all of these buildings had no choice but to build in the EUES, mostly east of Lexington Avenue, in order to get permits. Historic districts generally have very restrictive rules on what can or cannot be built, including buildings that would actually **_match_** the older style of the neighborhood, for fear of "copying" the classic architecture. With the character of the WUES locked into place, development cramped itself into the EUES, with buildings reaching into the thirties and forties of stories as housing demands continued to push the neighborhood into the sky. As a result, densities in the EUES crept ever upward, far outpacing that of the WUES.
+
+As the late 80s approached, the rapid construction of towers reached a breaking point in city planning politics, with two major belligerents: the NYC Planning Department, who saw the need for more housing and continuous upscaling in the EUES, and neighborhood preservation groups like Civitas, who felt that the new towers were antithetical to the character of the UES, and that their construction would ultimately ruin the neighborhood.
+
 -similarly to soho, UES is split into two regions, also west and east
 -western side (5th av to generally around lexington) is labeled historic district from 59 to 79 (above 79 does not concern us) (https://www.nyc.gov/assets/lpc/downloads/pdf/maps/HistoricDistrictMaps/Manhattan/Upper_East_Side.pdf) starting in ~1979-1981 (http://s-media.nyc.gov/agencies/lpc/lp/1051.pdf)
 -eastern side has no historic protections whatsoever, but this actually isnt as bad as it sounds
