@@ -170,18 +170,6 @@ The course of city politics eventually came around to the same conclusion. Accor
 
 Yet another [New York Times article](https://www.nytimes.com/1994/02/10/nyregion/zoning-changes-reduce-size-of-east-side-projects.html) documents the passage of this new EUES zoning code. In February 1994, the code passed unanimously in the New York City Council with a vote of 45-0, according to the [transcripts](https://legistar.council.nyc.gov/View.ashx?M=F&ID=4108736&GUID=D9993B96-CD16-4BF2-86B1-EE091740AFE7) from the February 9 meeting. 35-story height limits, setbacks, storefronts, requirements to be flush with other buildings in the block, plaza bonus eliminations, and many more were passed. This, along with rules stipulating that 60 percent of floor space be concentrated in the first 15 stories, which encourage a "layer-cake" building structure, helped to re-establish proper urban design in the EUES zoning code without outright removing density and tall buildings from the equation. Buildings like the aforementioned Trump tower would after this point become illegal to build. This triumphant compromise between Civitas and the Planning Commission came with much chagrin to the New York Real Estate Board, whose president, Steven Spinola, was attributed by the Times as saying "the revisions will discourage new buildings, not only by reducing their allowable size, but by compelling builders to construct longer and darker apartments of less value." Let's investigate this claim after 30 years of Civitas-assisted EUES development. 
 
-
--similarly to soho, UES is split into two regions, also west and east
--western side (5th av to generally around lexington) is labeled historic district from 59 to 79 (above 79 does not concern us) (https://www.nyc.gov/assets/lpc/downloads/pdf/maps/HistoricDistrictMaps/Manhattan/Upper_East_Side.pdf) starting in ~1979-1981 (http://s-media.nyc.gov/agencies/lpc/lp/1051.pdf)
--eastern side has no historic protections whatsoever, but this actually isnt as bad as it sounds
--ensuing legal and political battle begins between developers/planners and historic preservation advocates such as civitas (closet NIMBYs, lets be real) in the late 80s over the "avenues" of UES (3rd-1st) (https://www.nytimes.com/1987/12/06/realestate/downscaling-the-avenues-on-the-upper-east-side.html)
--civitas loses the war of attrition (citation needed) and now the eastern upper east side is WILDLY different in character than the western upper east side (show renders + pics)
--WUES is less dense, quieter, more uniform in height (~12-17 fl), almost no business on the streets
--EUES is denser, more active, more engaging to look at due to the height differences (heights can range from 4 to 50 fl), more shops and restaurants
--result? EUES is more affordable (citation needed) and just a better place to explore and have fun in
--once again, hist. designations can help, but we must be careful of preservation becoming stagnation
--we want neighborhoods, not walk-thru museums!
-
 ##### 1520 Sedgewick Avenue: When Density Fails
 ##### The Legacy of Moses (Bronx/Qns/SI Highway Mayhem)
 ##### Land vs. Votes: Sprawl's Misrepresentation of NYC's Population Distribution
