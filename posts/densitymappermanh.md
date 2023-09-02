@@ -1,6 +1,6 @@
 ---
-title: 'NYCDensityMapper, Pt. 2 - Discussing the Patterns'
-description: "Using the NYC Density Maps I developed and walked through my creation of in my previous post, I give some thoughts on the patterns--and the changes that should be happening--in New York's density."
+title: 'NYCDensityMapper, Pt. 2 - Discussing Manhattan'
+description: "Using the NYC Density Maps I developed and walked through my creation of in my previous post, I give some thoughts on the patterns--and the changes that should be happening--in Manhattan's density."
 ---
 
 #### [Why don't you go back?](/..)
