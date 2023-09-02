@@ -120,11 +120,11 @@ In sum, while its solution is **_NOWHERE_** near enough to fix the housing and h
 
 ##### East Side Story
 
-Similarly to SoHo, one can find a strange split in density between the two parts of the Upper East Side.
+The Upper East Side, fancy apartment towers, sophisticated museums, and a lovely park on its left side. What's more to love, and what's more to dream about being able to afford? In truth, the Upper East Side is actually more than a quiet retirement home for urban socialites, as there is once again another half yet discovered. Similarly to SoHo, one can find a strange split in density between the two parts of the Upper East Side.
 
 ![UES Split Render](/assets/images/3_uesrendernohist.png)
 
-What we're essentially seeing is a 100% increase in density just by jumping one block. Once again, one street, 3rd Avenue in our case, serves as the defacto border between two differing regions of density. Though the orientation is reversed, the story is the same. West of 3rd Avenue, and especially below 79th Street, the housing density is around 100 to 180 units per acre on average. East of 3rd Avenue, and especially below 79th Street, the housing density is around 220 to 360 units per acre on average. You once again might be wondering: "These two blocks must have different types and sizes of buildings, right?"
+As shown on the map, what we're essentially seeing is a 100% increase in density just by jumping one block. Once again, one street, 3rd Avenue in our case, serves as the defacto border between two differing regions of density. Though the orientation is reversed, the story is the same. West of 3rd Avenue, and especially below 79th Street, the housing density is around 100 to 180 units per acre on average. East of 3rd Avenue, and especially below 79th Street, the housing density is around 220 to 360 units per acre on average. You once again might be wondering: "These two blocks must have different types and sizes of buildings, right?"
 
 Here, things are a little more clear. Try to guess which photo is from the UES west of 3rd Avenue (we'll call this WUES for convenience), and which photo is from the UES east of 3rd Avenue (we'll call this EUES for convenience).
 
@@ -149,9 +149,9 @@ This is important to keep in mind as we head to the reason why EUES and WUES are
 
 This is the up to date map of the Upper East Side Historic District, with its 2010 expansion. It stretches to Lexington from 61st Street up to 69th Street, and straddles mid-block between Lexington and 3rd Avenues from 69th Street up to 76th Street, before retreating back to Lexington for its last three blocks uptown. As you can see, the eastern boundary of the district varies depending on the cross-street, so just saying "3rd Avenue" as the boundary does not do this complex border justice. Saying that the border is "somewhere between Park and 3rd Avenues" would be more accurate, which is why Lexington Avenue can vary greatly in character depending on where one is located in the Upper East Side. 
 
-This district was first considered for establishment in 1979, and was passed in 1981, with a national registration in 1984. During the 1980s, while the district was just finishing up making its way through the legal pipeline, development of apartment buildings in the EUES was beginning to reach higher and higher into the sky. With the recent establishment of this historic district in the WUES, all of these buildings were built in the EUES, mostly east of Lexington Avenue, in order to get permits. Historic districts generally have very restrictive rules on what can or cannot be built, including buildings that would actually **_match_** the older style of the neighborhood, for fear of "copying" the classic architecture. With the character of the WUES locked into place, and following new zoning regulations for the EUES in the early 80s that were more permissive to tall, imposing towers, development was encouraged to flood into it, with buildings reaching into the thirties and forties of stories as housing demands continued to push the neighborhood into the sky. As a result, densities in the EUES crept ever upward, far outpacing that of the WUES.
+This district was first considered for establishment in 1979, and was passed in 1981, with a national registration in 1984. During the 1980s, while the district was just finishing up making its way through the legal pipeline, development of apartment buildings in the EUES was reaching higher and higher into the sky. With the recent establishment of this historic district in the WUES, all of these buildings were built in the EUES, mostly east of Lexington Avenue, in order to get permits. Historic districts generally have very restrictive rules on what can or cannot be built, including buildings that would actually **_match_** the older style of the neighborhood, for fear of "copying" the classic architecture. With the character of the WUES locked into place, and following new zoning regulations for the EUES in the early 80s that were more permissive to tall, imposing towers, development was encouraged to flood into it, with buildings reaching into the thirties and forties of stories as housing demands continued to push the neighborhood into the sky. As a result, densities in the EUES crept ever upward, far outpacing that of the WUES.
 
-As the late 80s approached, the rapid construction of towers reached a breaking point in city planning politics, with two major belligerents: the NYC Planning Department and real estate industry, who saw the need for more housing and continuous upscaling in the EUES, and grassroots neighborhood preservation groups like Civitas, who felt that the new towers were antithetical to the character of the UES, and that their construction would greatly damage the neighborhood.
+As the late 80s approached, the rapid construction of towers reached a breaking point in city planning politics, with two major belligerents: the NYC Planning Department and Real Estate Board, who saw the need for more housing and continuous upscaling in the EUES, and grassroots neighborhood preservation groups like Civitas, who felt that the new towers were antithetical to the character of the UES, and that their construction would greatly damage the neighborhood.
 
 ![Civitas Opposition to Supertalls in 2nd/93rd, 1986-87](/assets/images/3_uesnyt1.png)
 #### 1986-87, Civitas Opposition to Supertalls, Pictured by the [New York Times](https://timesmachine.nytimes.com/timesmachine/1987/12/06/issue.html)
@@ -186,26 +186,57 @@ With some example buildings from around the EUES area, I will demonstrate the po
 Short <br>
 Short buildings in the EUES, those that are under eight stories tall, almost always have storefronts, are flush with the sidewalk, and are too short to need setbacks in the first place. As a result, they fit in so well with the rest of the neighborhood that they are usually the epicenter of nightlife, usually having a restaurant storefront with outdoor dining. People are laughing, drinking, eating, and walking in or near these buildings with impressive ease, and why wouldn't they? This is the historic infrastructure of the EUES.
 
+![Traditional Shorter Buildings in the EUES 1](/assets/images/3_uesnight1.png)
+#### Two shorter buildings on 78th Street behind 2nd Avenue with lively commerce. Both built in 1910.
+![Traditional Shorter Buildings in the EUES 2](/assets/images/3_uesnight2.png)
+#### A set of six shorter buildings on 2nd Avenue between 77th and 78th Streets with lively commerce. All built between 1900 and 1920.
+
 Old Tall with "Plaza" <br>
 Super tall buildings in EUES built before 1994 without a plaza are usually so recessed from the sidewalk that they cannot have any meaningful commerce take place. Because of this, I saw a double whammy of uninviting buildings not just with no commerce, but also with plaza designs so terrifyingly brutal that they look like they're straight from a horror film. This is obviously compounded with the fact that they look ridiculously out of place with the rest of the built environment due to their continuous and unending height. I almost never felt safe here, especially since I went to take these photos at night.
 
+![The Knickerbocker 1](/assets/images/3_uesnight6.png)
+![The Knickerbocker 2](/assets/images/3_uesnight7.png)
+#### The 40-story Knickerbocker Plaza Building on 2nd Avenue between 91st and 92nd Streets. Built in 1975, it provides difficult to access, sparse commerce, and breaks the continuum of urban space.
+
 Old Tall with no "Plaza" <br>
-Super tall buildings in EUES built before 1994 without plazas fare a little better than their recessed counterparts. They are usually, but not always, lined with storefronts, making them slightly more safe and inviting, though the nagging feeling of being under a cliff remained, as these buildings almost always lack setbacks.
+Super tall buildings in EUES built before 1994 without plazas fare a little better than their recessed counterparts. They are usually, but not always, lined with storefronts, making them more safe and inviting. However, there is still a nagging feeling of being under a cliff, as these buildings almost always lack setbacks. They are also still disjointed with other, shorter buildings in the area.
+
+![Old Tall, Flush with Sidewalk and has Commerce 1](/assets/images/3_uesnight3.png)
+#### A 37-story tall tower on 2nd Avenue between 73rd and 74th Streets, built in 1967, flush with the sidewalk and has commerce, but is still imposing.
+![Old Tall, Flush with Sidewalk and has Commerce 2](/assets/images/3_uesnight4.png)
+#### A 21-story tall tower on 2nd Avenue between 73rd and 74th Streets, built in 1964, flush with the sidewalk and has commerce, but does not seamlessly connect to neighboring buildings.
 
 New Talls <br><br>
-Newer tall buildings in the EUES, which as you'll see, are all built after 1994, are required to have numerous things, including the aforementioned 35-floor height maximum, the setbacks, the flush nature with the sidewalk, and the availability of a storefront. Such regulations facilitate better integration with the surrounding neighborhood.
+Newer tall buildings in the EUES, which as you'll see, are mostly built after 1994, are required to have numerous things, including the aforementioned 35-floor height maximum, the setbacks, the flush nature with the sidewalk, and the availability of a storefront. Such regulations facilitate better integration with the surrounding neighborhood.
 
-New Tall with no Storefront <br>
-Usually these new talls with missing storefronts are simply in the process of renting out retail space, and sit in the meantime with brightly lit, empty first floors. This, while not preferred to a building whose lobby is lined with paying store managers who can offer rich commercial experiences, is MUCH preferred to the older style of super-tall development.
+New Tall without Store <br>
+Usually these new talls with missing storefronts are simply in the process of renting out retail space, and sit in the meantime with brightly lit, empty first floors. This, while not preferred to a building whose lobby is lined with paying store managers who can offer rich commercial experiences, is MUCH preferred to the older style of super-tall development. There is also still a path to having commercial activity in the near future.
 
-New Tall with Storefront <br>
-These new talls are truly the best of all worlds, tall and dense, but without interrupting the sidewalk or the view. They also provide commerce and retail to pedestrians and helps keep the street front active and lively. These buildings have the potential to, and often do, perform as well or better than the traditional short buildings and providing an interesting environment with fun activities. 
+![New Tall, No Store](/assets/images/3_uesnight11.png)
+#### A 30-story tall tower on 2nd Avenue between 80th and 81st Streets, built in 2019, with the 1994 zoning code's setbacks, height limits, tight sidewalk space, and room for stores at the ground floor. It fits better with the other buildings thanks to the setback.
 
-Though these buildings can be anywhere between 25 and 35 stories tall, they still feel like a building with a lower height of around five-ten stories, and that is specifically because the setback successfully set up an illusion to the pedestrian that the building ends at that height. This allows for a more flush, uniform "wall" against the sidewalk, to use Newman's words. We have accomplished the feel of a cozy, inviting neighborhood, while simultaneously building taller, and providing high density for those who need the housing. The issues of sun coverage, adequate airflow, and wind management have been solved as well, as these "layer-cake" buildings block less sunlight and air, and are more compact and aerodynamic than the monolithic, unrestricted towers of the 80s and early 90s.
+New Tall with Store <br>
+These new talls are truly the best of all worlds, tall and dense, but without interrupting the sidewalk or the view. They also provide commerce and retail to pedestrians and helps keep the street front active and lively. These buildings have the potential to, and often do, perform as well or better than the traditional short buildings at providing an interesting environment with fun activities. 
 
--add pictures and corresponding dates of construction of buildings to each section
--add honorable mention of new talls still under construction (2nd/83rd) 
--add affordability, zillow screenshot
+![New Tall with Store 1](/assets/images/3_uesnight8.png)
+#### A 32-story tall tower on 1st Avenue between 91st and 92nd Streets, built in 2004, with all the benefits of the 1994 zoning code. It fits seamlessly with the other buildings thanks to the setback, and it has a gourmet market on the first floor.
+![New Tall with Store 2](/assets/images/3_uesnight9.png)
+#### A 31-story tall tower on 2nd Avenue between 76th and 77th Streets, built in 2000. It also benefits from the 1994 zoning code, and has a TD Bank on the first floor.
+
+Though these buildings can be anywhere between 25 and 35 stories tall, they still feel like a building with a lower height of around five-ten stories, and that is specifically because the setback successfully set up an illusion to the pedestrian that the building ends at that height. This allows for a more flush, uniform "wall" against the sidewalk, to use Newman's words. We have accomplished the feel of a cozy, inviting neighborhood, while simultaneously building taller, and providing high density for those who need the housing. The issues of sun coverage, adequate airflow, and wind management have been solved as well, as these "layer-cake" buildings block less sunlight and air, and are more compact and aerodynamic than the monolithic, unrestricted towers of mid-century through the early 90s.
+
+![Under Construction New Tall in EUES](/assets/images/3_uesnight12.png)
+#### Quick mention that there are still more new talls being constructed to Civitas standards in the EUES! This is 250-252 East 83rd Street on 2nd Avenue! At time of writing, it has almost been topped out, and is slated for opening in [Fall of 2024](https://newyorkyimby.com/2022/11/below-grade-work-continues-at-250-252-east-83rd-street-on-manhattans-upper-east-side.html).
+
+Just thought it would also be good to mention that affordability, while maybe not attributable to any one style of development, be it the early 80s zoning code or the 1994 code, almost always rises with density, and we can see it here in the UES as well.
+
+![Zillow WUES vs. EUES](/assets/images/3_ueszillow.png)
+
+This Zillow screenshot shows that there is not a SINGLE unit for rent in the WUES, the historic district, that is below $3,500 a month. In comparison, the EUES has plenty such units. While living in the EUES is certainly not cheap, it is *possible*, which cannot be said of the WUES. I am not arguing here that we should in any way replace the historic district of the WUES with a laissez-faire free market capitalist free for all like the EUES was before 1994, but it is something to consider. Not every neighborhood in NYC can afford the burden of historical significance, and certainly many should be allowed to thrive in the modern day.
+
+To that end, Civitas and the NYC Planning Commission, although they **vehemently** disagreed and argued on the methodology, they ultimately made their compromise in the mid-90s and decided to work together to build a modern EUES. They decided that density was important, but they also understood that blindly building towers without thought is not the proper way to do so. Civitas made sure that the zoning code carefully reviewed tower plans for neighborhood continuity, aesthetic merit, reasonable height limits, useful and engaging public space on the ground, and continued affordability and fiscal success. 
+
+I believe there is a firm lesson or two in this story. The voices of grassroots movements are immensely important in city planning decisions, especially when they represent a wide range of interests, not just those of the wealthiest or the most powerful. There is also a need for greater government oversight in making sure that we build **responsible** density. We must not create another hotbed for war like that which went down on the Avenues of the Upper East Side.
 
 ##### 1520 Sedgewick Avenue: When Density Fails
 ##### The Legacy of Moses (Bronx/Qns/SI Highway Mayhem)
