@@ -28,6 +28,7 @@ description: "Using the NYC Density Maps I developed and walked through my creat
 
 ##### [Back to Start](/posts/densitymappermanh/#start)
 <h5 id="midtowns-black-hole">Midtown's Black Hole</h5>
+
 We've all seen it on the street: it's 5 PM. Office workers, hedge fund managers, CEOs, and interns alike walking down 6th Avenue, finding the nearest ten-dollar coffee store or subway entrance. You think, wow, this place really is the financial capital of the world...... if you're a tourist, that is!
 
 Jokes aside, despite being known for its lively business activity in the day, the office district of Manhattan, which comprises this part of Midtown:
