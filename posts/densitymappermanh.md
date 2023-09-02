@@ -203,7 +203,7 @@ Short buildings in the EUES, those that are under eight stories tall, almost alw
 #### A set of six shorter buildings on 2nd Avenue between 77th and 78th Streets with lively commerce. All built between 1900 and 1920.
 
 Old Tall with "Plaza" <br>
-Super tall buildings in EUES built before 1994 without a plaza are usually so recessed from the sidewalk that they cannot have any meaningful commerce take place. Because of this, I saw a double whammy of uninviting buildings not just with no commerce, but also with plaza designs so terrifyingly brutal that they look like they're straight from a horror film. This is obviously compounded with the fact that they look ridiculously out of place with the rest of the built environment due to their continuous and unending height. I almost never felt safe here, especially since I went to take these photos at night.
+Super tall buildings in EUES built before 1994 with plazas are usually so recessed from the sidewalk that they cannot have any meaningful commerce take place. Because of this, I saw a double whammy of uninviting buildings not just with no commerce, but also with plaza designs so terrifyingly brutal that they look like they're straight from a horror film. This is obviously compounded with the fact that they look ridiculously out of place with the rest of the built environment due to their continuous and unending height. I almost never felt safe here, especially since I went to take these photos at night.
 
 ![The Knickerbocker 1](/assets/images/3_uesnight6.png)
 ![The Knickerbocker 2](/assets/images/3_uesnight7.png)
