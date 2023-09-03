@@ -249,6 +249,8 @@ To that end, Civitas and the NYC Planning Commission, although they **vehemently
 
 I believe there is a firm lesson or two in this story. The voices of grassroots movements are immensely important in city planning decisions, especially when they represent a wide range of interests, not just those of the wealthiest or the most powerful. There is also a need for greater government oversight in making sure that we build **responsible** density. We must not create another hotbed for war like that which went down on the Avenues of the Upper East Side.
 
+(Hey, did you know I made a montage of the Civitas video? Well now you do! Check it out [here!](https://youtu.be/w6y8O4PCWac))
+
 See my takes on density in the other boroughs in my next few posts! Stay tuned!
 
 ##### [Back to Start](/posts/densitymappermanh/#start)
