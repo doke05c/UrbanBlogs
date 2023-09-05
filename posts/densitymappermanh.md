@@ -251,6 +251,8 @@ I believe there is a firm lesson or two in this story. The voices of grassroots 
 
 (Hey, did you know I made a montage of the Civitas video? Well now you do! Check it out [here!](https://youtu.be/w6y8O4PCWac))
 
+<iframe id="ytplayer" type="text/html" src="https://www.youtube.com/embed/w6y8O4PCWac?autoplay=1&origin=http://urbanblogs.netlify.app/posts/densitymappercont" frameborder="0"></iframe>
+
 See my takes on density in the other boroughs in my next few posts! Stay tuned!
 
 ##### [Back to Start](/posts/densitymappermanh/#start)
