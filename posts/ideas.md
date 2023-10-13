@@ -12,6 +12,9 @@ Athens Post (by Ami Dube)
 Tower-in-the-Park Takedown (jane jacobs + william whyte analysis, lot-based densitymapper rerender)
 -based on midterm due wednesday, ask prof abt permission to post
 
+In Defense of Queenslink/STOP IGNORING TRANSIT IN GREENWAY PROJECTS! 
+-review TTA videos, september rally content, eric adams dunking
+
 DENSITY MAP UPDATE - NEW LOT-LEVEL MAPPING
 -probably just post new map images, not too hard tbh (maybe update part 1 post???)
 
@@ -29,9 +32,6 @@ The Power of Experience (di paola/critical mass building/my understanding of liv
 
 On Gentrification (urban frontier reading, morus/east village/loisaida fight)
 -use 10/6/23 urbs cw as starting point
-
-In Defense of Queenslink (rally), 
--review TTA videos, september rally content
 
 Prewalk Doc (Sorted in descending station order by ridership, mix SMEE/NTT format: 8.10, 1.1, etc) 
 
