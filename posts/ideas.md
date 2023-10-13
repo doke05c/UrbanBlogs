@@ -1,6 +1,6 @@
 Upcoming Posts: 
 
-Rockaway Equity Post (moliterno essay + menser suggestion about GND for public housing): 
+Rockaway Equity Post (eng essay + menser suggestion about GND for public housing): 
 -75% ish done, need pics and GND public housing conclusion
 
 Providence: The New Biking City (original title: a tale of two qualities, changed because the bikes won me over)
