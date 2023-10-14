@@ -15,6 +15,9 @@ Tower-in-the-Park Takedown (jane jacobs + william whyte analysis, lot-based dens
 In Defense of Queenslink/STOP IGNORING TRANSIT IN GREENWAY PROJECTS! 
 -review TTA videos, september rally content, eric adams dunking
 
+CitiBike to the Boroughs!
+-south bk, flshing, south qns, rockaways, (si/jersey?)
+
 DENSITY MAP UPDATE - NEW LOT-LEVEL MAPPING
 -probably just post new map images, not too hard tbh (maybe update part 1 post???)
 
