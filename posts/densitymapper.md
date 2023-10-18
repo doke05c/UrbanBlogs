@@ -263,11 +263,11 @@ This is why the following images are by the borough. I regret to inform that com
 
 <h3 id="the-results">The Results</h3>
 
-![Manhattan](/assets/images/2_manhattan.png)
-![Bronx](/assets/images/2_bronx.png)
-![Brooklyn](/assets/images/2_brooklyn.png)
-![Queens](/assets/images/2_queens.png)
-![Staten Island](/assets/images/2_staten.png)
+![Manhattan](/assets/images/2_manhattan_lot.jpg)
+![Bronx](/assets/images/2_bronx_lot.jpg)
+![Brooklyn](/assets/images/2_brooklyn_lot.jpg)
+![Queens](/assets/images/2_queens_lot.jpg)
+![Staten Island](/assets/images/2_si_lot.jpg)
 
 The first few things that may jump out at you are the white spaces for highways, and the black spaces for parks and... the middle of midtown Manhattan? Well, there are no houses in highways or parks, and definitely not in blocks devoted solely to business buildings, so I guess that makes sense. However, there are some other interesting things this map allows us to see...
 

@@ -17,11 +17,11 @@ description: "Using the NYC Density Maps I developed and walked through my creat
 
 <h5 id="the-maps">The Maps</h5>
 
-![Manhattan](/assets/images/2_manhattan.png)
-![Bronx](/assets/images/2_bronx.png)
-![Brooklyn](/assets/images/2_brooklyn.png)
-![Queens](/assets/images/2_queens.png)
-![Staten Island](/assets/images/2_staten.png)
+![Manhattan](/assets/images/2_manhattan_lot.jpg)
+![Bronx](/assets/images/2_bronx_lot.jpg)
+![Brooklyn](/assets/images/2_brooklyn_lot.jpg)
+![Queens](/assets/images/2_queens_lot.jpg)
+![Staten Island](/assets/images/2_si_lot.jpg)
 #### NYC's residential density mapped by the block level.
 
 ### About those Blocks...
