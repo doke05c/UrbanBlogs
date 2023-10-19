@@ -1,5 +1,9 @@
 Upcoming Posts: 
 
+Tower-in-the-Park Takedown (jane jacobs + william whyte analysis, lot-based densitymapper rerender)
+-based on midterm due wednesday, ask prof abt permission to post
+-90% ish done, need to rework citations(?) and maybe make it a little less intellectual sounding (pls get permission before posting it as TBD)
+
 Rockaway Equity Post (eng essay + menser suggestion about GND for public housing): 
 -75% ish done, need pics and GND public housing conclusion
 
@@ -8,9 +12,6 @@ Providence: The New Biking City (original title: a tale of two qualities, change
 
 Athens Post (by Ami Dube)
 -wait for ami to send
-
-Tower-in-the-Park Takedown (jane jacobs + william whyte analysis, lot-based densitymapper rerender)
--based on midterm due wednesday, ask prof abt permission to post
 
 In Defense of Queenslink/STOP IGNORING TRANSIT IN GREENWAY PROJECTS! 
 -review TTA videos, september rally content, eric adams dunking
