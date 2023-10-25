@@ -35,7 +35,7 @@ The Power of Experience (di paola/critical mass building/my understanding of liv
 -dunno if i wanna use the first midterm urbs paper for this
 
 On Gentrification (urban frontier reading, morus/east village/loisaida fight)
--use 10/6/23 urbs cw as starting point
+-use 10/6/23 urbs cw as starting point, future urbs notes also useful
 
 Prewalk Doc (Sorted in descending station order by ridership, mix SMEE/NTT format: 8.10, 1.1, etc) 
 
