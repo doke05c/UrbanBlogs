@@ -17,7 +17,7 @@ Inequity Series **HAS MULTIPLE POST IDEAS, THESE ARE ALL SEPARATE POSTS UNDER ON
 	On Gentrification (urban frontier reading, morus/east village/	loisaida fight)
 	-use 10/6/23 urbs cw as starting point, future urbs notes also 		useful
 
-	The Legacy of Moses
+	The Legacy of Moses (Let's Tear Some Highways Down!)
 
 	History of NYC's Subway, Modern Projects and why we still can't let go of our "Manhattan-Centrism" (nakib interview)
 
