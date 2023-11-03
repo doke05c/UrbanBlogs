@@ -1,5 +1,10 @@
 Upcoming Posts: 
 
+BUTTIGEG: A (CAUTIOUSLY) HOPEFUL SECRETARY :D
+-use notes from other file, pics, stua chats, whatever takes i have
+-my question and expanding on it!
+-overall good impression of pete :)
+
 Tower-in-the-Park Takedown (jane jacobs + william whyte analysis, lot-based densitymapper rerender)
 -based on midterm due wednesday, ask prof abt permission to post
 -90% ish done, need to rework citations(?) and maybe make it a little less intellectual sounding (pls get permission before posting it as TBD)
