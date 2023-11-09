@@ -4,6 +4,7 @@ BUTTIGEG: A (CAUTIOUSLY) HOPEFUL SECRETARY :D
 -use notes from other file, pics, stua chats, whatever takes i have
 -my question and expanding on it!
 -overall good impression of pete :)
+-https://www.businessinsider.com/house-republicans-move-cut-pete-buttigieg-salary-to-one-dollar-2023-11 republicans clearly dont like him so that must mean hes based
 
 Tower-in-the-Park Takedown (jane jacobs + william whyte analysis, lot-based densitymapper rerender)
 -based on midterm due wednesday, ask prof abt permission to post
