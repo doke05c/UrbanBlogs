@@ -24,8 +24,11 @@ Inequity Series **HAS MULTIPLE POST IDEAS, THESE ARE ALL SEPARATE POSTS UNDER ON
 	-use 10/6/23 urbs cw as starting point, future urbs notes also 		useful
 
 	The Legacy of Moses (Let's Tear Some Highways Down!)
-
+		-this might use urbs refl essay #3 ASK STROM FIRST)
 	History of NYC's Subway, Modern Projects and why we still can't let go of our "Manhattan-Centrism" (nakib interview)
+		-this might use urbs refl essay #3 too (ASK STROM FIRST)
+
+maybe combine these two?? ^^^^^^
 
 
 Providence: The New Biking City (original title: a tale of two qualities, changed because the bikes won me over)
