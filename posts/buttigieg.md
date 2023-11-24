@@ -70,7 +70,7 @@ buttigieg says:
 Audience Q: Everyone seems to not pay attention on the street (looking at phones), what do we do? Is it just a NYC issue or is it a national issue? There are a lot of competing interests on the road? (EDITOR'S NOTE: i think this question sucks, it reduces road design and systemic issues to individual error)
 
 buttigieg says:
-	-**we have a road death crisis.** [40k a year die in traffic deaths](https://www.iihs.org/topics/fatality-statistics/detail/state-by-state)
+		-**we have a road death crisis.** [40k a year die in traffic deaths](https://www.iihs.org/topics/fatality-statistics/detail/state-by-state)
 	-many of those people are what the DoT calls [vulnerable road users](https://highways.dot.gov/sites/fhwa.dot.gov/files/2022-10/VRU%20Safety%20Assessment%20Guidance%20FINAL_508.pdf): pedestrians, cyclists, etc
 
 Audience Q (Abigail Lieber): How can we mitigate climate with the type of transportation that we use? (trains over cars, etc) 
@@ -110,6 +110,6 @@ Audience Q: People are still on their phones in Amsterdam and Seoul, and people 
 buttigieg says:
 	-we tolerate carnage in the USA, this **shouldn't be the cost of business**
 	-we need safer vehicle speeds (lower)
-	-**reducing lane widths and lane count (like he did in south bend, indiana!) not only make streets safer, it also SPEEDS UP TRAFFIC! who would have thought! (**EDITOR'S NOTE: yes pete, we love induced demand <3)
+	-**reducing lane widths and lane count ([like he did in south bend, indiana](https://www.southbendtribune.com/story/news/local/2020/12/17/buttigiegs-transportation-idea-smart-streets-it-changed-downtown-south-bend-but-challenges-remai/43908475/)!) not only make streets safer, it also SPEEDS UP TRAFFIC! who would have thought! (**EDITOR'S NOTE: yes pete, we love induced demand <3)
 	-it is time to expand vehicle safety standards to include pedestrian deaths, and legally enforce car manufacturers to make sure their vehicles are safer for pedestrian collisions (EDITORS NOTE: missed opportunity to advocate policy for tightening regulations on SUV design)
 	-fancy tech won't stop cars from running into pedestrians, and **WE CAN'T TRUST IT TO!**
