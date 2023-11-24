@@ -7,7 +7,7 @@ BUTTIGEG: A (CAUTIOUSLY) HOPEFUL SECRETARY :D
 -https://www.businessinsider.com/house-republicans-move-cut-pete-buttigieg-salary-to-one-dollar-2023-11 republicans clearly dont like him so that must mean hes based
 
 Tower-in-the-Park Takedown (jane jacobs + william whyte analysis, lot-based densitymapper rerender)
--based on midterm due wednesday, ask prof abt permission to post
+-based on urbs essay #2
 -90% ish done, need to rework citations(?) and maybe make it a little less intellectual sounding (pls get permission before posting it as TBD)
 
 Inequity Series **HAS MULTIPLE POST IDEAS, THESE ARE ALL SEPARATE POSTS UNDER ONE SERIES, MUCH LIKE DENSITY MAPPER** (inspired by nakib interview)

@@ -3,7 +3,6 @@ title: 'NYCDensityMapper, Pt. 2 - Discussing Manhattan'
 description: "Using the NYC Density Maps I developed and walked through my creation of in my previous post, I give some thoughts on the patterns--and the changes that should be happening--in Manhattan's density."
 ---
 
-#### [Why don't you go back?](/..)
 <h4 id="start"></h4>
 
 ##### NYCDensityMapper, Pt. 2 - Discussing Manhattan
@@ -256,4 +255,3 @@ I believe there is a firm lesson or two in this story. The voices of grassroots 
 See my takes on density in the other boroughs in my next few posts! Stay tuned!
 
 ##### [Back to Start](/posts/densitymappermanh/#start)
-#### [Why don't you go back?](/..)

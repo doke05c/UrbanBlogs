@@ -3,8 +3,6 @@ title: 'NYCDensityMapper - Showing the Process'
 description: "Using Python, SQL, and ZoLa, I made a map of NYC's housing density by the block, with some interesting results. See my process in creating it!"
 ---
 
-#### [Why don't you go back?](/..)
-
 
 ##### NYCDensityMapper - Showing the Process
 
@@ -275,4 +273,3 @@ In the next article, which will be a part 2 to this one!
 Sorry... it is getting a little long....
 
 
-#### [Why don't you go back?](/..)

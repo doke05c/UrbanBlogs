@@ -3,7 +3,6 @@ title: 'NYCDensityMapper, Pt. 3 - Trouble in the Bronx'
 description: "I continue my NYC Density Maps analysis, and this time, the Bronx's car-centric and anti-pedestrian development patterns are on the chopping block."
 ---
 
-#### [Why don't you go back?](/..)
 <h4 id="start"></h4>
 
 
@@ -16,4 +15,3 @@ description: "I continue my NYC Density Maps analysis, and this time, the Bronx'
 
 ##### What is Dense Enough (for me)?
 
-#### [Why don't you go back?](/..)
