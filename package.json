@@ -4,13 +4,16 @@
   "description": "Thoughts about urban planning and development hosted on a blog powered by Eleventy &amp; Netlify.",
   "main": "index.js",
   "scripts": {
-	"build" : "npx @11ty/eleventy",
-	"dev" : "npx @11ty/eleventy --serve"
+    "build": "npx @11ty/eleventy",
+    "dev": "npx @11ty/eleventy --serve"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1"
+    "@11ty/eleventy": "^3.1.5"
+  },
+  "dependencies": {
+    "@duckdb/duckdb-wasm": "^1.33.1-dev20.0"
   }
 }
