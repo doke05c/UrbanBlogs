@@ -14,6 +14,8 @@
     "@11ty/eleventy": "^3.1.5"
   },
   "dependencies": {
-    "@duckdb/duckdb-wasm": "^1.33.1-dev20.0"
+    "@duckdb/duckdb-wasm": "^1.33.1-dev20.0",
+    "apache-arrow": "^21.1.0",
+    "vite": "^8.0.3"
   }
 }
