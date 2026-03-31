@@ -24,28 +24,9 @@ const db = new duckdb.AsyncDuckDB(
 
 await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 
-console.log("hi :) time to test?")
+// console.log("hi :) time to test?")
 
-
-
-// //get database
-// const response = await fetch('/src/report_card.duckdb');
-
-// //puts file into memory, MAY BE MEMORY INTENSIVE
-// const buffer = await response.arrayBuffer();
-
-// //put file in virtual filesystem
-
-// const FILE_NAME = "/src/report_card.duckdb";
-
-// await db.registerFileBuffer(
-//   FILE_NAME,
-//   new Uint8Array(buffer)
-// );
-
-//open database read-only
-
-console.log("ENV:", window.NODE_ENV);
+// console.log("ENV:", window.NODE_ENV);
 
 const path =
   window.NODE_ENV === "dev"
@@ -72,7 +53,7 @@ const data = result.toArray();
 
 const table = document.createElement('table');
 
-console.log("hi :) it worked?")
+// console.log("hi :) it worked?")
 
 // headers
 const headerRow = document.createElement('tr');
