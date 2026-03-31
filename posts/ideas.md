@@ -7,15 +7,14 @@ Tower-in-the-Park Takedown (jane jacobs + william whyte analysis, lot-based dens
 Inequity Series **HAS MULTIPLE POST IDEAS, THESE ARE ALL SEPARATE POSTS UNDER ONE SERIES, MUCH LIKE DENSITY MAPPER** (inspired by nakib interview)
 
 	South Bx gentrification (eng final)
-
-	qnslink (UR article)
-
+	
 	CitiBike to the Boroughs!
 	-south bk, flshing, south qns, rockaways, (si/jersey?)
 
 	Rockaway Equity Post (eng essay + menser suggestion about GND 		for public housing): 
 		-75% ish done, need pics and GND public housing conclusion
-
+		
+	qnslink (UR article):
 	In Defense of Queenslink/STOP IGNORING TRANSIT IN GREENWAY 					 PROJECTS! 
 	-review TTA videos, september rally content, eric adams 	dunking, urban review article (please accept me)
 
