@@ -38,7 +38,28 @@ But let me remind you what New York actually looks like.
 
 ![CitiBike Coverage Map](/assets/images/5_citicoverage.jpg)
 
-Most of the city's area is left completely dry by the service, despite having been up (and to its credit, expanding!) since 2013. Expansion has historically followed a radial pattern, beginning in Manhattan's Central Business District, and fanning out. 
+Most of the city's area is left completely dry by the service, despite having been up (and to its credit, expanding!) since 2013. Expansion has historically followed a radial pattern: beginning in Manhattan's Central Business District and Downtown Brooklyn, and fanning outwards. 
+
+![CitiBike 1st Expansion Map](/assets/images/5_exp1.jpg)
+#### (image courtesy of [CitiBike on Twitter](https://twitter.com/citibikenyc/status/624632486065250304))
+
+The first expansion outside the CBD and Downtown Brooklyn started in the summer of 2015, when CitiBike service snaked along the edge of Northern Brooklyn into Long Island City (Qns), followed by the Fall 2015 expansion into the Upper West and East Sides (Mnh). By 2019, CitiBike was also made available in Queensbridge, Astoria (Qns), Harlem (Mnh), Red Hook, Carroll Gardens, and Park Slope (Bk).
+
+![CitiBike 1st Expansion Map](/assets/images/5_exp2.jpg)
+#### (image courtesy of [CitiBike](https://ride.citibikenyc.com/blog/major-citi-bike-expansion-map-revealed))
+
+The second major expansions came in the most recent four years of CitiBike's history, and they just completed a few months ago in Corona, Queens. Among the new areas served are Upper Manhattan (Mnh), the South Bronx, Kingsbridge, Fordham, Tremont (Bx), Sunset Park, Flatbush, Crown Heights, Bed-Stuy, Bushwick (Bk), Ridgewood, Sunnyside, Jackson Heights, and Elmhurst (Qns). 
+
+Nevertheless, residents of Woodlawn, Wakefield, Co-Op City, Eastchester, Baychester, Throgg's Neck, Clason Point, Parkchester, Van Nest, Williamsbridge, Norwood (Bx), Forest Hills, Glendale, Woodhaven, Ozone Park, Flushing, Howard Beach, the Rockaways, Eastern Queens (Qns), Midwood, Canarsie, Borough Park, Bensonhurst, Coney Island, Brighton Beach, Bergen Beach, Bay Ridge, East New York, (Bk), and the **ENTIRETY** of Staten Island are left out from the game of bike-share in New York.
+
+When it comes to my **real** destinations: Forest Hills for work, Midwood or Bergen Beach to see friends, the Rockaways to come back home, it is impossible to make the full trip on an e-bike, as doable as it would be distance-wise were the infrastructure to actually exist. It just so happens that neighborhoods that aren't blessed with propinquity to City Hall tend to be MUCH worse off economically, more populated by people of color, and do not have the choice of taking the subway given a lack of bike-share infrastructure (due to historical patterns that we do not have time to discuss here). ***CitiBike, in instituting a downtown-first approach for building its docks, is defeating the purpose of introducing cycling as an alternative form of transit.***
+
+If my CitiBike dock breaks where I live on 1st Avenue and 25th Street, fine. I can take the subway, the bus, walk, take the ferry???? This is in stark contrast to far-flung neighborhoods like Throgg's Neck, Bergen Beach, or South Ozone Park. Residents in these neighborhoods often need to take *multiple* buses to reach the nearest subway, if it's in the area at all. If any one of the transit methods they use were to suddenly stop working one day, they aren't getting anywhere. It's as simple as that. Given these circumstances, ***CItiBike is perpetuating patterns of poor connectivity in far-flung areas and privilege in downtown regions by prioritizing areas that already have an abundance of transit over far-flung regions that desperately need more options for transit.*** 
+
+According to a [2019 study done by the Urban Politics and Governance Research Group at the McGill University School of Urban Planning](https://upgo.lab.mcgill.ca/publication/bridging-the-boroughs/bridging-the-boroughs.pdf), use info on pgs 2,3 for alarming stats,
+then 25-27 for expansion policy proposal (which to prioritize, i will still suggest docks at ALL subway sta's eventually)
+
+
 
 https://qns.com/2019/07/jamaica-councilwoman-slams-citi-bike-expansion-plan-after-it-excludes-southeastern-queens/
 
@@ -52,3 +73,15 @@ https://upgo.lab.mcgill.ca/publication/bridging-the-boroughs/
 
 https://upgo.lab.mcgill.ca/publication/bridging-the-boroughs/bridging-the-boroughs.pdf
 
+This needs to change. How do we do it?
+vvv
+
+-plan to RAPIDLY! rollout citibike in all of nyc
+	-dock at EVERY subway station and LIRR stop in NYC-proper (maybe even metro area) (NO EXCEPTIONS)
+	-docks every six blocks, max 5m walk to any citibike dock for residents
+	-PRIMARY GOAL: GET PEOPLE ACROSS THAT LAST XTH OF A MILE TO THEIR SUBWAY
+	-BEGIN EXPANSION IN THE EAST BRONX, EAST BK AREAS ASAP, THEN CENTRAL BK, EAST/SOUTH QUEENS, SI **PUT POC/WORKING CLASS FIRST! NO MORE DOWNTOWN-FIRST!** 
+
+-possibly also serve popular tourist/leisure areas: (rockaways, coney, orchard beach areas)
+
+-possible public buyout? (capitalism bad uwu)
