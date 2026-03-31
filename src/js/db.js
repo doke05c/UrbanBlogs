@@ -24,26 +24,37 @@ const db = new duckdb.AsyncDuckDB(
 
 await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 
-// console.log("hi :) time to test?")
+
+const IS_DEV = window.NODE_ENV === "dev";
 
 // console.log("ENV:", window.NODE_ENV);
 
-const path =
-  window.NODE_ENV === "dev"
-    ? "http://192.168.137.199:8080/src/report_card.duckdb"
-    : "https://urbanblogs.netlify.app/src/report_card.duckdb";
+const BASE_DATA_URL = IS_DEV
+  ? "http://192.168.137.199:8080/src"
+  : "https://urbanblogs.netlify.app/src";
 
-await db.open({
-  path,
-  accessMode: duckdb.DuckDBAccessMode.READ_ONLY
-});
+//don't open full duckdb unless absolutely necessary
+
+//get all datasets' names
+const DATASETS = {
+  report_all: `${BASE_DATA_URL}/report_card.duckdb`,
+  cbd_entries: `${BASE_DATA_URL}/cbd_entries.parquet`,
+  mta_bridge_traffic: `${BASE_DATA_URL}/mta_bridge_traffic.parquet`,
+  mta_overall_ridership_traffic: `${BASE_DATA_URL}/mta_overall_ridership_traffic.parquet`
+};
+  
+// console.log("hi :) time to test?")
 
 //client connection
 const conn = await db.connect();
 
-//get first 10 rows from mta_bridge_traffic
+
+
+//get first 10 rows from cbd_entries
 const result = await conn.query(`
-  SELECT * FROM cbd_entries LIMIT 10
+  SELECT * 
+  FROM read_parquet('${DATASETS.cbd_entries}') 
+  LIMIT 10
 `);
 
 //print result as array

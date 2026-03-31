@@ -2,8 +2,7 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("styles.css");
   eleventyConfig.addPassthroughCopy("assets");
   eleventyConfig.addPassthroughCopy("_headers");
-  eleventyConfig.addPassthroughCopy("src/report_card.duckdb");
-  eleventyConfig.addPassthroughCopy("src/js");
+  eleventyConfig.addPassthroughCopy("src");
   eleventyConfig.addPassthroughCopy({
     "node_modules/@duckdb/duckdb-wasm/dist": "duckdb"
   });
