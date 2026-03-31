@@ -1,12 +1,17 @@
 import * as duckdb from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@latest/+esm";
+// import * as duckdb from "@duckdb/duckdb-wasm";
 
 // const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
-const bundle = {
-  mainModule: "/duckdb/duckdb-mvp.wasm",
-  mainWorker: "/duckdb/duckdb-browser-mvp.worker.js",
-  pthreadWorker: "/duckdb/duckdb-browser-coi.pthread.worker.js"
-};
+// const bundle = {
+//   mainModule: "/duckdb/duckdb-mvp.wasm",
+//   mainWorker: "/duckdb/duckdb-browser-mvp.worker.js",
+//   pthreadWorker: "/duckdb/duckdb-browser-coi.pthread.worker.js"
+// };
 
+const bundles = duckdb.getJsDelivrBundles();
+const bundle = await duckdb.selectBundle(bundles);
+
+console.log(bundle);
 
 const worker = new Worker(bundle.mainWorker);
 
@@ -16,6 +21,7 @@ const db = new duckdb.AsyncDuckDB(
 );
 
 await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+
 
 console.log("hi :) time to test?")
 
