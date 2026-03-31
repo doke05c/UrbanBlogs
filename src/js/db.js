@@ -17,6 +17,9 @@ const db = new duckdb.AsyncDuckDB(
 
 await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 
+console.log("hi :) time to test?")
+
+
 //get database
 const response = await fetch('/src/report_card.duckdb');
 
@@ -24,14 +27,17 @@ const response = await fetch('/src/report_card.duckdb');
 const buffer = await response.arrayBuffer();
 
 //put file in virtual filesystem
+
+const FILE_NAME = "/src/report_card.duckdb";
+
 await db.registerFileBuffer(
-  '/src/report_card.duckdb',
+  FILE_NAME,
   new Uint8Array(buffer)
 );
 
 //open database read-only
 await db.open({
-  path: '/src/report_card.duckdb',
+  path: FILE_NAME,
   accessMode: duckdb.DuckDBAccessMode.READ_ONLY
 });
 
@@ -40,11 +46,17 @@ const conn = await db.connect();
 
 //get first 10 rows from mta_bridge_traffic
 const result = await conn.query(`
-  SELECT * FROM mta_bridge_traffic LIMIT 10
+  SELECT * FROM cbd_entries LIMIT 10
 `);
 
 //print result as array
 console.log(result.toArray());
+
+const data = result.toArray();
+
+const table = document.createElement('table');
+
+console.log("hi :) it worked?")
 
 // headers
 const headerRow = document.createElement('tr');
