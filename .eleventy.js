@@ -1,6 +1,7 @@
 module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("styles.css");
   eleventyConfig.addPassthroughCopy("assets");
+  eleventyConfig.addPassthroughCopy("_headers");
   eleventyConfig.addPassthroughCopy("src/report_card.duckdb");
   eleventyConfig.addPassthroughCopy("src/js");
   eleventyConfig.addPassthroughCopy({
@@ -14,8 +15,10 @@ module.exports = function(eleventyConfig) {
     
     headers: {
       "Cross-Origin-Opener-Policy": "same-origin",
-      "Cross-Origin-Embedder-Policy": "require-corp"
+      "Cross-Origin-Embedder-Policy": "require-corp",
     }
   });
+
+  eleventyConfig.addGlobalData("env", process.env.NODE_ENV);
 
 };

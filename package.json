@@ -4,8 +4,8 @@
   "description": "Thoughts about urban planning and development hosted on a blog powered by Eleventy &amp; Netlify.",
   "main": "index.js",
   "scripts": {
-    "build": "npx @11ty/eleventy",
-    "dev": "npx @11ty/eleventy --serve"
+    "build": "cross-env NODE_ENV=build npx @11ty/eleventy",
+    "dev": "cross-env NODE_ENV=dev npx @11ty/eleventy --serve"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +16,7 @@
   "dependencies": {
     "@duckdb/duckdb-wasm": "^1.33.1-dev20.0",
     "apache-arrow": "^21.1.0",
+    "cross-env": "^10.1.0",
     "vite": "^8.0.3"
   }
 }

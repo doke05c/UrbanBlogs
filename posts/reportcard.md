@@ -11,6 +11,10 @@ description: "The New York City region has been missing a centralized location w
 
 I'm trying to test out how I can bring in tables from my DuckDB database to my website, specifically this page. Here goes nothing!
 
+<script>
+  window.NODE_ENV = "{{ env }}";
+</script>
+
 <script type="module" src="/src/js/db.js"></script>
 
 
