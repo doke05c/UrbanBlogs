@@ -38,7 +38,7 @@ But let me remind you what New York actually looks like.
 
 ![CitiBike Coverage Map](/assets/images/5_citicoverage.jpg)
 
-Most of the city's area is left completely dry by the service, despite having been up (and to its credit, expanding!) since 2013. Expansion has historically followed a radial pattern: beginning in Manhattan's Central Business District and Downtown Brooklyn, and fanning outwards. 
+Most of the city's area is left completely dry by the service, despite CitiBike having been up (and to its credit, expanding!) since 2013. Expansion has historically followed a radial pattern: beginning in Manhattan's Central Business District and Downtown Brooklyn, and fanning outwards. 
 
 ![CitiBike 1st Expansion Map](/assets/images/5_exp1.jpg)
 #### (image courtesy of [CitiBike on Twitter](https://twitter.com/citibikenyc/status/624632486065250304))
