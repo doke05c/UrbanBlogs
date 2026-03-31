@@ -28,20 +28,20 @@ await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 console.log("hi :) time to test?")
 
 
-//get database
-const response = await fetch('/src/report_card.duckdb');
+// //get database
+// const response = await fetch('/src/report_card.duckdb');
 
-//puts file into memory, MAY BE MEMORY INTENSIVE
-const buffer = await response.arrayBuffer();
+// //puts file into memory, MAY BE MEMORY INTENSIVE
+// const buffer = await response.arrayBuffer();
 
 //put file in virtual filesystem
 
 const FILE_NAME = "/src/report_card.duckdb";
 
-await db.registerFileBuffer(
-  FILE_NAME,
-  new Uint8Array(buffer)
-);
+// await db.registerFileBuffer(
+//   FILE_NAME,
+//   new Uint8Array(buffer)
+// );
 
 //open database read-only
 await db.open({
