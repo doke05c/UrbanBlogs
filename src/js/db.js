@@ -1,5 +1,5 @@
-// import * as duckdb from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@latest/+esm";
-import * as duckdb from "@duckdb/duckdb-wasm";
+import * as duckdb from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@latest/+esm";
+// import * as duckdb from "@duckdb/duckdb-wasm";
 
 // const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
 const bundle = {
