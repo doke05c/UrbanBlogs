@@ -11,11 +11,13 @@ description: "The New York City region has been missing a centralized location w
 
 I'm trying to test out how I can bring in tables from my DuckDB database to my website, specifically this page. Here goes nothing!
 
+<!-- grab dev state from package.json npm loader -->
 <script>
   window.NODE_ENV = "{{ env }}";
 </script>
 
+<!-- run database json -->
 <script type="module" src="/src/js/db.js"></script>
 
 #### Number of CBD Entries in the Most Recently Available 2 Weeks:
-<div id="chart"></div>
+<div id="chart"></div> 
