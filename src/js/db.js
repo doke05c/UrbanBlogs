@@ -1,39 +1,37 @@
-//load JS bindings for duckdb web assembly (essentially loads duckdb package)
-import { duckdb } from '@duckdb/duckdb-wasm';
+import * as duckdb from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@latest/+esm";
+
+// const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
+const bundle = {
+  mainModule: "/duckdb/duckdb-mvp.wasm",
+  mainWorker: "/duckdb/duckdb-browser-mvp.worker.js",
+  pthreadWorker: "/duckdb/duckdb-browser-coi.pthread.worker.js"
+};
 
 
-// Pseudo-code: in practice you choose the right bundle/worker
-
-//get the right binary + worker config for the browser
-const bundle = await duckdb.selectBundle();
-
-//spawn web worker
 const worker = new Worker(bundle.mainWorker);
 
-//put duckdb logs into web console log
-const logger = new duckdb.ConsoleLogger();
+const db = new duckdb.AsyncDuckDB(
+  new duckdb.ConsoleLogger(),
+  worker
+);
 
-//instantiate new duckdb instance controller, named "db"
-const db = new duckdb.AsyncDuckDB(logger, worker);
-
-//start virtual filesystem/memory heap
 await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 
 //get database
-const response = await fetch('/report_card.duckdb');
+const response = await fetch('/src/report_card.duckdb');
 
 //puts file into memory, MAY BE MEMORY INTENSIVE
 const buffer = await response.arrayBuffer();
 
 //put file in virtual filesystem
 await db.registerFileBuffer(
-  'report_card.duckdb',
+  '/src/report_card.duckdb',
   new Uint8Array(buffer)
 );
 
 //open database read-only
 await db.open({
-  path: 'report_card.duckdb',
+  path: '/src/report_card.duckdb',
   accessMode: duckdb.DuckDBAccessMode.READ_ONLY
 });
 
