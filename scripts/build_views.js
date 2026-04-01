@@ -69,3 +69,6 @@ async function build() {
 }
 
 build();
+
+
+//NEXT STEPS, HAVE WEB FRONT END WORK OUT THE JSON FILES TO MAKE GRAPHS IN BROWSER :)
