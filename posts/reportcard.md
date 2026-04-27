@@ -17,7 +17,11 @@ I'm trying to test out how I can bring in tables from my DuckDB database to my w
 </script>
 
 <!-- run database json -->
-<script type="module" src="/src/js/db.js"></script>
+<!-- <script type="module" src="/src/js/db.js"></script> -->
+<script type="module" src="/src/js/db_new.js"></script>
 
-#### Number of CBD Entries in the Most Recently Available 2 Weeks:
+
+#### Number of CBD Entries in the Most Recently Available Week:
 <div id="chart"></div>
+
+<br>
