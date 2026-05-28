@@ -26,6 +26,11 @@ I created a version that should load nearly instantly. Here goes nothing!
 
 
 #### Number of CBD Entries in the Most Recently Available Week:
-<div id="chart"></div>
+<div id="past_week_entries_chart"></div>
+
+<br>
+
+#### Number of CBD Entries Monthly Since Jan 2025, up to Latest Full Month:
+<div id="monthly_entries_chart_from_2025"></div>
 
 <br>

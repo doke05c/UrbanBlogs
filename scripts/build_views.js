@@ -23,7 +23,7 @@ function query(sql) {
 
 //build() creates all the json items of the stuff we actually wanna graph/display
 async function build() {
-  //past 7 days of cbd entries
+    //past 7 days of cbd entries
     const last7d_entries = await query(`
         SELECT
             strftime(toll_date, '%Y-%m-%d') AS date,
@@ -38,10 +38,39 @@ async function build() {
         GROUP BY date
         ORDER BY date;
     `);
-    
+
     fs.writeFileSync(
         "src/json/last_7_days_cbd.json",
         JSON.stringify(last7d_entries)
+    );
+
+    //monthly record of cbd entries
+    const monthly_entries = await query(`
+        WITH max_date AS (
+            SELECT MAX(CAST(toll_date AS DATE)) AS max_d
+            FROM cbd_entries
+        ),
+
+        cutoff AS (
+            SELECT date_trunc('month', max_d) AS cutoff_date
+            FROM max_date
+        )
+
+        SELECT
+            strftime(toll_date, '%Y-%m') AS month,
+            SUM(crz_entries) AS count
+
+        FROM cbd_entries
+        WHERE CAST(toll_date AS DATE) >= DATE '2025-01-01'
+        AND CAST(toll_date AS DATE) < (SELECT cutoff_date FROM cutoff)
+        
+        GROUP BY month
+        ORDER BY month;
+    `);
+    
+    fs.writeFileSync(
+        "src/json/monthly_cbd.json",
+        JSON.stringify(monthly_entries)
     );
 
     const last_7d_overall = await query(`
