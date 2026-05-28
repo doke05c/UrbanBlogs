@@ -29,6 +29,7 @@ I created a version that should load nearly instantly. Here goes nothing!
 <div id="past_week_entries_chart"></div>
 
 <br>
+
 ##### May 28, 2026: 4:30 PM, Roosevelt House Public Policy Institute:
 
 Another chart! After about a month to work on a different project, I'm back with more data on CRZ entries! Thinking of taking the monthlies since 2025 to the next level by bringing in the earlier versions (2024 and before) and making this a line chart instead. Here is another bar for now:
