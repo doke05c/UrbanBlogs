@@ -91,7 +91,7 @@ document.getElementById('past_week_entries_chart').appendChild(past_week_entries
 
 // LOADER COMES FIRST: LET USER WAIT
 
-const monthly_entries_chart_from_2025 = document.createElement('monthly_entries_chart_from_2025'); //<- Chart for past entries to CBD
+const monthly_entries_chart_from_2025 = document.createElement('monthly_entries_chart_from_2025'); //<- Chart for monthly entries to CBD
 
 const monthly_entries_chart_from_2025_loader = document.createElement("div");
 monthly_entries_chart_from_2025_loader.textContent = "Loading chart...";
@@ -118,8 +118,6 @@ const start = new Date(2025, 0, 1); // Jan = 0
 const full_month_count =
     (twoWeeksAgo.getFullYear() - start.getFullYear()) * 12 +
     (twoWeeksAgo.getMonth() - start.getMonth());
-
-// console.log(full_month_count);
 
 //GET MONTHLY CRZ ENTRIES SINCE 2025
 const monthly_entries_chart_from_2025_rows = await fetch("/src/json/monthly_cbd.json")
@@ -159,15 +157,15 @@ monthly_entries_chart_from_2025_rows.forEach(r => {
   bar.style.minWidth = "0";
 
   bar.title = `${d.toLocaleDateString('en-US', { month: 'long' })+ " " + r.month.slice(0,4)}: ${r.count}`; //<- "Title" will appear on hover:
-                                                                            // mm-dd-yyyy: count
+                                                                            // month, year: count
 
   const count_label = document.createElement("div"); //<- make count label, top of bar
   count_label.textContent = r.count;
 
-  const date_label = document.createElement("div"); //<0 make date label, bottom of bar
+  const date_label = document.createElement("div"); //<- make date label, bottom of bar
 
   date_label.textContent =   
-    d.toLocaleDateString('en-US', { month: 'short' }) + " " + r.month.slice(0,4); //<- set date label, just mm-dd and DOW
+    d.toLocaleDateString('en-US', { month: 'short' }) + " " + r.month.slice(0,4); //<- set date label, just mo year 
 
   //SET LABEL STYLE
   date_label.style.fontSize = `${140 / full_month_count}px`;
