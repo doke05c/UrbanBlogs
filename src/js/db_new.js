@@ -220,7 +220,7 @@ const monthly_entries_chart_from_2025_line_svg = document.createElementNS(
 //allow overflow
 monthly_entries_chart_from_2025_line_svg.style.overflow = "visible";
 
-//set width and height
+//set width and height via a viewbox (sets maximums, the rest is scaled according to platform size)
 const monthly_entries_chart_from_2025_line_viewBoxWidth = 1000;
 const monthly_entries_chart_from_2025_line_viewBoxHeight = 250;
 
@@ -274,6 +274,97 @@ monthly_entries_chart_from_2025_line_coords.forEach(p => {
   monthly_entries_chart_from_2025_line_svg.appendChild(circle); //add circles
 
 });
+
+//SET AXES
+
+//Y AXIS
+const monthly_entries_chart_from_2025_line_yAxis = document.createElementNS(
+  "http://www.w3.org/2000/svg",
+  "line"
+);
+
+monthly_entries_chart_from_2025_line_yAxis.setAttribute("x1", 0);
+monthly_entries_chart_from_2025_line_yAxis.setAttribute("y1", 0);
+
+monthly_entries_chart_from_2025_line_yAxis.setAttribute("x2", 0);
+monthly_entries_chart_from_2025_line_yAxis.setAttribute("y2", monthly_entries_chart_from_2025_line_viewBoxHeight);
+
+monthly_entries_chart_from_2025_line_yAxis.setAttribute("stroke", "#999");
+
+monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_yAxis);
+
+//X AXIS
+const monthly_entries_chart_from_2025_line_xAxis = document.createElementNS(
+  "http://www.w3.org/2000/svg",
+  "line"
+);
+
+monthly_entries_chart_from_2025_line_xAxis.setAttribute("x1", 0);
+monthly_entries_chart_from_2025_line_xAxis.setAttribute("y1", monthly_entries_chart_from_2025_line_viewBoxHeight);
+
+monthly_entries_chart_from_2025_line_xAxis.setAttribute("x2", monthly_entries_chart_from_2025_line_viewBoxWidth);
+monthly_entries_chart_from_2025_line_xAxis.setAttribute("y2", monthly_entries_chart_from_2025_line_viewBoxHeight);
+
+monthly_entries_chart_from_2025_line_xAxis.setAttribute("stroke", "#999");
+
+monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_xAxis);
+
+//Y AXIS TICK MARKS
+
+//set number of ticks
+const monthly_entries_chart_from_2025_line_tickCount = 7;
+
+//for all the ticks we want...
+for (let i = 0; i <= monthly_entries_chart_from_2025_line_tickCount; i++) {
+
+  //set value for each tick mark
+  const value =
+    Math.round((monthly_entries_chart_from_2025_max *
+    (1 - i / monthly_entries_chart_from_2025_line_tickCount)) / 10000) * 10000;
+
+  //set position for each tick mark
+  const y =
+    (i / monthly_entries_chart_from_2025_line_tickCount) *
+    (monthly_entries_chart_from_2025_line_viewBoxHeight);
+
+  //tick mark element creation
+  const monthly_entries_chart_from_2025_line_tick = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "line"
+  );
+
+  monthly_entries_chart_from_2025_line_tick.setAttribute("x1", -10);
+  monthly_entries_chart_from_2025_line_tick.setAttribute("x2", 0);
+  monthly_entries_chart_from_2025_line_tick.setAttribute("y1", y);
+  monthly_entries_chart_from_2025_line_tick.setAttribute("y2", y);
+
+  monthly_entries_chart_from_2025_line_tick.setAttribute("stroke", "#999");
+
+  //put down ticks
+  monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_tick);
+
+  //Y AXIS LABELS
+
+  const monthly_entries_chart_from_2025_line_y_axis_label = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "text"
+  );
+
+  monthly_entries_chart_from_2025_line_y_axis_label.setAttribute("x", -20);
+  monthly_entries_chart_from_2025_line_y_axis_label.setAttribute("y", y + 4);
+
+  monthly_entries_chart_from_2025_line_y_axis_label.setAttribute("text-anchor", "end");
+  monthly_entries_chart_from_2025_line_y_axis_label.setAttribute("fill", "#e8e9de");
+
+  monthly_entries_chart_from_2025_line_y_axis_label.textContent =
+    Math.round(value).toLocaleString();
+
+  monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_y_axis_label);
+
+}
+
+
+
 
 monthly_entries_chart_from_2025_line_loader.remove();
 monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025_line_svg);
