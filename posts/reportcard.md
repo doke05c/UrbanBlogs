@@ -34,7 +34,13 @@ I created a version that should load nearly instantly. Here goes nothing!
 
 Another chart! After about a month to work on a different project, I'm back with more data on CRZ entries! Thinking of taking the monthlies since 2025 to the next level by bringing in the earlier versions (2024 and before) and making this a line chart instead. Here is another bar for now:
 
-#### Number of CBD Entries Monthly Since Jan 2025, up to Latest Full Month:
+#### Number of CBD Entries Monthly Since Jan 2025, up to Latest Full, Bar:
 <div id="monthly_entries_chart_from_2025"></div>
+<br>
 
+##### June 8, 2026: 1:00 PM, City College Cohen Library:
+
+Experimenting with line chart formatting, this will be a more scalable and readable way to observe longitudinal transit trends.
+#### Number of CBD Entries Monthly Since Jan 2025, up to Latest Full Month, Line:
+<div id="monthly_entries_chart_from_2025_line"></div>
 <br>

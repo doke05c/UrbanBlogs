@@ -87,7 +87,30 @@ document.getElementById('past_week_entries_chart').appendChild(past_week_entries
 
 //*END LAST7D_CBD CHART
 
-//*START MONTHLY_CBD_FROM_2025 CHART
+//*START MONTHLY_CBD_FROM_2025 CHART (LINE AND GRAPH)
+
+//prelim info on how many months to get, and the dataset fetch itself before either graph or line chart is made
+
+//number of months in the chart
+
+//get the date as of 2w ago, the endpoint of the dataset on most days
+const twoWeeksAgo = new Date();
+twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+//get start date to calculate number of months in time period since jan '25
+const start = new Date(2025, 0, 1); // Jan = 0
+
+const full_month_count =
+    (twoWeeksAgo.getFullYear() - start.getFullYear()) * 12 +
+    (twoWeeksAgo.getMonth() - start.getMonth());
+
+//GET MONTHLY CRZ ENTRIES SINCE 2025
+const monthly_entries_chart_from_2025_rows = await fetch("/src/json/monthly_cbd.json")
+    .then(res => res.json());
+  
+// console.log(monthly_entries_chart_from_2025_rows)
+
+//START BAR CHART
 
 // LOADER COMES FIRST: LET USER WAIT
 
@@ -105,25 +128,6 @@ monthly_entries_chart_from_2025.appendChild(monthly_entries_chart_from_2025_load
 
 document.getElementById('monthly_entries_chart_from_2025').appendChild(monthly_entries_chart_from_2025) //<- Display
 
-
-//number of months in the chart
-
-//get the date as of 2w ago, the endpoint of the dataset on most days
-const twoWeeksAgo = new Date();
-twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-
-//get start date to calculate number of months in time period since jan '24
-const start = new Date(2025, 0, 1); // Jan = 0
-
-const full_month_count =
-    (twoWeeksAgo.getFullYear() - start.getFullYear()) * 12 +
-    (twoWeeksAgo.getMonth() - start.getMonth());
-
-//GET MONTHLY CRZ ENTRIES SINCE 2025
-const monthly_entries_chart_from_2025_rows = await fetch("/src/json/monthly_cbd.json")
-    .then(res => res.json());
-  
-console.log(monthly_entries_chart_from_2025_rows)
 
 //SET CONTAINER GEOMETRY
 const monthly_entries_chart_from_2025_max = Math.max(...monthly_entries_chart_from_2025_rows.map(r => Number(r.count))); //<- set highest value in chart
@@ -188,4 +192,26 @@ monthly_entries_chart_from_2025.appendChild(monthly_entries_chart_from_2025_wrap
 
 document.getElementById('monthly_entries_chart_from_2025').appendChild(monthly_entries_chart_from_2025) //<- Display
 
+//END BAR CHART
+
+//START LINE CHART
+
+const monthly_entries_chart_from_2025_line = document.createElement('monthly_entries_chart_from_2025_line'); //<- Chart for monthly entries to CBD
+
+const monthly_entries_chart_from_2025_line_loader = document.createElement("div");
+monthly_entries_chart_from_2025_line_loader.textContent = "Loading chart...";
+monthly_entries_chart_from_2025_line_loader.style.display = "flex";
+monthly_entries_chart_from_2025_line_loader.style.alignItems = "center";
+monthly_entries_chart_from_2025_line_loader.style.justifyContent = "center";
+monthly_entries_chart_from_2025_line_loader.style.height = "200px";
+monthly_entries_chart_from_2025_line_loader.style.fontSize = "14px";
+monthly_entries_chart_from_2025_line_loader.style.color = "#666";
+monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025_line_loader); //<- Make the "chart" the loader for now
+
+document.getElementById('monthly_entries_chart_from_2025_line').appendChild(monthly_entries_chart_from_2025_line) //<- Display
+
+
+//END LINE CHART
+
 //*END MONTHLY_CBD_FROM_2025 CHART
+
