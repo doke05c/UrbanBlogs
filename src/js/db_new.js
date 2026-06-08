@@ -220,8 +220,9 @@ const monthly_entries_chart_from_2025_line_svg = document.createElementNS(
 //allow overflow
 monthly_entries_chart_from_2025_line_svg.style.overflow = "visible";
 
-//padding constant from left side
+//padding constant from left/right sides
 const monthly_entries_chart_from_2025_line_padding_left = 60; 
+const monthly_entries_chart_from_2025_line_padding_right = 60; 
 
 //set width and height via a viewbox (sets maximums, the rest is scaled according to platform size)
 const monthly_entries_chart_from_2025_line_viewBoxWidth = 1000;
@@ -240,8 +241,18 @@ monthly_entries_chart_from_2025_line_svg.style.aspectRatio = "4 / 1";
 
 //set points on line chart (time, value : x, y)
 const monthly_entries_chart_from_2025_line_coords = monthly_entries_chart_from_2025_rows.map((r, i) => ({
-  x: monthly_entries_chart_from_2025_line_padding_left + i * (monthly_entries_chart_from_2025_line_viewBoxWidth / (monthly_entries_chart_from_2025_rows.length - 1)),
-  y: monthly_entries_chart_from_2025_line_viewBoxHeight - (Number(r.count) / monthly_entries_chart_from_2025_max) * monthly_entries_chart_from_2025_line_viewBoxHeight,
+  x:
+    monthly_entries_chart_from_2025_line_padding_left +
+    i * (
+      (monthly_entries_chart_from_2025_line_viewBoxWidth -
+      monthly_entries_chart_from_2025_line_padding_left -
+      monthly_entries_chart_from_2025_line_padding_right) /
+      (monthly_entries_chart_from_2025_rows.length - 1)
+    ),  
+
+  y: monthly_entries_chart_from_2025_line_viewBoxHeight - 
+    (Number(r.count) / monthly_entries_chart_from_2025_max) * 
+    monthly_entries_chart_from_2025_line_viewBoxHeight,
   value: r.count
 }));
 
@@ -389,7 +400,7 @@ for (let i = 0; i <= monthly_entries_chart_from_2025_line_tickCount; i++) {
 
   //set y-gridlines
   monthly_entries_chart_from_2025_line_grid.setAttribute("x1", monthly_entries_chart_from_2025_line_padding_left);
-  monthly_entries_chart_from_2025_line_grid.setAttribute("x2", monthly_entries_chart_from_2025_line_padding_left + monthly_entries_chart_from_2025_line_viewBoxWidth);
+  monthly_entries_chart_from_2025_line_grid.setAttribute("x2", monthly_entries_chart_from_2025_line_viewBoxWidth - monthly_entries_chart_from_2025_line_padding_right);
   monthly_entries_chart_from_2025_line_grid.setAttribute("y1", y);
   monthly_entries_chart_from_2025_line_grid.setAttribute("y2", y);
 
