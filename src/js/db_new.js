@@ -211,30 +211,34 @@ monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025
 
 document.getElementById('monthly_entries_chart_from_2025_line').appendChild(monthly_entries_chart_from_2025_line) //<- Display
 
-//set height
-const monthly_entries_chart_from_2025_line_height = 200;
-
 //use svg to set line chart size attributes
 const monthly_entries_chart_from_2025_line_svg = document.createElementNS(
   "http://www.w3.org/2000/svg",
   "svg"
 );
 
+//allow overflow
 monthly_entries_chart_from_2025_line_svg.style.overflow = "visible";
 
-monthly_entries_chart_from_2025_line_svg.setAttribute("viewBox", `0 0 1000 ${monthly_entries_chart_from_2025_line_height}`);
-monthly_entries_chart_from_2025_line_svg.setAttribute("preserveAspectRatio", "none");
-
-monthly_entries_chart_from_2025_line_svg.style.width = "100%";
-monthly_entries_chart_from_2025_line_svg.style.height = `${monthly_entries_chart_from_2025_line_height}px`;
-
-//set width
+//set width and height
 const monthly_entries_chart_from_2025_line_viewBoxWidth = 1000;
+const monthly_entries_chart_from_2025_line_viewBoxHeight = 250;
+
+monthly_entries_chart_from_2025_line_svg.setAttribute(
+  "viewBox",
+  `0 0 ${monthly_entries_chart_from_2025_line_viewBoxWidth} ${monthly_entries_chart_from_2025_line_viewBoxHeight}`
+);
+
+//make aspect ratio to ensure device scalability
+monthly_entries_chart_from_2025_line_svg.style.width = "100%";
+monthly_entries_chart_from_2025_line_svg.style.height = "auto";
+monthly_entries_chart_from_2025_line_svg.style.aspectRatio = "4 / 1";
+
 
 //set points on line chart (time, value : x, y)
 const monthly_entries_chart_from_2025_line_coords = monthly_entries_chart_from_2025_rows.map((r, i) => ({
   x: i * (monthly_entries_chart_from_2025_line_viewBoxWidth / (monthly_entries_chart_from_2025_rows.length - 1)),
-  y: monthly_entries_chart_from_2025_line_height - (Number(r.count) / monthly_entries_chart_from_2025_max) * monthly_entries_chart_from_2025_line_height
+  y: monthly_entries_chart_from_2025_line_viewBoxHeight - (Number(r.count) / monthly_entries_chart_from_2025_max) * monthly_entries_chart_from_2025_line_viewBoxHeight
 }));
 
 const monthly_entries_chart_from_2025_line_polyline = document.createElementNS(
@@ -276,9 +280,6 @@ monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025
 
 //GRAPH IS READY! kill loader
 monthly_entries_chart_from_2025_line_loader.remove();
-
-//add container to chart item, ship it off to main blog file
-monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025_line_wrapper);
 
 document.getElementById('monthly_entries_chart_from_2025_line').appendChild(monthly_entries_chart_from_2025_line) //<- Display
 
