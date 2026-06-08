@@ -107,6 +107,8 @@ const full_month_count =
 //GET MONTHLY CRZ ENTRIES SINCE 2025
 const monthly_entries_chart_from_2025_rows = await fetch("/src/json/monthly_cbd.json")
     .then(res => res.json());
+
+const monthly_entries_chart_from_2025_max = Math.max(...monthly_entries_chart_from_2025_rows.map(r => Number(r.count))); //<- set highest value in chart
   
 // console.log(monthly_entries_chart_from_2025_rows)
 
@@ -130,7 +132,6 @@ document.getElementById('monthly_entries_chart_from_2025').appendChild(monthly_e
 
 
 //SET CONTAINER GEOMETRY
-const monthly_entries_chart_from_2025_max = Math.max(...monthly_entries_chart_from_2025_rows.map(r => Number(r.count))); //<- set highest value in chart
 const monthly_entries_chart_from_2025_wrapper = document.createElement("div");
 monthly_entries_chart_from_2025_wrapper.style.display = "flex";
 monthly_entries_chart_from_2025_wrapper.style.alignItems = "flex-end";
@@ -157,7 +158,7 @@ monthly_entries_chart_from_2025_rows.forEach(r => {
   bar.style.justifyContent = "space-between";
   bar.style.alignItems = "center";        
   bar.style.color = "white";
-  bar.style.fontSize = `${168 / full_month_count}px`;
+  bar.style.fontSize = `${126 / full_month_count}px`;
   bar.style.minWidth = "0";
 
   bar.title = `${d.toLocaleDateString('en-US', { month: 'long' })+ " " + r.month.slice(0,4)}: ${r.count}`; //<- "Title" will appear on hover:
@@ -207,6 +208,77 @@ monthly_entries_chart_from_2025_line_loader.style.height = "200px";
 monthly_entries_chart_from_2025_line_loader.style.fontSize = "14px";
 monthly_entries_chart_from_2025_line_loader.style.color = "#666";
 monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025_line_loader); //<- Make the "chart" the loader for now
+
+document.getElementById('monthly_entries_chart_from_2025_line').appendChild(monthly_entries_chart_from_2025_line) //<- Display
+
+//set height
+const monthly_entries_chart_from_2025_line_height = 200;
+
+//use svg to set line chart size attributes
+const monthly_entries_chart_from_2025_line_svg = document.createElementNS(
+  "http://www.w3.org/2000/svg",
+  "svg"
+);
+
+monthly_entries_chart_from_2025_line_svg.style.overflow = "visible";
+
+monthly_entries_chart_from_2025_line_svg.setAttribute("viewBox", `0 0 1000 ${monthly_entries_chart_from_2025_line_height}`);
+monthly_entries_chart_from_2025_line_svg.setAttribute("preserveAspectRatio", "none");
+
+monthly_entries_chart_from_2025_line_svg.style.width = "100%";
+monthly_entries_chart_from_2025_line_svg.style.height = `${monthly_entries_chart_from_2025_line_height}px`;
+
+//set width
+const monthly_entries_chart_from_2025_line_viewBoxWidth = 1000;
+
+//set points on line chart (time, value : x, y)
+const monthly_entries_chart_from_2025_line_coords = monthly_entries_chart_from_2025_rows.map((r, i) => ({
+  x: i * (monthly_entries_chart_from_2025_line_viewBoxWidth / (monthly_entries_chart_from_2025_rows.length - 1)),
+  y: monthly_entries_chart_from_2025_line_height - (Number(r.count) / monthly_entries_chart_from_2025_max) * monthly_entries_chart_from_2025_line_height
+}));
+
+const monthly_entries_chart_from_2025_line_polyline = document.createElementNS(
+  "http://www.w3.org/2000/svg",
+  "polyline"
+);
+
+//set lines connecting points
+monthly_entries_chart_from_2025_line_polyline.setAttribute(
+  "points",
+  monthly_entries_chart_from_2025_line_coords.map(p => `${p.x},${p.y}`).join(" ")
+);
+
+monthly_entries_chart_from_2025_line_polyline.setAttribute("fill", "none");
+monthly_entries_chart_from_2025_line_polyline.setAttribute("stroke", "#e8e9de");
+monthly_entries_chart_from_2025_line_polyline.setAttribute("stroke-width", "2.5");
+
+monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_polyline);
+
+//making points (circles)
+monthly_entries_chart_from_2025_line_coords.forEach(p => {
+  //get circle info from web standard
+  const circle = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "circle"
+  );
+
+  circle.setAttribute("cx", p.x); //set x position of circle to our x
+  circle.setAttribute("cy", p.y); //set y position of circle to our y
+  circle.setAttribute("r", 5); //set radius
+  circle.setAttribute("fill", "#4a90e2"); //set color
+
+  monthly_entries_chart_from_2025_line_svg.appendChild(circle); //add circles
+
+});
+
+monthly_entries_chart_from_2025_line_loader.remove();
+monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025_line_svg);
+
+//GRAPH IS READY! kill loader
+monthly_entries_chart_from_2025_line_loader.remove();
+
+//add container to chart item, ship it off to main blog file
+monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025_line_wrapper);
 
 document.getElementById('monthly_entries_chart_from_2025_line').appendChild(monthly_entries_chart_from_2025_line) //<- Display
 
