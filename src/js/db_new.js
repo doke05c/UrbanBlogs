@@ -224,6 +224,15 @@ monthly_entries_chart_from_2025_line_svg.style.overflow = "visible";
 const monthly_entries_chart_from_2025_line_padding_left = 60; 
 const monthly_entries_chart_from_2025_line_padding_right = 60; 
 
+//set step for chart according to scale of data
+const monthly_entries_chart_from_2025_line_yAxisStep = 2_000_000;
+
+//set max gridline for line chart based on step size and max value
+const monthly_entries_chart_from_2025_line_yAxisMax =
+  Math.ceil(monthly_entries_chart_from_2025_max / monthly_entries_chart_from_2025_line_yAxisStep) *
+  monthly_entries_chart_from_2025_line_yAxisStep;
+
+
 //set width and height via a viewbox (sets maximums, the rest is scaled according to platform size)
 const monthly_entries_chart_from_2025_line_viewBoxWidth = 1000;
 const monthly_entries_chart_from_2025_line_viewBoxHeight = 250;
@@ -251,7 +260,7 @@ const monthly_entries_chart_from_2025_line_coords = monthly_entries_chart_from_2
     ),  
 
   y: monthly_entries_chart_from_2025_line_viewBoxHeight - 
-    (Number(r.count) / monthly_entries_chart_from_2025_max) * 
+    (Number(r.count) / monthly_entries_chart_from_2025_line_yAxisMax) * 
     monthly_entries_chart_from_2025_line_viewBoxHeight,
   value: r.count
 }));
@@ -277,16 +286,14 @@ monthly_entries_chart_from_2025_line_polyline.setAttribute("stroke-width", "2.5"
 
 //Y AXIS TICK MARKS
 
-//set number of ticks
-const monthly_entries_chart_from_2025_line_tickCount = 7;
+//tickCount = max value / step size
+const monthly_entries_chart_from_2025_line_tickCount = monthly_entries_chart_from_2025_line_yAxisMax / monthly_entries_chart_from_2025_line_yAxisStep;
 
-//for all the ticks we want...
+//for all the ticks we want... (max value / step size)
 for (let i = 0; i <= monthly_entries_chart_from_2025_line_tickCount; i++) {
 
-  //set value for each tick mark (ROUNDED, KEEP NOTE OF SCALE OF DATA)
-  const value =
-    Math.round((monthly_entries_chart_from_2025_max *
-    (1 - i / monthly_entries_chart_from_2025_line_tickCount)) / 10000) * 10000;
+  //set value for each tick mark
+  const value = monthly_entries_chart_from_2025_line_yAxisMax - (i * monthly_entries_chart_from_2025_line_yAxisStep);
 
   //set position for each tick mark
   const y =
