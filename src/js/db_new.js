@@ -475,28 +475,40 @@ monthly_entries_chart_from_2025_line_coords.forEach(p => {
 
 //PUT POINT LABELS OVER GRID
 
+//for every point...
 monthly_entries_chart_from_2025_line_coords.forEach(p => {
 
+  //make a text label with web standard
   const monthly_entries_chart_from_2025_line_text = document.createElementNS(
     "http://www.w3.org/2000/svg",
     "text"
   );
 
+  //set x,y positions of text
+
+  //x is on the point
   monthly_entries_chart_from_2025_line_text.setAttribute("x", p.x);
+
+  //y is just below point
   monthly_entries_chart_from_2025_line_text.setAttribute("y", p.y + 20);
 
+  //text starts just after point
   monthly_entries_chart_from_2025_line_text.setAttribute("text-anchor", "start");
   monthly_entries_chart_from_2025_line_text.setAttribute("dominant-baseline", "middle");
 
+  //font size and color
   monthly_entries_chart_from_2025_line_text.setAttribute("font-size", "10");
   monthly_entries_chart_from_2025_line_text.setAttribute("fill", "#e8e9de");
 
+  //set value of point, in comma form for readability
   monthly_entries_chart_from_2025_line_text.textContent = p.value.toLocaleString();
 
+  //put down point labels
   monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_text);
 });
 
-monthly_entries_chart_from_2025_line_loader.remove();
+
+//add svg elements to chart
 monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025_line_svg);
 
 //GRAPH IS READY! kill loader
