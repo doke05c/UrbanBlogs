@@ -289,7 +289,7 @@ monthly_entries_chart_from_2025_line_yAxis.setAttribute("y1", 0);
 monthly_entries_chart_from_2025_line_yAxis.setAttribute("x2", 0);
 monthly_entries_chart_from_2025_line_yAxis.setAttribute("y2", monthly_entries_chart_from_2025_line_viewBoxHeight);
 
-monthly_entries_chart_from_2025_line_yAxis.setAttribute("stroke", "#999");
+monthly_entries_chart_from_2025_line_yAxis.setAttribute("stroke", "#  ");
 
 monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_yAxis);
 
@@ -305,7 +305,7 @@ monthly_entries_chart_from_2025_line_xAxis.setAttribute("y1", monthly_entries_ch
 monthly_entries_chart_from_2025_line_xAxis.setAttribute("x2", monthly_entries_chart_from_2025_line_viewBoxWidth);
 monthly_entries_chart_from_2025_line_xAxis.setAttribute("y2", monthly_entries_chart_from_2025_line_viewBoxHeight);
 
-monthly_entries_chart_from_2025_line_xAxis.setAttribute("stroke", "#999");
+monthly_entries_chart_from_2025_line_xAxis.setAttribute("stroke", "#555");
 
 monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_xAxis);
 
@@ -317,7 +317,7 @@ const monthly_entries_chart_from_2025_line_tickCount = 7;
 //for all the ticks we want...
 for (let i = 0; i <= monthly_entries_chart_from_2025_line_tickCount; i++) {
 
-  //set value for each tick mark
+  //set value for each tick mark (ROUNDED, KEEP NOTE OF SCALE OF DATA)
   const value =
     Math.round((monthly_entries_chart_from_2025_max *
     (1 - i / monthly_entries_chart_from_2025_line_tickCount)) / 10000) * 10000;
@@ -333,12 +333,14 @@ for (let i = 0; i <= monthly_entries_chart_from_2025_line_tickCount; i++) {
     "line"
   );
 
+  //set location of positions of ends of tick marks
   monthly_entries_chart_from_2025_line_tick.setAttribute("x1", -10);
   monthly_entries_chart_from_2025_line_tick.setAttribute("x2", 0);
   monthly_entries_chart_from_2025_line_tick.setAttribute("y1", y);
   monthly_entries_chart_from_2025_line_tick.setAttribute("y2", y);
 
-  monthly_entries_chart_from_2025_line_tick.setAttribute("stroke", "#999");
+  //color tick marks
+  monthly_entries_chart_from_2025_line_tick.setAttribute("stroke", "#555");
 
   //put down ticks
   monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_tick);
@@ -350,20 +352,119 @@ for (let i = 0; i <= monthly_entries_chart_from_2025_line_tickCount; i++) {
     "text"
   );
 
+  //set location of labels
   monthly_entries_chart_from_2025_line_y_axis_label.setAttribute("x", -20);
   monthly_entries_chart_from_2025_line_y_axis_label.setAttribute("y", y + 4);
 
+  //set color/style of labels
   monthly_entries_chart_from_2025_line_y_axis_label.setAttribute("text-anchor", "end");
   monthly_entries_chart_from_2025_line_y_axis_label.setAttribute("fill", "#e8e9de");
 
+  //set value as text
   monthly_entries_chart_from_2025_line_y_axis_label.textContent =
     Math.round(value).toLocaleString();
 
+  //put down labels
   monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_y_axis_label);
 
 }
 
+//X AXIS LABEL
+monthly_entries_chart_from_2025_line_coords.forEach((p, i) => {
 
+  const monthly_entries_chart_from_2025_line_x_axis_label = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "text"
+  );
+
+  //set x value of x label to be where point was
+  monthly_entries_chart_from_2025_line_x_axis_label.setAttribute("x", p.x);
+
+  //set y value of y label to be at the bottom-ish of the chart 
+  monthly_entries_chart_from_2025_line_x_axis_label.setAttribute(
+    "y",
+    monthly_entries_chart_from_2025_line_viewBoxHeight + 18
+  );
+
+  //anchor text to middle of position
+  monthly_entries_chart_from_2025_line_x_axis_label.setAttribute(
+    "text-anchor",
+    "middle"
+  );
+
+  //set label fill color
+  monthly_entries_chart_from_2025_line_x_axis_label.setAttribute("fill", "#e8e9de");
+
+  //get year and month from each month value to put down as labels cleanly
+  const [year, month] =
+    monthly_entries_chart_from_2025_rows[i].month.split('-').map(Number);
+  
+  //make shortened year ('YY)
+  const shortYear = `'${String(year).slice(-2)}`;
+
+  //get date attribute for each month to turn into datestring
+  const d = new Date(year, month - 1, 1);
+
+  //put datestring and shortyear together for full label
+  monthly_entries_chart_from_2025_line_x_axis_label.textContent =
+    `${d.toLocaleDateString('en-US', { month: 'short' })} ${shortYear}`;
+
+  //put down x-label
+  monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_x_axis_label);
+
+});
+
+//GRID
+
+//Y-GRIDLINES
+
+//for all the ticks we have...
+for (let i = 0; i <= monthly_entries_chart_from_2025_line_tickCount; i++) {
+  
+  //set y value for gridline
+  const y =
+    (i / monthly_entries_chart_from_2025_line_tickCount) *
+    (monthly_entries_chart_from_2025_line_viewBoxHeight);
+  
+  //make svg gridline
+  const monthly_entries_chart_from_2025_line_grid = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "line"
+  );
+
+  //set y-gridlines
+  monthly_entries_chart_from_2025_line_grid.setAttribute("x1", 0);
+  monthly_entries_chart_from_2025_line_grid.setAttribute("x2", monthly_entries_chart_from_2025_line_viewBoxWidth);
+  monthly_entries_chart_from_2025_line_grid.setAttribute("y1", y);
+  monthly_entries_chart_from_2025_line_grid.setAttribute("y2", y);
+
+  monthly_entries_chart_from_2025_line_grid.setAttribute("stroke", "#555");
+  monthly_entries_chart_from_2025_line_grid.setAttribute("stroke-width", "1");
+
+  monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_grid);
+}
+
+//X-GRIDLINES
+
+monthly_entries_chart_from_2025_line_coords.forEach((p) => {
+
+  const monthly_entries_chart_from_2025_line_grid = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "line"
+  );
+
+  monthly_entries_chart_from_2025_line_grid.setAttribute("x1", p.x);
+  monthly_entries_chart_from_2025_line_grid.setAttribute("x2", p.x);
+
+  monthly_entries_chart_from_2025_line_grid.setAttribute("y1", 0);
+  monthly_entries_chart_from_2025_line_grid.setAttribute("y2", monthly_entries_chart_from_2025_line_viewBoxHeight);
+
+  monthly_entries_chart_from_2025_line_grid.setAttribute("stroke", "#555");
+  monthly_entries_chart_from_2025_line_grid.setAttribute("stroke-width", "1");
+
+  monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_grid);
+
+});
 
 
 monthly_entries_chart_from_2025_line_loader.remove();
