@@ -238,7 +238,8 @@ monthly_entries_chart_from_2025_line_svg.style.aspectRatio = "4 / 1";
 //set points on line chart (time, value : x, y)
 const monthly_entries_chart_from_2025_line_coords = monthly_entries_chart_from_2025_rows.map((r, i) => ({
   x: i * (monthly_entries_chart_from_2025_line_viewBoxWidth / (monthly_entries_chart_from_2025_rows.length - 1)),
-  y: monthly_entries_chart_from_2025_line_viewBoxHeight - (Number(r.count) / monthly_entries_chart_from_2025_max) * monthly_entries_chart_from_2025_line_viewBoxHeight
+  y: monthly_entries_chart_from_2025_line_viewBoxHeight - (Number(r.count) / monthly_entries_chart_from_2025_max) * monthly_entries_chart_from_2025_line_viewBoxHeight,
+  value: r.count
 }));
 
 const monthly_entries_chart_from_2025_line_polyline = document.createElementNS(
@@ -256,24 +257,7 @@ monthly_entries_chart_from_2025_line_polyline.setAttribute("fill", "none");
 monthly_entries_chart_from_2025_line_polyline.setAttribute("stroke", "#e8e9de");
 monthly_entries_chart_from_2025_line_polyline.setAttribute("stroke-width", "2.5");
 
-monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_polyline);
-
-//making points (circles)
-monthly_entries_chart_from_2025_line_coords.forEach(p => {
-  //get circle info from web standard
-  const circle = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "circle"
-  );
-
-  circle.setAttribute("cx", p.x); //set x position of circle to our x
-  circle.setAttribute("cy", p.y); //set y position of circle to our y
-  circle.setAttribute("r", 5); //set radius
-  circle.setAttribute("fill", "#4a90e2"); //set color
-
-  monthly_entries_chart_from_2025_line_svg.appendChild(circle); //add circles
-
-});
+// monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_polyline); //MOVED TO END TO GO OVER GRID
 
 //SET AXES
 
@@ -466,6 +450,51 @@ monthly_entries_chart_from_2025_line_coords.forEach((p) => {
 
 });
 
+//POLYLINES GO OVER GRID
+monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_polyline);
+
+//CIRCLES GO OVER LINES, GOES OVER GRID
+//making points (circles)
+
+monthly_entries_chart_from_2025_line_coords.forEach(p => {
+
+  //get circle info from web standard
+  const monthly_entries_chart_from_2025_line_circle = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "circle"
+  );
+
+  monthly_entries_chart_from_2025_line_circle.setAttribute("cx", p.x); //set x position of circle to our x
+  monthly_entries_chart_from_2025_line_circle.setAttribute("cy", p.y); //set y position of circle to our y
+  monthly_entries_chart_from_2025_line_circle.setAttribute("r", 5); //set radius
+  monthly_entries_chart_from_2025_line_circle.setAttribute("fill", "#4a90e2"); //set color
+
+  monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_circle); //MOVED TO END TO GO OVER GRID
+
+});
+
+//PUT POINT LABELS OVER GRID
+
+monthly_entries_chart_from_2025_line_coords.forEach(p => {
+
+  const monthly_entries_chart_from_2025_line_text = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "text"
+  );
+
+  monthly_entries_chart_from_2025_line_text.setAttribute("x", p.x);
+  monthly_entries_chart_from_2025_line_text.setAttribute("y", p.y + 20);
+
+  monthly_entries_chart_from_2025_line_text.setAttribute("text-anchor", "start");
+  monthly_entries_chart_from_2025_line_text.setAttribute("dominant-baseline", "middle");
+
+  monthly_entries_chart_from_2025_line_text.setAttribute("font-size", "10");
+  monthly_entries_chart_from_2025_line_text.setAttribute("fill", "#e8e9de");
+
+  monthly_entries_chart_from_2025_line_text.textContent = p.value.toLocaleString();
+
+  monthly_entries_chart_from_2025_line_svg.appendChild(monthly_entries_chart_from_2025_line_text);
+});
 
 monthly_entries_chart_from_2025_line_loader.remove();
 monthly_entries_chart_from_2025_line.appendChild(monthly_entries_chart_from_2025_line_svg);
