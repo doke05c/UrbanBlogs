@@ -1,6 +1,12 @@
 function makeLineChart({
+  //data we want to plot
   rows,
+
+  //name of chart container we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
   containerId,
+
+  //what time scale are we graphing over? days, months?
+  timeOfInterest,
 
   //set width and height via a viewbox (sets maximums, the rest is scaled according to platform size)
   viewBoxWidth = 1000,
@@ -11,7 +17,7 @@ function makeLineChart({
   paddingRight = 60,
 
   //set step for chart according to scale of data
-  yAxisStep = 3_000_000,
+  yAxisStep,
 
   //set colors for elements
   lineColor = "#e8e9de",
@@ -149,6 +155,8 @@ function makeLineChart({
     y_axis_label.setAttribute("text-anchor", "end");
     y_axis_label.setAttribute("fill", lineColor);
 
+    y_axis_label.setAttribute("font-size", `${90 / tickCount}`);    
+
     //set value as text
     y_axis_label.textContent =
       Math.round(value).toLocaleString();
@@ -183,22 +191,41 @@ function makeLineChart({
       "middle"
     );
 
+    x_axis_label.setAttribute("font-size", `${100 / tickCount}`);    
+
     //set label fill color
     x_axis_label.setAttribute("fill", lineColor);
 
-    //get year and month from each month value to put down as labels cleanly
-    const [year, month] =
-      rows[i].month.split('-').map(Number);
-    
-    //make shortened year ('YY)
-    const shortYear = `'${String(year).slice(-2)}`;
+    if (timeOfInterest == "month") {
+      //get year and month from each month value to put down as labels cleanly
+      const [year, month] =
+        rows[i].month.split('-').map(Number);
+      
+      //make shortened year ('YY)
+      const shortYear = `'${String(year).slice(-2)}`;
 
-    //get date attribute for each month to turn into datestring
-    const d = new Date(year, month - 1, 1);
+      //get date attribute for each month to turn into datestring
+      const d = new Date(year, month - 1, 1);
 
-    //put datestring and shortyear together for full label
-    x_axis_label.textContent =
-      `${d.toLocaleDateString('en-US', { month: 'short' })} ${shortYear}`;
+      //put datestring and shortyear together for full label
+      x_axis_label.textContent =
+        `${d.toLocaleDateString('en-US', { month: 'short' })} ${shortYear}`;
+    }
+
+    if (timeOfInterest == "date") {
+      //get year and month from each month value to put down as labels cleanly
+      const [year, month, date] =
+        rows[i].date.split('-').map(Number);
+
+      //get date attribute for each month to turn into datestring
+      const d = new Date(year, month - 1, date);
+
+      //put month and date together for full label
+      x_axis_label.textContent =
+        `${d.toLocaleDateString('en-US', { weekday: 'short' })}, ${d.toLocaleDateString('en-US', { month: '2-digit' })}-${d.toLocaleDateString('en-US', {day: "2-digit"})}`;
+    }
+
+
 
     //put down x-label
     svg.appendChild(x_axis_label);
@@ -304,7 +331,7 @@ function makeLineChart({
     line_text.setAttribute("dominant-baseline", "middle");
 
     //font size and color
-    line_text.setAttribute("font-size", "10");
+    line_text.setAttribute("font-size", `${150 / rows.length}`);    
     line_text.setAttribute("fill", lineColor);
 
     //set value of point, in comma form for readability
@@ -328,9 +355,13 @@ function makeLineChart({
 }
 
 function makeBarChart({
+  //data we want to plot
   rows,
+
+  //name of chart container we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
   containerId,
 
+  //what time scale are we graphing over? days, months?
   timeOfInterest,
 
   //set colors for elements
@@ -348,7 +379,7 @@ function makeBarChart({
 
   // LOADER COMES FIRST: LET USER WAIT
 
-  const bar_chart = document.createElement(containerId); //<- Chart for monthly entries to CBD
+  const bar_chart = document.createElement(containerId); //<- bar chart element creation
 
   const bar_chart_loader = document.createElement("div");
   bar_chart_loader.textContent = "Loading chart...";
@@ -463,6 +494,15 @@ const monthly_entries_chart_from_2025_rows = await fetch("/src/json/monthly_cbd.
 makeLineChart({
   rows: monthly_entries_chart_from_2025_rows,
   containerId: "monthly_entries_chart_from_2025_line",
+  yAxisStep: 3_000_000,
+  timeOfInterest: "month"
+});
+
+makeLineChart({
+  rows: past_week_entries_rows,
+  containerId: "past_week_entries_chart_line",
+  yAxisStep: 100_000,
+  timeOfInterest: "date"
 });
 
 //CALL BAR CHART FUNCTION

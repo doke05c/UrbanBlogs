@@ -25,7 +25,7 @@ I created a version that should load nearly instantly. Here goes nothing!
 <script type="module" src="/src/js/db_new.js"></script>
 
 
-#### Number of CBD Entries in the Most Recently Available Week:
+#### Number of CBD Entries in the Most Recently Available Week, Bar:
 <div id="past_week_entries_chart"></div>
 
 <br>
@@ -43,4 +43,11 @@ Another chart! After about a month to work on a different project, I'm back with
 Experimenting with line chart formatting, this will be a more scalable and readable way to observe longitudinal transit trends.
 #### Number of CBD Entries Monthly Since Jan 2025, up to Latest Full Month, Line:
 <div id="monthly_entries_chart_from_2025_line"></div>
+<br>
+
+##### June 9, 2026: 1:00 PM, Roosevelt House Public Policy Institute:
+
+I restructured the process for making charts, everything is now as automated as possible! This means that I can remake the 7-Day entries history as a line chart in nearly no time at all!
+#### Number of CBD Entries in the Most Recently Available Week, Line:
+<div id="past_week_entries_chart_line"></div>
 <br>
