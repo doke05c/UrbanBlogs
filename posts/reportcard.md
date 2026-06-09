@@ -56,3 +56,7 @@ Oh, also, Subway ridership!
 #### Number of Entries into the MTA Subway Since Mar 2020, Line:
 <div id="monthly_entries_subway_from_mar_2020_line"></div>
 <br>
+
+#### Number of Entries into the MTA Subway Since Mar 2020, Bar:
+<div id="monthly_entries_subway_from_mar_2020_bar"></div>
+<br>

@@ -529,3 +529,9 @@ makeBarChart({
   containerId: "past_week_entries_chart",
   timeOfInterest: "date"
 });
+
+makeBarChart({
+  rows: monthly_entries_subway_from_mar_2020_rows,
+  containerId: "monthly_entries_subway_from_mar_2020_bar",
+  timeOfInterest: "month"
+});
