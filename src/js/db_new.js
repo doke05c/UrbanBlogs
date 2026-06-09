@@ -490,6 +490,10 @@ const past_week_entries_rows = await fetch("/src/json/last_7_days_cbd.json")
 const monthly_entries_chart_from_2025_rows = await fetch("/src/json/monthly_cbd.json")
     .then(res => res.json());
 
+//GET MONTHLY SUBWAY ENTRIES SINCE MAR 2020
+const monthly_entries_subway_from_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_from_mar_2020.json")
+    .then(res => res.json());
+
 //CALL LINE CHART FUNCTION
 makeLineChart({
   rows: monthly_entries_chart_from_2025_rows,
@@ -503,6 +507,13 @@ makeLineChart({
   containerId: "past_week_entries_chart_line",
   yAxisStep: 100_000,
   timeOfInterest: "date"
+});
+
+makeLineChart({
+  rows: monthly_entries_subway_from_mar_2020_rows,
+  containerId: "monthly_entries_subway_from_mar_2020_line",
+  yAxisStep: 10_000_000,
+  timeOfInterest: "month"
 });
 
 //CALL BAR CHART FUNCTION

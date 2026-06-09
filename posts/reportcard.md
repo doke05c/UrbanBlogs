@@ -51,3 +51,8 @@ I restructured the process for making charts, everything is now as automated as 
 #### Number of CBD Entries in the Most Recently Available Week, Line:
 <div id="past_week_entries_chart_line"></div>
 <br>
+
+Oh, also, Subway ridership!
+#### Number of Entries into the MTA Subway Since Mar 2020, Line:
+<div id="monthly_entries_subway_from_mar_2020_line"></div>
+<br>

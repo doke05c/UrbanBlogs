@@ -23,6 +23,38 @@ function query(sql) {
 
 //build() creates all the json items of the stuff we actually wanna graph/display
 async function build() {
+
+    //entire history of monthly subway entries since 03/2020
+    const monthly_subway_entries_from_mar_2020 = await query(`
+        WITH max_date AS (
+            SELECT MAX(CAST(date AS DATE)) AS max_d
+            FROM mta_overall_ridership_traffic
+        ),
+
+        cutoff AS (
+            SELECT date_trunc('month', max_d) AS cutoff_date
+            FROM max_date
+        )
+
+        SELECT
+            strftime(date, '%Y-%m') AS month,
+            SUM(*) AS count,
+        
+        FROM mta_overall_ridership_traffic
+
+        WHERE mode = 'Subway'
+            AND CAST(toll_date AS DATE) >= DATE '2020-03-01'
+            AND CAST(toll_date AS DATE) < (SELECT cutoff_date FROM cutoff)
+        
+        GROUP BY month
+        ORDER BY month;
+    `);
+
+    fs.writeFileSync(
+        "src/json/monthly_subway_entries_from_mar_2020.json",
+        JSON.stringify(monthly_subway_entries_from_mar_2020)
+    );
+
     //past 7 days of cbd entries
     const last7d_entries = await query(`
         SELECT
