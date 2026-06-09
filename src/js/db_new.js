@@ -512,7 +512,7 @@ makeLineChart({
 makeLineChart({
   rows: monthly_entries_subway_from_mar_2020_rows,
   containerId: "monthly_entries_subway_from_mar_2020_line",
-  yAxisStep: 10_000_000,
+  yAxisStep: 5_000_000,
   timeOfInterest: "month"
 });
 
