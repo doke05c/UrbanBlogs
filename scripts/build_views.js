@@ -38,13 +38,13 @@ async function build() {
 
         SELECT
             strftime(date, '%Y-%m') AS month,
-            SUM(*) AS count,
+            SUM(count) AS count,
         
         FROM mta_overall_ridership_traffic
 
         WHERE mode = 'Subway'
-            AND CAST(toll_date AS DATE) >= DATE '2020-03-01'
-            AND CAST(toll_date AS DATE) < (SELECT cutoff_date FROM cutoff)
+            AND CAST(date AS DATE) >= DATE '2020-03-01'
+            AND CAST(date AS DATE) < (SELECT cutoff_date FROM cutoff)
         
         GROUP BY month
         ORDER BY month;
