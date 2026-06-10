@@ -8,10 +8,6 @@ function makeLineChart({
   //what time scale are we graphing over? days, months?
   timeOfInterest,
 
-  //set width and height via a viewbox (sets maximums, the rest is scaled according to platform size)
-  viewBoxWidth = 1000,
-  viewBoxHeight = 250,
-
   //padding constant from left/right sides
   paddingLeft = 60,
   paddingRight = 60,
@@ -23,9 +19,14 @@ function makeLineChart({
   lineColor = "#e8e9de",
   pointColor = "#4a90e2",
   gridColor = "#555",
+  thick_gridColor = "#888",
 
   //set aspect ratio
-  aspectRatio = "4 / 1"
+  aspectRatio = 4,
+
+  //set width and height via a viewbox (sets maximums, the rest is scaled according to platform size)
+  viewBoxWidth = 1000,
+  viewBoxHeight = viewBoxWidth / aspectRatio 
 }) {
 
   const rows_max_val = Math.max(...rows.map(r => Number(r.count))); //<- set highest value in chart
@@ -66,7 +67,7 @@ function makeLineChart({
   //make aspect ratio to ensure device scalability
   svg.style.width = "100%";
   svg.style.height = "auto";
-  svg.style.aspectRatio = aspectRatio;
+  svg.style.aspectRatio = `${aspectRatio} / 1`;
 
 
   //set points on line chart (time, value : x, y)
@@ -168,6 +169,8 @@ function makeLineChart({
 
   //X AXIS LABEL
 
+  let skip_amount;
+
   //for each point on x-axis...
   coords.forEach((p, i) => {
 
@@ -191,8 +194,8 @@ function makeLineChart({
       "middle"
     );
 
-    x_axis_label.setAttribute("font-size", `${100 / tickCount}`);    
-
+    x_axis_label.setAttribute("font-size", `${100 / tickCount}`);
+    
     //set label fill color
     x_axis_label.setAttribute("fill", lineColor);
 
@@ -223,14 +226,20 @@ function makeLineChart({
       //put month and date together for full label
       x_axis_label.textContent =
         `${d.toLocaleDateString('en-US', { weekday: 'short' })}, ${d.toLocaleDateString('en-US', { month: '2-digit' })}-${d.toLocaleDateString('en-US', {day: "2-digit"})}`;
+
+    }
+    
+    skip_amount = Math.round(coords.length / ( viewBoxWidth / (100 / tickCount) / x_axis_label.textContent.length));
+    //how many x-axis labels should we skip to make it look less cramped?
+
+    //put down x-label, skipping the amount of labels we calculated earlier
+    if (i % skip_amount == 0) {
+      svg.appendChild(x_axis_label);
     }
 
-
-
-    //put down x-label
-    svg.appendChild(x_axis_label);
-
   });
+
+  console.log(skip_amount, containerId);
 
   //GRID
 
@@ -264,7 +273,7 @@ function makeLineChart({
 
   //X-GRIDLINES
 
-  coords.forEach((p) => {
+  coords.forEach((p, i) => {
 
     const x_grid = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -277,8 +286,14 @@ function makeLineChart({
     x_grid.setAttribute("y1", 0);
     x_grid.setAttribute("y2", viewBoxHeight);
 
-    x_grid.setAttribute("stroke", gridColor);
-    x_grid.setAttribute("stroke-width", "1");
+    //use the skip_amount to put thicker/more contrasted grid-lines on the labeled axis points
+    if (i % skip_amount == 0) {
+      x_grid.setAttribute("stroke-width", "1.25");
+      x_grid.setAttribute("stroke", thick_gridColor);
+    } else {
+      x_grid.setAttribute("stroke-width", "1");
+      x_grid.setAttribute("stroke", gridColor);
+    }
 
     svg.appendChild(x_grid);
 
@@ -310,7 +325,7 @@ function makeLineChart({
   //PUT POINT LABELS OVER GRID
 
   //for every point...
-  coords.forEach(p => {
+  coords.forEach((p, i)=> {
 
     //make a text label with web standard
     const line_text = document.createElementNS(
@@ -323,8 +338,19 @@ function makeLineChart({
     //x is on the point
     line_text.setAttribute("x", p.x);
 
-    //y is just below point
-    line_text.setAttribute("y", p.y + 20);
+    //y is just below point, unless line is decreasing by following logic:
+
+    let opposite_height_mult = 1; //default label will be lower on first item
+
+    if ((i+1 <= coords.length-1) && (coords[i+1].value < coords[i].value)) { //if non-first item is less than previous item,
+      opposite_height_mult = -1;                             //put label above line
+    }
+
+    if (i+1 <= coords.length-1) { //if non-last item, see the slope of the line ahead 
+                                  //to get label out of the way with a multiplier
+
+    }
+    line_text.setAttribute("y", p.y + ((coords.length / 1000 + 16) * (opposite_height_mult)));
 
     //text starts just after point
     line_text.setAttribute("text-anchor", "start");
@@ -512,8 +538,9 @@ makeLineChart({
 makeLineChart({
   rows: monthly_entries_subway_from_mar_2020_rows,
   containerId: "monthly_entries_subway_from_mar_2020_line",
-  yAxisStep: 5_000_000,
-  timeOfInterest: "month"
+  yAxisStep: 10_000_000,
+  timeOfInterest: "month",
+  aspectRatio: 2
 });
 
 //CALL BAR CHART FUNCTION
