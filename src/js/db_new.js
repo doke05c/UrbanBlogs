@@ -314,7 +314,7 @@ function makeLineChart({
   //CIRCLES GO OVER LINES, GOES OVER GRID
   //making points (circles)
 
-  coords.forEach(p => {
+  coords.forEach((p,i) => {
 
     //get circle info from web standard
     const line_circle = document.createElementNS(
@@ -327,7 +327,50 @@ function makeLineChart({
     line_circle.setAttribute("r", 5); //set radius
     line_circle.setAttribute("fill", pointColor); //set color
 
+    //create text necessary for hover, one for month case, one for date case
+    let tooltip_text = "";
+
+    if (timeOfInterest == "month") {
+      //get year and month from each month value to put down as labels cleanly
+      const [year, month] =
+        rows[i].month.split('-').map(Number);
+      
+      //get date attribute for each month to turn into datestring
+      const d = new Date(year, month - 1, 1);
+
+      //create tooltip
+      tooltip_text = `${d.toLocaleDateString('en-US', { month: 'long' })+ " " + rows[i].month.slice(0,4)}: ${p.value.toLocaleString()}`; //<- "Title" will appear on hover:
+                                                                                // month, year: count
+    }
+
+    if (timeOfInterest == "date") {
+      //get year and month from each month value to put down as labels cleanly
+      const [year, month, date] =
+        rows[i].date.split('-').map(Number);
+
+      //get date attribute for each month to turn into datestring
+      const d = new Date(year, month - 1, date);
+
+      //create tooltip
+      tooltip_text = `${d.toLocaleDateString('en-US',{ date: 'long' })}: ${p.value.toLocaleString()}`; //<- "Title" will appear on hover:
+                                                                                // date: count
+    }
+
+    //create title element which we will add the tooltip text to
+    const title = document.createElementNS(
+      "http://www.w3.org/2000/svg", 
+      "title"
+    );
+
+    //add tooltip text to title
+    title.textContent = tooltip_text;
+
+    //add title to circle
+    line_circle.appendChild(title);
+
+    //add circle
     svg.appendChild(line_circle); //MOVED TO END TO GO OVER GRID
+
 
   });
 
@@ -567,6 +610,10 @@ const monthly_entries_chart_from_2025_rows = await fetch("/src/json/monthly_cbd.
 const monthly_entries_subway_from_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_from_mar_2020.json")
     .then(res => res.json());
 
+//GET MONTHLY LIRR ENTRIES SINCE MAR 2020
+const monthly_lirr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_lirr_entries_from_mar_2020.json")
+    .then(res => res.json());
+
 //CALL LINE CHART FUNCTION
 makeLineChart({
   rows: monthly_entries_chart_from_2025_rows,
@@ -586,6 +633,14 @@ makeLineChart({
   rows: monthly_entries_subway_from_mar_2020_rows,
   containerId: "monthly_entries_subway_from_mar_2020_line",
   yAxisStep: 10_000_000,
+  timeOfInterest: "month",
+  aspectRatio: 2
+});
+
+makeLineChart({
+  rows: monthly_lirr_entries_from_mar_2020_rows,
+  containerId: "monthly_entries_lirr_from_mar_2020_line",
+  yAxisStep: 1_000_000,
   timeOfInterest: "month",
   aspectRatio: 2
 });

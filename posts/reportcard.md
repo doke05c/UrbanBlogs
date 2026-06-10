@@ -53,10 +53,18 @@ I restructured the process for making charts, everything is now as automated as 
 <br>
 
 Oh, also, Subway ridership!
-#### Number of Entries into the MTA Subway Since Mar 2020, Line:
+#### MTA Subway Monthly Ridership Since Mar 2020, Line:
 <div id="monthly_entries_subway_from_mar_2020_line"></div>
 <br>
 
-#### Number of Entries into the MTA Subway Since Mar 2020, Bar:
+#### MTA Subway Monthly Ridership Since Mar 2020, Bar:
 <div id="monthly_entries_subway_from_mar_2020_bar"></div>
+<br>
+
+##### June 10, 2026: 1:00 PM, Hunter College Cooperman Library:
+
+I added a lot of readability and visibility changes to the line charts, which scale dynamically with the size of the dataset that needs to be graphed. The Subway ridership line chart looks in much better shape now, so check out LIRR ridership!
+
+#### MTA LIRR Monthly Ridership Since Mar 2020, Line:
+<div id="monthly_entries_lirr_from_mar_2020_line"></div>
 <br>
