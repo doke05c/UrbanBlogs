@@ -15,6 +15,12 @@ function makeLineChart({
   //set step for chart according to scale of data
   yAxisStep,
 
+  //set cutoff for truncated label counts on points
+  pointLabelCutoffCount = 40,
+
+  //enable minor X-axis gridlines
+  enableMinorXGridlines,
+
   //set colors for elements
   lineColor = "#e8e9de",
   pointColor = "#4a90e2",
@@ -28,6 +34,11 @@ function makeLineChart({
   viewBoxWidth = 1000,
   viewBoxHeight = viewBoxWidth / aspectRatio 
 }) {
+
+  //set MinorXGridlines to be off when the pointLabelCutoffCount is reached
+  if (enableMinorXGridlines == undefined) {
+    enableMinorXGridlines = rows.length >= pointLabelCutoffCount ? 0 : 1;
+  }
 
   const rows_max_val = Math.max(...rows.map(r => Number(r.count))); //<- set highest value in chart
 
@@ -228,9 +239,9 @@ function makeLineChart({
         `${d.toLocaleDateString('en-US', { weekday: 'short' })}, ${d.toLocaleDateString('en-US', { month: '2-digit' })}-${d.toLocaleDateString('en-US', {day: "2-digit"})}`;
 
     }
-    
-    skip_amount = Math.round(coords.length / ( viewBoxWidth / (100 / tickCount) / x_axis_label.textContent.length));
+
     //how many x-axis labels should we skip to make it look less cramped?
+    skip_amount = Math.round(coords.length / ( viewBoxWidth / (100 / tickCount) / x_axis_label.textContent.length));
 
     //put down x-label, skipping the amount of labels we calculated earlier
     if (i % skip_amount == 0) {
@@ -238,8 +249,6 @@ function makeLineChart({
     }
 
   });
-
-  console.log(skip_amount, containerId);
 
   //GRID
 
@@ -291,7 +300,7 @@ function makeLineChart({
       x_grid.setAttribute("stroke-width", "1.25");
       x_grid.setAttribute("stroke", thick_gridColor);
     } else {
-      x_grid.setAttribute("stroke-width", "1");
+      x_grid.setAttribute("stroke-width", `${enableMinorXGridlines}`);
       x_grid.setAttribute("stroke", gridColor);
     }
 
@@ -357,14 +366,52 @@ function makeLineChart({
     line_text.setAttribute("dominant-baseline", "middle");
 
     //font size and color
-    line_text.setAttribute("font-size", `${150 / rows.length}`);    
+    line_text.setAttribute("font-size", `${85 / tickCount}`);
+
     line_text.setAttribute("fill", lineColor);
 
     //set value of point, in comma form for readability
     line_text.textContent = p.value.toLocaleString();
 
-    //put down point labels
-    svg.appendChild(line_text);
+    //inner function to add point label lines. only needed when points have a possibility to become ambiguous, like when:
+    //1. points skip labels
+    //2. points are only labeled by min/max/start/end
+    const addPointLabelLine = () => {
+    if (coords.length >= pointLabelCutoffCount || skip_amount > 1) {
+      //make point label line
+      const point_label_line = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "line"
+      );
+
+      //set line boundaries
+      point_label_line.setAttribute("x1", p.x-1);
+      point_label_line.setAttribute("x2", p.x-1);
+      point_label_line.setAttribute("y1", p.y);
+      point_label_line.setAttribute("y2", p.y + ((coords.length / 1000 + 18) * (opposite_height_mult)));
+
+      point_label_line.setAttribute("stroke", lineColor);
+      point_label_line.setAttribute("stroke-width", "1");
+
+      svg.appendChild(point_label_line);
+    }
+  };
+
+    //if there are enough points, put down only the first, last, min, and max labels
+    if (coords.length >= pointLabelCutoffCount) {
+      if (i == 0 || i == coords.length-1 || coords[i].value == rows_max_val || coords[i].value == Math.min(...rows.map(r => Number(r.count)))) {
+        svg.appendChild(line_text);
+        addPointLabelLine();
+      }
+    }
+    else {
+    //if there are not enough points, just put down the skip_amount interval point labels
+      if (i % skip_amount == 0) {
+        svg.appendChild(line_text);
+        addPointLabelLine();
+      }
+    }
+
   });
 
 
