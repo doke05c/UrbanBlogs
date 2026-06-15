@@ -617,7 +617,6 @@ function makeBarChart({
     labelText.setAttribute("fill", textColor);
     labelText.setAttribute("font-size", `${barWidth * 0.18}`);
 
-
     //monthly x-labels
     if (timeOfInterest === "month") {
       const [year, month] = r.month.split("-").map(Number);
@@ -662,8 +661,11 @@ const monthly_entries_subway_from_mar_2020_rows = await fetch("/src/json/monthly
     .then(res => res.json());
 
 //GET MONTHLY LIRR ENTRIES SINCE MAR 2020
-const monthly_lirr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_lirr_entries_from_mar_2020.json")
+const monthly_mnr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_from_mar_2020.json")
     .then(res => res.json());
+
+//GET MONTHLY MNR ENTRIES SINCE MAR 2020
+
 
 //CALL LINE CHART FUNCTION
 makeLineChart({
@@ -691,6 +693,14 @@ makeLineChart({
 makeLineChart({
   rows: monthly_lirr_entries_from_mar_2020_rows,
   containerId: "monthly_entries_lirr_from_mar_2020_line",
+  yAxisStep: 1_000_000,
+  timeOfInterest: "month",
+  aspectRatio: 2
+});
+
+makeLineChart({
+  rows: monthly_mnr_entries_from_mar_2020_rows,
+  containerId: "monthly_entries_mnr_from_mar_2020_line",
   yAxisStep: 1_000_000,
   timeOfInterest: "month",
   aspectRatio: 2
