@@ -73,7 +73,7 @@ I added a lot of readability and visibility changes to the line charts, which sc
 
 I reworked bar charts to work at all scales with all devices, though bar charts probably aren't best for large longitudinal observations. So.. here's the Metro-North as a line chart:
 
-#### MTA LIRR Monthly Ridership Since Mar 2020, Line:
+#### MTA MNRR Monthly Ridership Since Mar 2020, Line:
 <div id="monthly_entries_mnr_from_mar_2020_line"></div>
 <br>
 
