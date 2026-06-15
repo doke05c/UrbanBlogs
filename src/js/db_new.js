@@ -471,31 +471,30 @@ function makeLineChart({
 }
 
 function makeBarChart({
-  //data we want to plot
-  rows,
+  //data we want to plot 
+  rows, 
 
-  //name of chart container we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
-  containerId,
+  //name of chart container we want to use to put actual chart into (TAKEN FROM BLOG PAGE) 
+  containerId, 
 
-  //what time scale are we graphing over? days, months?
-  timeOfInterest,
+  //what time scale are we graphing over? days, months? 
+  timeOfInterest, 
 
-  //set colors for elements
-  textColor = "#e8e9de",
+  //set colors for elements 
+  textColor = "#e8e9de", 
   barColor = "#4a90e2",
 
+  width = 1000,
+  height = 300,
+
+  paddingTop = 25,
+  paddingBottom = 45,
+  paddingLeft = 5,
+  paddingRight = 5
 }) {
 
-  //number of items in the chart
-  const full_item_count = rows.length;
-
-  const rows_max_val = Math.max(...rows.map(r => Number(r.count))); //<- set highest value in chart
-    
-  //START BAR CHART
-
-  // LOADER COMES FIRST: LET USER WAIT
-
-  const bar_chart = document.createElement(containerId); //<- bar chart element creation
+  //create container for bar chart
+  const container = document.createElement(containerId);
 
   const bar_chart_loader = document.createElement("div");
   bar_chart_loader.textContent = "Loading chart...";
@@ -505,97 +504,149 @@ function makeBarChart({
   bar_chart_loader.style.height = "200px";
   bar_chart_loader.style.fontSize = "14px";
   bar_chart_loader.style.color = "#666";
-  bar_chart.appendChild(bar_chart_loader); //<- Make the "chart" the loader for now
+  container.appendChild(bar_chart_loader); //<- Make the "chart" the loader for now
 
-  document.getElementById(containerId).appendChild(bar_chart) //<- Display
+  document.getElementById(containerId).appendChild(container) //<- Display
 
 
-  //SET CONTAINER GEOMETRY
-  const bar_chart_wrapper = document.createElement("div");
-  bar_chart_wrapper.style.display = "flex";
-  bar_chart_wrapper.style.alignItems = "flex-end";
-  bar_chart_wrapper.style.gap = "8px";
-  bar_chart_wrapper.style.height = "200px";
-  bar_chart_wrapper.style.width = "100%";
+  //get highest value of the dataset, made to scale bar chart
+  const maxVal = Math.max(...rows.map(r => Number(r.count)));
 
-  //FOR EACH TIME ITEM...
-  rows.forEach(r => {
+  //set bar width relative to the number of bars
+  const barWidth = (width - paddingLeft - paddingRight) / rows.length;
 
-    let d;
+  //SVG creation
 
-    if (timeOfInterest == "month") {
-      const [year, month] = r.month.split('-').map(Number);
-      d = new Date(year, month - 1, 1); //<- create "Date" object for the month
+  //create svg element to which all items will be added
+  const svg = document.createElementNS(
+    "http://www.w3.org/2000/svg", 
+    "svg"
+  );
+
+  //set svg scaling system according to function parameters
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.style.width = "100%";
+  svg.style.height = "auto";
+
+  //BARS
+
+  //for each item in the dataset...
+  rows.forEach((r, i) => {
+    const value = Number(r.count);
+    
+    //set bar height relative to maximum
+    const barHeight =
+      ((value / maxVal) * (height - paddingTop - paddingBottom));
+
+    //set length (x) and width (y) of each bar 
+    const x = paddingLeft + i * barWidth;
+    const y = height - paddingBottom - barHeight;
+
+    //make rectangle svg element with bar attributes
+    const rect = document.createElementNS(
+      "http://www.w3.org/2000/svg", 
+      "rect"
+    );
+
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", y);
+    rect.setAttribute("width", barWidth * 0.8);
+    rect.setAttribute("height", barHeight);
+    rect.setAttribute("fill", barColor);
+
+    //TOOLTIPS
+
+    const title = document.createElementNS(
+      "http://www.w3.org/2000/svg", 
+      "title"
+    );
+
+    //monthly date tooltips
+    if (timeOfInterest === "month") {
+      const [year, month] = r.month.split("-").map(Number);
+      const d = new Date(year, month - 1, 1);
+      title.textContent = `${d.toLocaleDateString("en-US", { month: "short" })} ${year}: ${value.toLocaleString()}`;
     }
 
-    if (timeOfInterest == "date") {
-      const [year, month, day] = r.date.split('-').map(Number);
-      d = new Date(year, month - 1, day); //<- create "Date" object for the date
+    //daily date tooltips
+    if (timeOfInterest === "date") {
+      const [year, month, day] = r.date.split("-").map(Number);
+      const d = new Date(year, month - 1, day);
+      title.textContent = `${d.toDateString()}: ${value.toLocaleString()}`;
     }
 
-    const bar = document.createElement("div");//<- make bar
+    //add hover tooltips to bars
+    rect.appendChild(title);
 
-    const bar_height = (Number(r.count) / rows_max_val) * 100;//<- set bar height ratio to max
+    //add bar to svg
+    svg.appendChild(rect);
 
-    //SET BAR GEOMETRY
-    bar.style.height = `${bar_height}%`;
-    bar.style.flex = "1 1 0";
-    bar.style.background = barColor;
-    bar.style.display = "flex";
-    bar.style.flexDirection = "column";       
-    bar.style.justifyContent = "space-between";
-    bar.style.alignItems = "center";        
-    bar.style.color = textColor;
-    bar.style.fontSize = `${11.8 / full_item_count}vw`;
-    bar.style.minWidth = "0";
+    //TOP OF BAR LABELS
 
-    if (timeOfInterest == "month") {
-      bar.title = `${d.toLocaleDateString('en-US', { month: 'long' })+ " " + r.month.slice(0,4)}: ${r.count.toLocaleString()}`; //<- "Title" will appear on hover:
-                                                                                // month, year: count
+    //create svg element for top of bar labels
+    const valueText = document.createElementNS(
+      "http://www.w3.org/2000/svg", 
+      "text"
+    );
+
+    //get string of count value
+    valueText.textContent = value.toLocaleString();
+
+    valueText.setAttribute("x", x + barWidth * 0.4);
+    valueText.setAttribute("y", y + (barWidth * 0.19));
+    valueText.setAttribute("text-anchor", "middle");
+    valueText.setAttribute("fill", textColor);
+
+    //set font size relative to font width and text length
+    valueText.setAttribute("font-size", `${1.4 * barWidth / valueText.textContent.length}`);
+
+    //added top of bar label to svg
+    svg.appendChild(valueText);
+
+    //X-LABEL
+
+    //create svg element to x-label
+    const labelText = document.createElementNS(
+      "http://www.w3.org/2000/svg", 
+      "text"
+    );
+
+    labelText.setAttribute("x", x + barWidth * 0.4);
+    labelText.setAttribute("y", height - paddingBottom + (barWidth * 0.25));
+    labelText.setAttribute("text-anchor", "middle");
+    labelText.setAttribute("fill", textColor);
+    labelText.setAttribute("font-size", `${barWidth * 0.18}`);
+
+
+    //monthly x-labels
+    if (timeOfInterest === "month") {
+      const [year, month] = r.month.split("-").map(Number);
+      const d = new Date(year, month - 1, 1);
+      labelText.textContent =
+        d.toLocaleDateString("en-US", { month: "short" }) + " " + year;
     }
 
-    if (timeOfInterest == "date") {
-      bar.title = `${d.toLocaleDateString('en-US',{ date: 'long' })}: ${r.count.toLocaleString()}`; //<- "Title" will appear on hover:
-                                                                                // month, year: count
+    //daily x-labels
+    if (timeOfInterest === "date") {
+      const [year, month, day] = r.date.split("-").map(Number);
+      const d = new Date(year, month - 1, day);
+      labelText.textContent =
+        d.toLocaleDateString("en-US", { weekday: "short" }) +
+        " " +
+        r.date.slice(5, 10);
     }
 
-    const count_label = document.createElement("div"); //<- make count label, top of bar
-    count_label.textContent = r.count.toLocaleString();
-
-    const date_label = document.createElement("div"); //<- make date label, bottom of bar
-
-    if (timeOfInterest == "month") {
-      date_label.textContent =   
-        d.toLocaleDateString('en-US', { month: 'short' }) + " " + r.month.slice(0,4); //<- set date label, just mo year 
-    }
-
-    if (timeOfInterest == "date") {
-      date_label.textContent =   
-        d.toLocaleDateString('en-US', { weekday: 'short' }) + ", " + r.date.slice(5,10); //<- set date label, just mm-dd and DOW
-    }
-
-    //SET LABEL STYLE
-    date_label.style.fontSize = `${13.5 / full_item_count}vw`;
-    date_label.style.marginBottom = `${-28 / full_item_count}vw`;
-    date_label.style.whiteSpace = "nowrap";
-
-    //add labels to bar
-    bar.appendChild(count_label);
-    bar.appendChild(date_label);
-
-    //add bar to container
-    bar_chart_wrapper.appendChild(bar);
+    //add x-label to svg
+    svg.appendChild(labelText);
   });
+
+  //add svg elements to chart
+  container.appendChild(svg);
 
   //GRAPH IS READY! kill loader
   bar_chart_loader.remove();
 
-  //add container to chart item, ship it off to main blog file
-  bar_chart.appendChild(bar_chart_wrapper);
-
-  document.getElementById(containerId).appendChild(bar_chart) //<- Display
-
-
+  document.getElementById(containerId).appendChild(container) //<- Display
 }
 
 //GET LAST 7 DAYS OF CRZ ENTRIES
