@@ -1,3 +1,69 @@
+//to plot multiple lines in one chart. to be used as helper for makeLineChart (input single dataset as parameter)
+function makeMultipleLineChart ({
+//TO-CHANGE NOTES:
+
+//DETERMINE enableMinorXGridlines WHEN IT IS BETTER UNDERSTOOD HOW MANY ELEMENTS THERE WILL BE TO GRAPH
+  //IDEA: FOR MONTHS AND FOR DAYS SEPARATELY: TAKE LARGEST DATE VALUE - SMALLEST DATE VALUE AND DIVIDE BY timeOfInterest
+
+
+  //data we want to plot
+  rows,
+
+  //list of chart container names we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
+  containerList,
+
+  //what time scale are we graphing over? days, months?
+  timeOfInterest,
+
+  //padding constant from left/right sides
+  paddingLeft = 60,
+  paddingRight = 60,
+
+  //set step for chart according to scale of data
+  yAxisStep,
+
+  //set cutoff for truncated label counts on points
+  pointLabelCutoffCount = 40,
+
+  //enable minor X-axis gridlines
+  enableMinorXGridlines,
+
+  //set colors for elements
+  lineColor = "#e8e9de",
+  pointColor = "#4a90e2",
+  gridColor = "#555",
+  thick_gridColor = "#888",
+
+  //set aspect ratio
+  aspectRatio = 4,
+
+  //set width and height via a viewbox (sets maximums, the rest is scaled according to platform size)
+  viewBoxWidth = 1000,
+  viewBoxHeight = viewBoxWidth / aspectRatio 
+}) {
+
+  //unpack containerList
+
+  //get highest date of all elements
+  //get lowest date of all elements
+  //get highest y-value of all datasets
+
+  //make chart loader
+
+
+  //point count is determined separately by timeofinterest, taken as difference of max date and min date
+  const pointCount;
+
+  //set MinorXGridlines to be off when the pointLabelCutoffCount is reached
+  if (enableMinorXGridlines == undefined) {
+    enableMinorXGridlines = pointCount >= pointLabelCutoffCount ? 0 : 1;
+  }
+
+  //create SVG
+
+}
+
+//to be converted to a single-line driver function for makeMultipleLineChart
 function makeLineChart({
   //data we want to plot
   rows,
