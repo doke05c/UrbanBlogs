@@ -6,11 +6,11 @@ function makeMultipleLineChart ({
   //IDEA: FOR MONTHS AND FOR DAYS SEPARATELY: TAKE LARGEST DATE VALUE - SMALLEST DATE VALUE AND DIVIDE BY timeOfInterest
 
 
-  //data we want to plot
-  rows,
+  //data we want to plot, list of datasets, to be unpacked in the function
+  datasetList,
 
-  //list of chart container names we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
-  containerList,
+  //container name we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
+  containerId = "test", //<== REMOVE LATER
 
   //what time scale are we graphing over? days, months?
   timeOfInterest,
@@ -42,17 +42,37 @@ function makeMultipleLineChart ({
   viewBoxHeight = viewBoxWidth / aspectRatio 
 }) {
 
-  //unpack containerList
+  //unpack containerList:
 
   //get highest date of all elements
   //get lowest date of all elements
   //get highest y-value of all datasets
 
+  let max_date = new Date(); //set max date as empty date for now
+  let min_date = new Date(); //set min date as empty date for now
+  let rows_max_val = 0; //set max value as 0 for now
+
+  //loop through every dataset we have
+  for (const [name, dataset] of Object.entries(datasetList)) {
+
+    console.log(dataset);
+
+    //update max value through each dataset
+    let local_max = Math.max(...dataset.map(r => Number(r.count)))
+    if (local_max > rows_max_val) {
+      rows_max_val = local_max;
+    }
+
+    //DATE NEXT
+  }
+
+  console.log(rows_max_val);
+
   //make chart loader
 
 
   //point count is determined separately by timeofinterest, taken as difference of max date and min date
-  const pointCount;
+  const pointCount = 0; //<== CALCULATE REAL VALUE LATER
 
   //set MinorXGridlines to be off when the pointLabelCutoffCount is reached
   if (enableMinorXGridlines == undefined) {
@@ -733,6 +753,19 @@ const monthly_lirr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_l
 //GET MONTHLY MNR ENTRIES SINCE MAR 2020
 const monthly_mnr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_from_mar_2020.json")
     .then(res => res.json());
+
+//CREATE LIST OF MNR AND LIRR ENTRIES SINCE MAR 2020
+const monthly_multimodal_from_mar_2020_rows = {
+  lirr: monthly_lirr_entries_from_mar_2020_rows,
+  mnr: monthly_mnr_entries_from_mar_2020_rows
+};
+
+//CALL MULTI LINE CHART FUNCTION TEST
+makeMultipleLineChart({
+  datasetList: monthly_multimodal_from_mar_2020_rows,
+  yAxisStep: 1_000_000,
+  timeOfInterest: "month"
+});
 
 //CALL LINE CHART FUNCTION
 makeLineChart({
