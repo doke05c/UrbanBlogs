@@ -63,7 +63,8 @@ function makeMultipleLineChart ({
       rows_max_val = local_max;
     }
 
-    //DATE NEXT
+    //update max date and min date value through each dataset
+    
   }
 
   console.log(rows_max_val);
