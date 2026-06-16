@@ -134,7 +134,29 @@ function makeMultipleLineChart ({
 
   document.getElementById(containerId).appendChild(multi_line) //<- Display
 
-  //create SVG
+  //use svg to set line chart size attributes
+  const svg = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+  );
+
+  //allow overflow
+  svg.style.overflow = "visible";
+
+  //set max gridline for line chart based on step size and max value
+  const yAxisMax =
+    Math.ceil(rows_max_val / yAxisStep) *
+    yAxisStep;
+
+  svg.setAttribute(
+    "viewBox",
+    `0 0 ${viewBoxWidth} ${viewBoxHeight}`
+  );
+
+  //make aspect ratio to ensure device scalability
+  svg.style.width = "100%";
+  svg.style.height = "auto";
+  svg.style.aspectRatio = `${aspectRatio} / 1`;
 
 }
 
