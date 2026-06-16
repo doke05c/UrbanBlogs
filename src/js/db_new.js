@@ -29,6 +29,8 @@ function makeMultipleLineChart ({
   enableMinorXGridlines,
 
   //set colors for elements
+  gridLabelColor = "#e8e9de",
+
   lineColors = [
     "#FF595E",
     "#8AC926",
@@ -164,32 +166,270 @@ function makeMultipleLineChart ({
   svg.style.aspectRatio = `${aspectRatio} / 1`;
 
   //create list of coordinate paths for each dataset, will be filled out iteratively below:
-  const coordsList = {};
+  let coordsList = {};
 
   //for each dataset,
-  for (const [i, [name, dataset]] of Object.entries(datasetList)) {
+  for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
 
-    //set points on line chart (time, value : x, y), get value as well
-    coordsList[name] = dataset.map((r, i) => ({
-      x:
-        paddingLeft +
-        i * (
-          (viewBoxWidth -
-          paddingLeft -
-          paddingRight) /
-          (pointCount)
-        ),  
+    //set points on line chart (time, value : x, y), get value and date as well
+    coordsList[name] = dataset.map(r => {
+      let d, x; 
 
+      //if month, make a system for x using month offset
+      if (timeOfInterest == "month") {
+        d = new Date(r.month + "-01");
+
+        const monthOffset =
+          (d.getFullYear() - min_date.getFullYear()) * 12 +
+          (d.getMonth() - min_date.getMonth());
+
+        x =
+          paddingLeft + 
+          (monthOffset / (pointCount - 1)) *
+          (viewBoxWidth - paddingLeft - paddingRight);
+      
+      //if day, make a system for x using day offset
+      } else if (timeOfInterest == "day") {
+        d = new Date(r.date);
+
+        const dayOffset =
+          (d - min_date) / (1000 * 60 * 60 * 24);
+
+        x =
+          paddingLeft +
+          (dayOffset / (pointCount - 1)) *
+          (viewBoxWidth - paddingLeft - paddingRight);
+      }
+      
+      return {
+      x: x,
+
+      //set y using value relative to max in viewbox
       y: viewBoxHeight - 
         (Number(r.count) / yAxisMax) * 
         viewBoxHeight,
 
-      value: r.count
-    }));
+      value: r.count,
+      date: d
+      };
+
+    });
   }
 
-  //create polylines for each dataset
-  for (const [name, dataset] of Object.entries(datasetList)) {
+  //SET AXES
+
+  //Y AXIS TICK MARKS
+
+  //tickCount = max value / step size
+  const tickCount = yAxisMax / yAxisStep;
+
+  //for all the ticks we want... (max value / step size)
+  for (let i = 0; i <= tickCount; i++) {
+
+    //set value for each tick mark
+    const value = yAxisMax - (i * yAxisStep);
+
+    //set position for each tick mark
+    const y =
+      (i / tickCount) *
+      (viewBoxHeight);
+
+    //tick mark element creation
+    const tick = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "line"
+    );
+
+    //set location of positions of ends of tick marks
+    tick.setAttribute("x1", paddingLeft-10);
+    tick.setAttribute("x2", paddingLeft);
+    tick.setAttribute("y1", y);
+    tick.setAttribute("y2", y);
+
+    //color tick marks
+    tick.setAttribute("stroke", gridColor);
+
+    //put down ticks
+    svg.appendChild(tick);
+
+    //Y AXIS LABELS
+
+    const y_axis_label = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+
+    //set location of labels
+    y_axis_label.setAttribute("x", paddingLeft-20);
+    y_axis_label.setAttribute("y", y + 4);
+
+    //set color/style of labels
+    y_axis_label.setAttribute("text-anchor", "end");
+    y_axis_label.setAttribute("fill", gridLabelColor);
+
+    y_axis_label.setAttribute("font-size", `${90 / tickCount}`);    
+
+    //set value as text
+    y_axis_label.textContent =
+      Math.round(value).toLocaleString();
+
+    //put down labels
+    svg.appendChild(y_axis_label);
+
+  }
+
+  //X AXIS LABEL
+  
+  //start by making standardized X axis points for the entire range from min_date to max_date (instead of deriving it from the points)
+  let xAxisPoints = [];
+
+  //for all points...
+  for (let i = 0; i < pointCount; i++) {
+    
+    //create a sample day d
+    let d;
+
+    //if the points are to be monthly, set them using min_date's month
+    if (timeOfInterest == "month") {
+      d = new Date(
+        min_date.getFullYear(),
+        min_date.getMonth() + i,
+        1
+      );
+    } 
+
+    //if the points are to be daily, set them using min_date's day
+    else if (timeOfInterest == "date") {
+      d = new Date(min_date);
+      d.setDate(min_date.getDate() + i);
+    }
+
+    //set points and corresponding dates
+    const x =
+      paddingLeft +
+      (i / (pointCount - 1)) *
+      (viewBoxWidth - paddingLeft - paddingRight);
+
+
+    xAxisPoints.push({
+      x,
+      date: d
+    });
+  }
+
+  let skip_amount;
+
+  //for each point on x-axis...
+  xAxisPoints.forEach((p, i) => {
+
+    const x_axis_label = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+
+    //set x value of x label to be where point was
+    x_axis_label.setAttribute("x", p.x);
+
+    //set y value of y label to be at the bottom-ish of the chart 
+    x_axis_label.setAttribute(
+      "y",
+      viewBoxHeight + 18
+    );
+
+    //anchor text to middle of position
+    x_axis_label.setAttribute(
+      "text-anchor",
+      "middle"
+    );
+
+    x_axis_label.setAttribute("font-size", `${100 / tickCount}`);
+    
+    //set label fill color
+    x_axis_label.setAttribute("fill", gridLabelColor);
+
+    //place different axis labels based on time of interest, use the xAxisPoints' date values as references instead of those of the dataset
+    if (timeOfInterest == "month") {
+      //get year and month from each month value to put down as labels cleanly
+      x_axis_label.textContent =
+        `${p.date.toLocaleDateString("en-US", {month:"short"})} '${String(p.date.getFullYear()).slice(-2)}`;
+    }
+
+    if (timeOfInterest == "date") {
+      //get year, month, date from each date to put down as labels cleanly
+      x_axis_label.textContent =
+        `${p.date.toLocaleDateString("en-US", {weekday:"short"})}, ${p.date.toLocaleDateString("en-US", {month:"2-digit", day:"2-digit"})}`;
+    }
+
+    //how many x-axis labels should we skip to make it look less cramped?
+    skip_amount = Math.round(pointCount / ( viewBoxWidth / (100 / tickCount) / x_axis_label.textContent.length));
+
+    //put down x-label, skipping the amount of labels we calculated earlier
+    if (i % skip_amount == 0) {
+      svg.appendChild(x_axis_label);
+    }
+
+  });
+
+  //GRID
+
+  //Y-GRIDLINES
+
+  //for all the ticks we have...
+  for (let i = 0; i <= tickCount; i++) {
+    
+    //set y value for gridline
+    const y =
+      (i / tickCount) *
+      (viewBoxHeight);
+    
+    //make svg gridline
+    const y_grid = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "line"
+    );
+
+    //set y-gridlines
+    y_grid.setAttribute("x1", paddingLeft);
+    y_grid.setAttribute("x2", viewBoxWidth - paddingRight);
+    y_grid.setAttribute("y1", y);
+    y_grid.setAttribute("y2", y);
+
+    y_grid.setAttribute("stroke", gridColor);
+    y_grid.setAttribute("stroke-width", "1");
+
+    svg.appendChild(y_grid);
+  }
+
+  //X-GRIDLINES
+
+  xAxisPoints.forEach((p, i) => {
+
+    const x_grid = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "line"
+    );
+
+    x_grid.setAttribute("x1", p.x);
+    x_grid.setAttribute("x2", p.x);
+
+    x_grid.setAttribute("y1", 0);
+    x_grid.setAttribute("y2", viewBoxHeight);
+
+    //use the skip_amount to put thicker/more contrasted grid-lines on the labeled axis points
+    if (i % skip_amount == 0) {
+      x_grid.setAttribute("stroke-width", "1.25");
+      x_grid.setAttribute("stroke", thick_gridColor);
+    } else {
+      x_grid.setAttribute("stroke-width", `${enableMinorXGridlines}`);
+      x_grid.setAttribute("stroke", gridColor);
+    }
+
+    svg.appendChild(x_grid);
+
+  });
+
+  //create polylines for each dataset, MOVED TO END TO GO OVER GRID
+  for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
 
     const line_polyline = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -206,9 +446,23 @@ function makeMultipleLineChart ({
     line_polyline.setAttribute("stroke", lineColors[i]);
     line_polyline.setAttribute("stroke-width", "2.5");
 
-    // svg.appendChild(line_polyline); //MOVED TO END TO GO OVER GRID
+    svg.appendChild(line_polyline);
   }
 
+  //POINTS, AND 
+
+  //POINT LABELS
+
+  //add svg elements to chart
+  multi_line.appendChild(svg);
+
+  //GRAPH IS READY! kill loader
+  multi_line_loader.remove();
+
+  document.getElementById(containerId).appendChild(multi_line) //<- Display
+
+
+  //END LINE CHART
 
 }
 
@@ -910,7 +1164,7 @@ makeMultipleLineChart({
 makeMultipleLineChart({
   datasetList: entries_list_past_week,
   containerId: "past_week_crossing_crz_bt_line",
-  yAxisStep: 100_000,
+  yAxisStep: 125_000,
   timeOfInterest: "date"
 });
 
