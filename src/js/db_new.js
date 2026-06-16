@@ -48,8 +48,8 @@ function makeMultipleLineChart ({
   //get lowest date of all elements
   //get highest y-value of all datasets
 
-  let max_date = new Date(); //set max date as empty date for now
-  let min_date = new Date(); //set min date as empty date for now
+  let max_date = new Date("1900-01-01"); //make a date that is almost guaranteed to be surpassed
+  let min_date = new Date("3000-01-01"); //make a date that is almost guaranteed to be preceeded (unless you're phillip fry :p)
   let rows_max_val = 0; //set max value as 0 for now
 
   //loop through every dataset we have
@@ -64,7 +64,30 @@ function makeMultipleLineChart ({
     }
 
     //update max date and min date value through each dataset
-    
+    let local_date_max = new Date("1900-01-01"); //make a date that is almost guaranteed to be surpassed
+    let local_date_min = new Date("3000-01-01"); //make a date that is almost guaranteed to be preceeded (unless you're phillip fry :p)
+
+    //WITHIN EACH DATASET, FIND THE MIN/MAX DATES
+    for (const r of dataset) {
+      const d = new Date(r.Date);
+
+      if (d > local_date_max) {
+        local_date_max = d;
+      }
+
+      if (d < local_date_min) {
+        local_date_min = d;
+      }
+    }
+
+    //ACROSS DATASETS, FIND THE MIN/MAX DATES
+    if (local_date_max > max_date) {
+      max_date = local_date_max;
+    }
+
+    if (local_date_min < min_date) {
+      min_date = local_date_min;
+    }
   }
 
   console.log(rows_max_val);
