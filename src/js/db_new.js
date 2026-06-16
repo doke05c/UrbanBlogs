@@ -37,7 +37,7 @@ function makeMultipleLineChart ({
     "#FFCA3A",
     "#6A4C93"
   ],
-  pointColor = "#4a90e2",
+  pointColor = "#eafafa",
   gridColor = "#555",
   thick_gridColor = "#888",
 
@@ -456,6 +456,70 @@ function makeMultipleLineChart ({
   }
 
   //POINTS, AND 
+  for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
+    coordsList[name].forEach((p,j) => {
+
+      //get circle info from web standard
+      const line_circle = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+
+      //establish point size relative to number of points
+      const circle_radius = Math.max((5.5 - ((pointCount/20) * Object.entries(datasetList).length/3)), 1.5);
+
+      line_circle.setAttribute("cx", p.x); //set x position of circle to our x
+      line_circle.setAttribute("cy", p.y); //set y position of circle to our y
+      line_circle.setAttribute("r", circle_radius); //set radius
+      line_circle.setAttribute("fill", pointColor); //set color
+
+      //create text necessary for hover, one for month case, one for date case
+      let tooltip_text = "";
+
+      if (timeOfInterest == "month") {
+        //get year and month from each month value to put down as labels cleanly
+        const [year, month] =
+          dataset[j].month.split('-').map(Number);
+        
+        //get date attribute for each month to turn into datestring
+        const d = new Date(year, month - 1, 1);
+
+        //create tooltip
+        tooltip_text = `${name} \n${d.toLocaleDateString('en-US', { month: 'long' })+ " " + dataset[j].month.slice(0,4)}: ${coordsList[name][j].value.toLocaleString()}`; //<- "Title" will appear on hover:
+                                                                                  // month, year: count
+      }
+
+      if (timeOfInterest == "date") {
+        //get year and month from each month value to put down as labels cleanly
+        const [year, month, date] =
+          dataset[j].date.split('-').map(Number);
+
+        //get date attribute for each month to turn into datestring
+        const d = new Date(year, month - 1, date);
+
+        //create tooltip
+        tooltip_text = `${name} \n${d.toLocaleDateString('en-US',{ date: 'long' })}: ${coordsList[name][j].value.toLocaleString()}`; //<- "Title" will appear on hover:
+                                                                                  // date: count
+      }
+
+      //create title element which we will add the tooltip text to
+      const title = document.createElementNS(
+        "http://www.w3.org/2000/svg", 
+        "title"
+      );
+
+      //add tooltip text to title
+      title.textContent = tooltip_text;
+
+      //add title to circle
+      line_circle.appendChild(title);
+
+      //add circle
+      svg.appendChild(line_circle); //MOVED TO END TO GO OVER GRID
+
+
+    });
+  }
 
   //POINT LABELS
 
@@ -1149,14 +1213,14 @@ const monthly_mnr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_mn
 
 //CREATE LIST OF MNR AND LIRR ENTRIES SINCE MAR 2020
 const monthly_multimodal_from_mar_2020_rows = {
-  lirr: monthly_lirr_entries_from_mar_2020_rows,
-  mnr: monthly_mnr_entries_from_mar_2020_rows
+  "LIRR Ridership": monthly_lirr_entries_from_mar_2020_rows,
+  "MNR Ridership": monthly_mnr_entries_from_mar_2020_rows
 };
 
 //CREATE LIST OF PAST WEEK ENTRIES (DATE TEST)
 const entries_list_past_week = {
-  crz: past_week_entries_rows,
-  bridge_tunnel: past_week_bridge_tunnel_rows
+  "CRZ Entries": past_week_entries_rows,
+  "Bridge & Tunnel Entries": past_week_bridge_tunnel_rows
 }
 
 //CALL MULTI LINE CHART FUNCTION TEST
