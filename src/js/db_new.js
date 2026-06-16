@@ -177,11 +177,14 @@ function makeMultipleLineChart ({
 
       //if month, make a system for x using month offset
       if (timeOfInterest == "month") {
-        d = new Date(r.month + "-01");
+        //create new date objects
+        
+        const [year, month] = r.month.split("-").map(Number);
+        d = new Date(year, month - 1, 1);
 
         const monthOffset =
-          (d.getFullYear() - min_date.getFullYear()) * 12 +
-          (d.getMonth() - min_date.getMonth());
+          (d.getUTCFullYear() - min_date.getUTCFullYear()) * 12 +
+          (d.getUTCMonth() - min_date.getUTCMonth());
 
         x =
           paddingLeft + 
@@ -189,18 +192,20 @@ function makeMultipleLineChart ({
           (viewBoxWidth - paddingLeft - paddingRight);
       
       //if day, make a system for x using day offset
-      } else if (timeOfInterest == "day") {
-        d = new Date(r.date);
+      } else if (timeOfInterest == "date") {
+        //create new date objects
+
+        const [year, month, day] = r.date.split("-").map(Number);
+        d = new Date(year, month - 1, day);
 
         const dayOffset =
-          (d - min_date) / (1000 * 60 * 60 * 24);
+          Math.round((d - min_date) / (1000 * 60 * 60 * 24));
 
         x =
           paddingLeft +
           (dayOffset / (pointCount - 1)) *
           (viewBoxWidth - paddingLeft - paddingRight);
-      }
-      
+      }      
       return {
       x: x,
 
@@ -210,6 +215,7 @@ function makeMultipleLineChart ({
         viewBoxHeight,
 
       value: r.count,
+
       date: d
       };
 
@@ -292,16 +298,15 @@ function makeMultipleLineChart ({
     //if the points are to be monthly, set them using min_date's month
     if (timeOfInterest == "month") {
       d = new Date(
-        min_date.getFullYear(),
-        min_date.getMonth() + i,
+        min_date.getUTCFullYear(),
+        min_date.getUTCMonth() + i,
         1
       );
-    } 
-
+    
     //if the points are to be daily, set them using min_date's day
-    else if (timeOfInterest == "date") {
+    } else if (timeOfInterest == "date") {
       d = new Date(min_date);
-      d.setDate(min_date.getDate() + i);
+      d.setDate(min_date.getUTCDate() + i);
     }
 
     //set points and corresponding dates
@@ -351,10 +356,11 @@ function makeMultipleLineChart ({
     if (timeOfInterest == "month") {
       //get year and month from each month value to put down as labels cleanly
       x_axis_label.textContent =
-        `${p.date.toLocaleDateString("en-US", {month:"short"})} '${String(p.date.getFullYear()).slice(-2)}`;
+        `${p.date.toLocaleDateString('en-US', { month: 'short' })} '${String(p.date.getFullYear()).slice(-2)}`;
     }
 
     if (timeOfInterest == "date") {
+      
       //get year, month, date from each date to put down as labels cleanly
       x_axis_label.textContent =
         `${p.date.toLocaleDateString("en-US", {weekday:"short"})}, ${p.date.toLocaleDateString("en-US", {month:"2-digit", day:"2-digit"})}`;
