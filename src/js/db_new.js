@@ -58,14 +58,19 @@ function makeMultipleLineChart ({
   let max_date = new Date("1900-01-01"); //make a date that is almost guaranteed to be surpassed
   let min_date = new Date("3000-01-01"); //make a date that is almost guaranteed to be preceeded (unless you're phillip fry :p)
   let rows_max_val = 0; //set max value as 0 for now
+  let rows_min_val = 999999; //set min value as very high for now
 
   //loop through every dataset we have
   for (const [name, dataset] of Object.entries(datasetList)) {
 
     //update max value through each dataset
-    let local_max = Math.max(...dataset.map(r => Number(r.count)))
+    let local_max = Math.max(...dataset.map(r => Number(r.count)));
+    let local_min = Math.min(...dataset.map(r => Number(r.count)));
     if (local_max > rows_max_val) {
       rows_max_val = local_max;
+    }
+    if (local_min < rows_min_val) {
+      rows_min_val = local_min;
     }
 
     //update max date and min date value through each dataset
@@ -338,7 +343,7 @@ function makeMultipleLineChart ({
     //set y value of y label to be at the bottom-ish of the chart 
     x_axis_label.setAttribute(
       "y",
-      viewBoxHeight + 18
+      viewBoxHeight + 25
     );
 
     //anchor text to middle of position
@@ -455,7 +460,7 @@ function makeMultipleLineChart ({
     svg.appendChild(line_polyline);
   }
 
-  //POINTS, AND 
+  //POINTS
   for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
     coordsList[name].forEach((p,j) => {
 
@@ -517,11 +522,102 @@ function makeMultipleLineChart ({
       //add circle
       svg.appendChild(line_circle); //MOVED TO END TO GO OVER GRID
 
-
     });
   }
 
   //POINT LABELS
+
+  //for every dataset...
+  for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
+
+    //for every point...
+    coordsList[name].forEach((p,j) => {
+
+      //make a text label with web standard
+      const line_text = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text"
+      );
+
+      //set x,y positions of text
+
+      //x is on the point
+      line_text.setAttribute("x", p.x);
+
+      //y is just below point, unless line is decreasing by following logic:
+
+      let opposite_height_mult = 1; //default label will be lower on first item
+
+      if ((j+1 <= coordsList[name].length-1) && (coordsList[name][j+1].value < coordsList[name][j].value)) { //if non-first item is less than previous item,
+        opposite_height_mult = -1;                             //put label above line
+      }
+
+      if (j+1 <= dataset.length-1) { //if non-last item, see the slope of the line ahead 
+                                    //to get label out of the way with a multiplier
+
+      }
+      line_text.setAttribute("y", p.y + ((dataset.length / 1000 + 16) * (opposite_height_mult)));
+
+      //text starts just after point
+      line_text.setAttribute("text-anchor", "start");
+      line_text.setAttribute("dominant-baseline", "middle");
+
+      //font size and color
+      line_text.setAttribute("font-size", `${85 / tickCount}`);
+
+      line_text.setAttribute("fill", gridLabelColor);
+
+      //set value of point, in comma form for readability
+      line_text.textContent = p.value.toLocaleString();
+
+      //inner function to add point label lines. only needed when points have a possibility to become ambiguous, like when:
+      //1. points skip labels
+      //2. points are only labeled by min/max/start/end
+      const addPointLabelLine = () => {
+        if (pointCount >= pointLabelCutoffCount || skip_amount > 1) {
+          //make point label line
+          const point_label_line = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+          );
+
+          //set line boundaries
+          point_label_line.setAttribute("x1", p.x-1);
+          point_label_line.setAttribute("x2", p.x-1);
+          point_label_line.setAttribute("y1", p.y);
+          point_label_line.setAttribute("y2", p.y + ((dataset.length / 1000 + 18) * (opposite_height_mult)));
+
+          point_label_line.setAttribute("stroke", gridLabelColor);
+          point_label_line.setAttribute("stroke-width", "1");
+
+          svg.appendChild(point_label_line);
+        }
+      };
+
+      //if there are enough points, but only one dataset, put down only the first, last, min, and max labels
+      if ((dataset.length >= pointLabelCutoffCount) && (Object.entries(datasetList).length == 1)) {
+        // min/max needs to be checked locally, NOT against global rows_max_val
+        if (j == 0 || j == dataset.length-1 || p.value == Math.max(...dataset.map(r => Number(r.count))) || p.value == Math.min(...dataset.map(r => Number(r.count)))) {
+          svg.appendChild(line_text);
+          addPointLabelLine();
+        }
+      }
+      //if there are enough points, and many datasets, put down only the global min and global max labels
+      else if ((dataset.length >= pointLabelCutoffCount) && (Object.entries(datasetList).length > 1)) {
+        if (p.value == rows_max_val || p.value == rows_min_val) {
+          svg.appendChild(line_text);
+          addPointLabelLine();  
+        }
+      } else {
+      //if there are not enough points, just put down the skip_amount interval point labels
+        if (j % skip_amount == 0) {
+          svg.appendChild(line_text);
+          addPointLabelLine();
+        }
+      }
+    });
+  }
+
 
   //add svg elements to chart
   multi_line.appendChild(svg);
@@ -729,10 +825,10 @@ function makeLineChart({
       "text"
     );
 
-    //set x value of x label to be where point was
+    //set x value of x axis label to be where point was
     x_axis_label.setAttribute("x", p.x);
 
-    //set y value of y label to be at the bottom-ish of the chart 
+    //set y value of x axis label to be at the bottom-ish of the chart 
     x_axis_label.setAttribute(
       "y",
       viewBoxHeight + 18
