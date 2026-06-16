@@ -42,7 +42,7 @@ function makeMultipleLineChart ({
   viewBoxHeight = viewBoxWidth / aspectRatio 
 }) {
 
-  //unpack containerList:
+  //unpack datasetList:
 
   //get highest date of all elements
   //get lowest date of all elements
@@ -64,13 +64,22 @@ function makeMultipleLineChart ({
     }
 
     //update max date and min date value through each dataset
+    //repeat min/maxes for checks within each datset
     let local_date_max = new Date("1900-01-01"); //make a date that is almost guaranteed to be surpassed
     let local_date_min = new Date("3000-01-01"); //make a date that is almost guaranteed to be preceeded (unless you're phillip fry :p)
 
-    //WITHIN EACH DATASET, FIND THE MIN/MAX DATES
-    for (const r of dataset) {
-      const d = new Date(r.Date);
 
+    for (const r of dataset) {
+
+      //if the date is a month, it must be converted to a date with a day
+      let d;
+      if (timeOfInterest == "month") {
+        d = new Date(r.month + "-01");
+      } else if (timeOfInterest == "date") {
+        d = new Date(r.date);
+      }
+
+      //WITHIN EACH DATASET, FIND THE MIN/MAX DATES
       if (d > local_date_max) {
         local_date_max = d;
       }
@@ -90,7 +99,12 @@ function makeMultipleLineChart ({
     }
   }
 
+  console.log(datasetList["mnr"][0]);
+  console.log(new Date(datasetList["mnr"][0].date));
+
   console.log(rows_max_val);
+  console.log(max_date);
+  console.log(min_date);
 
   //make chart loader
 
