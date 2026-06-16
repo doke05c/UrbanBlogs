@@ -55,8 +55,6 @@ function makeMultipleLineChart ({
   //loop through every dataset we have
   for (const [name, dataset] of Object.entries(datasetList)) {
 
-    console.log(dataset);
-
     //update max value through each dataset
     let local_max = Math.max(...dataset.map(r => Number(r.count)))
     if (local_max > rows_max_val) {
@@ -99,23 +97,32 @@ function makeMultipleLineChart ({
     }
   }
 
-  console.log(datasetList["mnr"][0]);
-  console.log(new Date(datasetList["mnr"][0].date));
-
-  console.log(rows_max_val);
-  console.log(max_date);
-  console.log(min_date);
-
-  //make chart loader
-
-
   //point count is determined separately by timeofinterest, taken as difference of max date and min date
-  const pointCount = 0; //<== CALCULATE REAL VALUE LATER
+  let pointCount;
+
+  if (timeOfInterest == "month") {
+    const month_diff =
+      (max_date.getFullYear() - min_date.getFullYear()) * 12 +
+      (max_date.getMonth() - min_date.getMonth());
+    pointCount = month_diff + 1; //inclusive range
+  
+  } else if (timeOfInterest == "date") {
+    const date_diff = Math.round(
+      (max_date - min_date) /
+      (1000 * 60 * 60 * 24) //divide epoch time by ms, sec, min, hour in a day
+    ); 
+    pointCount = date_diff + 1; //inclusive range
+  }
 
   //set MinorXGridlines to be off when the pointLabelCutoffCount is reached
   if (enableMinorXGridlines == undefined) {
     enableMinorXGridlines = pointCount >= pointLabelCutoffCount ? 0 : 1;
   }
+
+  //make chart loader
+
+
+
 
   //create SVG
 
@@ -798,11 +805,22 @@ const monthly_multimodal_from_mar_2020_rows = {
   mnr: monthly_mnr_entries_from_mar_2020_rows
 };
 
+//CREATE "LIST" OF PAST WEEK ENTRIES (DATE TEST)
+const entries_list_past_week = {
+  entries: past_week_entries_rows
+}
+
 //CALL MULTI LINE CHART FUNCTION TEST
 makeMultipleLineChart({
   datasetList: monthly_multimodal_from_mar_2020_rows,
   yAxisStep: 1_000_000,
   timeOfInterest: "month"
+});
+
+makeMultipleLineChart({
+  datasetList: entries_list_past_week,
+  yAxisStep: 100_000,
+  timeOfInterest: "date"
 });
 
 //CALL LINE CHART FUNCTION
