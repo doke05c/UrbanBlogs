@@ -1,4 +1,4 @@
-//to plot multiple lines in one chart. helper for makeLineChart (input single dataset as parameter)
+//plot multiple lines in one chart. helper for makeLineChart (input single dataset as parameter)
 function makeMultipleLineChart ({
 
   //data we want to plot, list of datasets, to be unpacked in the function
