@@ -1,10 +1,5 @@
-//to plot multiple lines in one chart. to be used as helper for makeLineChart (input single dataset as parameter)
+//to plot multiple lines in one chart. helper for makeLineChart (input single dataset as parameter)
 function makeMultipleLineChart ({
-//TO-CHANGE NOTES:
-
-//DETERMINE enableMinorXGridlines WHEN IT IS BETTER UNDERSTOOD HOW MANY ELEMENTS THERE WILL BE TO GRAPH
-  //IDEA: FOR MONTHS AND FOR DAYS SEPARATELY: TAKE LARGEST DATE VALUE - SMALLEST DATE VALUE AND DIVIDE BY timeOfInterest
-
 
   //data we want to plot, list of datasets, to be unpacked in the function
   datasetList,
@@ -711,12 +706,15 @@ function makeMultipleLineChart ({
   //END MULTI LINE CHART
 }
 
-//to be converted to a single-line driver function for makeMultipleLineChart
+//wrapper for makeMultipleLineChart
 function makeLineChart({
   //data we want to plot
   rows,
 
-  //name of chart container we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
+  //name of dataset
+  name,
+
+  //container name we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
   containerId,
 
   //what time scale are we graphing over? days, months?
@@ -736,8 +734,15 @@ function makeLineChart({
   enableMinorXGridlines,
 
   //set colors for elements
-  lineColor = "#e8e9de",
-  pointColor = "#4a90e2",
+  gridLabelColor = "#e8e9de",
+
+  lineColors = [
+    "#FF595E",
+    "#8AC926",
+    "#FFCA3A",
+    "#6A4C93"
+  ],
+  pointColor = "#eafafa",
   gridColor = "#555",
   thick_gridColor = "#888",
 
@@ -749,439 +754,35 @@ function makeLineChart({
   viewBoxHeight = viewBoxWidth / aspectRatio 
 }) {
 
-  //set MinorXGridlines to be off when the pointLabelCutoffCount is reached
-  if (enableMinorXGridlines == undefined) {
-    enableMinorXGridlines = rows.length >= pointLabelCutoffCount ? 0 : 1;
-  }
+  return makeMultipleLineChart({
 
-  const rows_max_val = Math.max(...rows.map(r => Number(r.count))); //<- set highest value in chart
+    datasetList: {
+      [name]: rows
+    },
 
-  const line_chart = document.createElement(containerId); //<- Chart element
+    containerId,
+    timeOfInterest,
 
-  const line_chart_loader = document.createElement("div");
-  line_chart_loader.textContent = "Loading chart...";
-  line_chart_loader.style.display = "flex";
-  line_chart_loader.style.alignItems = "center";
-  line_chart_loader.style.justifyContent = "center";
-  line_chart_loader.style.height = "200px";
-  line_chart_loader.style.fontSize = "14px";
-  line_chart_loader.style.color = "#666";
-  line_chart.appendChild(line_chart_loader); //<- Make the "chart" the loader for now
+    paddingLeft,
+    paddingRight,
 
-  document.getElementById(containerId).appendChild(line_chart) //<- Display
+    yAxisStep,
+    pointLabelCutoffCount,
 
-  //use svg to set line chart size attributes
-  const svg = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "svg"
-  );
+    enableMinorXGridlines,
 
-  //allow overflow
-  svg.style.overflow = "visible";
+    gridLabelColor,
 
-  //set max gridline for line chart based on step size and max value
-  const yAxisMax =
-    Math.ceil(rows_max_val / yAxisStep) *
-    yAxisStep;
+    lineColors,
+    pointColor,
+    gridColor,
+    thick_gridColor,
 
-  svg.setAttribute(
-    "viewBox",
-    `0 0 ${viewBoxWidth} ${viewBoxHeight}`
-  );
-
-  //make aspect ratio to ensure device scalability
-  svg.style.width = "100%";
-  svg.style.height = "auto";
-  svg.style.aspectRatio = `${aspectRatio} / 1`;
-
-
-  //set points on line chart (time, value : x, y)
-  const coords = rows.map((r, i) => ({
-    x:
-      paddingLeft +
-      i * (
-        (viewBoxWidth -
-        paddingLeft -
-        paddingRight) /
-        (rows.length - 1)
-      ),  
-
-    y: viewBoxHeight - 
-      (Number(r.count) / yAxisMax) * 
-      viewBoxHeight,
-
-    value: r.count
-  }));
-
-  const line_polyline = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "polyline"
-  );
-
-  //set lines connecting points
-  line_polyline.setAttribute(
-    "points",
-    coords.map(p => `${p.x},${p.y}`).join(" ")
-  );
-
-  line_polyline.setAttribute("fill", "none");
-  line_polyline.setAttribute("stroke", lineColor);
-  line_polyline.setAttribute("stroke-width", "2.5");
-
-  // svg.appendChild(line_polyline); //MOVED TO END TO GO OVER GRID
-
-  //SET AXES
-
-  //Y AXIS TICK MARKS
-
-  //tickCount = max value / step size
-  const tickCount = yAxisMax / yAxisStep;
-
-  //for all the ticks we want... (max value / step size)
-  for (let i = 0; i <= tickCount; i++) {
-
-    //set value for each tick mark
-    const value = yAxisMax - (i * yAxisStep);
-
-    //set position for each tick mark
-    const y =
-      (i / tickCount) *
-      (viewBoxHeight);
-
-    //tick mark element creation
-    const tick = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "line"
-    );
-
-    //set location of positions of ends of tick marks
-    tick.setAttribute("x1", paddingLeft-10);
-    tick.setAttribute("x2", paddingLeft);
-    tick.setAttribute("y1", y);
-    tick.setAttribute("y2", y);
-
-    //color tick marks
-    tick.setAttribute("stroke", gridColor);
-
-    //put down ticks
-    svg.appendChild(tick);
-
-    //Y AXIS LABELS
-
-    const y_axis_label = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
-
-    //set location of labels
-    y_axis_label.setAttribute("x", paddingLeft-20);
-    y_axis_label.setAttribute("y", y + 4);
-
-    //set color/style of labels
-    y_axis_label.setAttribute("text-anchor", "end");
-    y_axis_label.setAttribute("fill", lineColor);
-
-    y_axis_label.setAttribute("font-size", `${90 / tickCount}`);    
-
-    //set value as text
-    y_axis_label.textContent =
-      Math.round(value).toLocaleString();
-
-    //put down labels
-    svg.appendChild(y_axis_label);
-
-  }
-
-  //X AXIS LABEL
-
-  let skip_amount;
-
-  //for each point on x-axis...
-  coords.forEach((p, i) => {
-
-    const x_axis_label = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
-
-    //set x value of x axis label to be where point was
-    x_axis_label.setAttribute("x", p.x);
-
-    //set y value of x axis label to be at the bottom-ish of the chart 
-    x_axis_label.setAttribute(
-      "y",
-      viewBoxHeight + 18
-    );
-
-    //anchor text to middle of position
-    x_axis_label.setAttribute(
-      "text-anchor",
-      "middle"
-    );
-
-    x_axis_label.setAttribute("font-size", `${100 / tickCount}`);
-    
-    //set label fill color
-    x_axis_label.setAttribute("fill", lineColor);
-
-    if (timeOfInterest == "month") {
-      //get year and month from each month value to put down as labels cleanly
-      const [year, month] =
-        rows[i].month.split('-').map(Number);
-      
-      //make shortened year ('YY)
-      const shortYear = `'${String(year).slice(-2)}`;
-
-      //get date attribute for each month to turn into datestring
-      const d = new Date(year, month - 1, 1);
-
-      //put datestring and shortyear together for full label
-      x_axis_label.textContent =
-        `${d.toLocaleDateString('en-US', { month: 'short' })} ${shortYear}`;
-    }
-
-    if (timeOfInterest == "date") {
-      //get year and month from each month value to put down as labels cleanly
-      const [year, month, date] =
-        rows[i].date.split('-').map(Number);
-
-      //get date attribute for each month to turn into datestring
-      const d = new Date(year, month - 1, date);
-
-      //put month and date together for full label
-      x_axis_label.textContent =
-        `${d.toLocaleDateString('en-US', { weekday: 'short' })}, ${d.toLocaleDateString('en-US', { month: '2-digit' })}-${d.toLocaleDateString('en-US', {day: "2-digit"})}`;
-
-    }
-
-    //how many x-axis labels should we skip to make it look less cramped?
-    skip_amount = Math.round(coords.length / ( viewBoxWidth / (100 / tickCount) / x_axis_label.textContent.length));
-
-    //put down x-label, skipping the amount of labels we calculated earlier
-    if (i % skip_amount == 0) {
-      svg.appendChild(x_axis_label);
-    }
-
+    aspectRatio,
+    viewBoxWidth,
+    viewBoxHeight
   });
 
-  //GRID
-
-  //Y-GRIDLINES
-
-  //for all the ticks we have...
-  for (let i = 0; i <= tickCount; i++) {
-    
-    //set y value for gridline
-    const y =
-      (i / tickCount) *
-      (viewBoxHeight);
-    
-    //make svg gridline
-    const y_grid = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "line"
-    );
-
-    //set y-gridlines
-    y_grid.setAttribute("x1", paddingLeft);
-    y_grid.setAttribute("x2", viewBoxWidth - paddingRight);
-    y_grid.setAttribute("y1", y);
-    y_grid.setAttribute("y2", y);
-
-    y_grid.setAttribute("stroke", gridColor);
-    y_grid.setAttribute("stroke-width", "1");
-
-    svg.appendChild(y_grid);
-  }
-
-  //X-GRIDLINES
-
-  coords.forEach((p, i) => {
-
-    const x_grid = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "line"
-    );
-
-    x_grid.setAttribute("x1", p.x);
-    x_grid.setAttribute("x2", p.x);
-
-    x_grid.setAttribute("y1", 0);
-    x_grid.setAttribute("y2", viewBoxHeight);
-
-    //use the skip_amount to put thicker/more contrasted grid-lines on the labeled axis points
-    if (i % skip_amount == 0) {
-      x_grid.setAttribute("stroke-width", "1.25");
-      x_grid.setAttribute("stroke", thick_gridColor);
-    } else {
-      x_grid.setAttribute("stroke-width", `${enableMinorXGridlines}`);
-      x_grid.setAttribute("stroke", gridColor);
-    }
-
-    svg.appendChild(x_grid);
-
-  });
-
-  //POLYLINES GO OVER GRID
-  svg.appendChild(line_polyline);
-
-  //CIRCLES GO OVER LINES, GOES OVER GRID
-  //making points (circles)
-
-  coords.forEach((p,i) => {
-
-    //get circle info from web standard
-    const line_circle = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "circle"
-    );
-
-    line_circle.setAttribute("cx", p.x); //set x position of circle to our x
-    line_circle.setAttribute("cy", p.y); //set y position of circle to our y
-    line_circle.setAttribute("r", 5); //set radius
-    line_circle.setAttribute("fill", pointColor); //set color
-
-    //create text necessary for hover, one for month case, one for date case
-    let tooltip_text = "";
-
-    if (timeOfInterest == "month") {
-      //get year and month from each month value to put down as labels cleanly
-      const [year, month] =
-        rows[i].month.split('-').map(Number);
-      
-      //get date attribute for each month to turn into datestring
-      const d = new Date(year, month - 1, 1);
-
-      //create tooltip
-      tooltip_text = `${d.toLocaleDateString('en-US', { month: 'long' })+ " " + rows[i].month.slice(0,4)}: ${p.value.toLocaleString()}`; //<- "Title" will appear on hover:
-                                                                                // month, year: count
-    }
-
-    if (timeOfInterest == "date") {
-      //get year and month from each month value to put down as labels cleanly
-      const [year, month, date] =
-        rows[i].date.split('-').map(Number);
-
-      //get date attribute for each month to turn into datestring
-      const d = new Date(year, month - 1, date);
-
-      //create tooltip
-      tooltip_text = `${d.toLocaleDateString('en-US',{ date: 'long' })}: ${p.value.toLocaleString()}`; //<- "Title" will appear on hover:
-                                                                                // date: count
-    }
-
-    //create title element which we will add the tooltip text to
-    const title = document.createElementNS(
-      "http://www.w3.org/2000/svg", 
-      "title"
-    );
-
-    //add tooltip text to title
-    title.textContent = tooltip_text;
-
-    //add title to circle
-    line_circle.appendChild(title);
-
-    //add circle
-    svg.appendChild(line_circle); //MOVED TO END TO GO OVER GRID
-
-
-  });
-
-  //PUT POINT LABELS OVER GRID
-
-  //for every point...
-  coords.forEach((p, i)=> {
-
-    //make a text label with web standard
-    const line_text = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
-
-    //set x,y positions of text
-
-    //x is on the point
-    line_text.setAttribute("x", p.x);
-
-    //y is just below point, unless line is decreasing by following logic:
-
-    let opposite_height_mult = 1; //default label will be lower on first item
-
-    if ((i+1 <= coords.length-1) && (coords[i+1].value < coords[i].value)) { //if non-first item is less than previous item,
-      opposite_height_mult = -1;                             //put label above line
-    }
-
-    if (i+1 <= coords.length-1) { //if non-last item, see the slope of the line ahead 
-                                  //to get label out of the way with a multiplier
-
-    }
-    line_text.setAttribute("y", p.y + ((coords.length / 1000 + 16) * (opposite_height_mult)));
-
-    //text starts just after point
-    line_text.setAttribute("text-anchor", "start");
-    line_text.setAttribute("dominant-baseline", "middle");
-
-    //font size and color
-    line_text.setAttribute("font-size", `${85 / tickCount}`);
-
-    line_text.setAttribute("fill", lineColor);
-
-    //set value of point, in comma form for readability
-    line_text.textContent = p.value.toLocaleString();
-
-    //inner function to add point label lines. only needed when points have a possibility to become ambiguous, like when:
-    //1. points skip labels
-    //2. points are only labeled by min/max/start/end
-    const addPointLabelLine = () => {
-    if (coords.length >= pointLabelCutoffCount || skip_amount > 1) {
-      //make point label line
-      const point_label_line = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "line"
-      );
-
-      //set line boundaries
-      point_label_line.setAttribute("x1", p.x-1);
-      point_label_line.setAttribute("x2", p.x-1);
-      point_label_line.setAttribute("y1", p.y);
-      point_label_line.setAttribute("y2", p.y + ((coords.length / 1000 + 18) * (opposite_height_mult)));
-
-      point_label_line.setAttribute("stroke", lineColor);
-      point_label_line.setAttribute("stroke-width", "1");
-
-      svg.appendChild(point_label_line);
-    }
-  };
-
-    //if there are enough points, put down only the first, last, min, and max labels
-    if (coords.length >= pointLabelCutoffCount) {
-      if (i == 0 || i == coords.length-1 || coords[i].value == rows_max_val || coords[i].value == Math.min(...rows.map(r => Number(r.count)))) {
-        svg.appendChild(line_text);
-        addPointLabelLine();
-      }
-    }
-    else {
-    //if there are not enough points, just put down the skip_amount interval point labels
-      if (i % skip_amount == 0) {
-        svg.appendChild(line_text);
-        addPointLabelLine();
-      }
-    }
-
-  });
-
-
-  //add svg elements to chart
-  line_chart.appendChild(svg);
-
-  //GRAPH IS READY! kill loader
-  line_chart_loader.remove();
-
-  document.getElementById(containerId).appendChild(line_chart) //<- Display
-
-
-  //END LINE CHART
 }
 
 function makeBarChart({
@@ -1416,6 +1017,7 @@ makeMultipleLineChart({
 //CALL LINE CHART FUNCTION
 makeLineChart({
   rows: monthly_entries_chart_from_2025_rows,
+  name: "CRZ Entries",
   containerId: "monthly_entries_chart_from_2025_line",
   yAxisStep: 3_000_000,
   timeOfInterest: "month"
@@ -1423,6 +1025,7 @@ makeLineChart({
 
 makeLineChart({
   rows: past_week_entries_rows,
+  name: "CRZ Entries",
   containerId: "past_week_entries_chart_line",
   yAxisStep: 100_000,
   timeOfInterest: "date"
@@ -1430,6 +1033,7 @@ makeLineChart({
 
 makeLineChart({
   rows: monthly_entries_subway_from_mar_2020_rows,
+  name: "Subway Ridership",
   containerId: "monthly_entries_subway_from_mar_2020_line",
   yAxisStep: 20_000_000,
   timeOfInterest: "month",
@@ -1438,6 +1042,7 @@ makeLineChart({
 
 makeLineChart({
   rows: monthly_lirr_entries_from_mar_2020_rows,
+  name: "LIRR Ridership",
   containerId: "monthly_entries_lirr_from_mar_2020_line",
   yAxisStep: 1_000_000,
   timeOfInterest: "month",
@@ -1446,6 +1051,7 @@ makeLineChart({
 
 makeLineChart({
   rows: monthly_mnr_entries_from_mar_2020_rows,
+  name: "MNR Ridership",
   containerId: "monthly_entries_mnr_from_mar_2020_line",
   yAxisStep: 900_000,
   timeOfInterest: "month",
