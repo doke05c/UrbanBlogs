@@ -88,3 +88,11 @@ I'm starting to work on a multi-line chart that automatically sets boundaries an
 #### Most Recently Available Week CRZ Entries and Bridge/Tunnel Crossings, Line:
 <div id="past_week_crossing_crz_bt_line"></div>
 <br>
+
+##### June 16, 2026: 6:30PM, Jefferson Market Library:
+
+Here's a multimodal monthly chart for all the public transit modes in the MTA Traffic & Ridership since Mar 2020 dataset!
+
+#### MTA Multimodal Ridership Since Mar 2020, Line:
+<div id="monthly_multimodal_from_mar_2020_line"></div>
+<br>

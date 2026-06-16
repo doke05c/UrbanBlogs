@@ -30,7 +30,10 @@ function makeMultipleLineChart ({
     "#FF595E",
     "#8AC926",
     "#FFCA3A",
-    "#6A4C93"
+    "#6A4C93",
+    "#FF924C",
+    "#00C2A8",
+    "#F72585",
   ],
   pointColor = "#eafafa",
   gridColor = "#555",
@@ -338,7 +341,7 @@ function makeMultipleLineChart ({
     //set y value of y label to be at the bottom-ish of the chart 
     x_axis_label.setAttribute(
       "y",
-      viewBoxHeight + 25
+      viewBoxHeight + 40
     );
 
     //anchor text to middle of position
@@ -616,22 +619,34 @@ function makeMultipleLineChart ({
   // LEGEND
 
   //set height of the legend to be below the bottom of graph, past the x-axis labels
-  const legendY = viewBoxHeight + 55;
+  const legendY = viewBoxHeight + 70;
 
   //set spacing apart between legend labels
-  const legendSpacing = 140;
   const legendLineLength = 25;
+  let legendSpacing;
 
-  //total width of legend block
-  const legendWidth =
-    Object.keys(datasetList).length * legendSpacing;
+  //total width of legend block is defined by start and max
+  const legendStartX = 60;
+  const legendMaxX = viewBoxWidth - 60;
 
-  //center legend block
-  let legendX =
-    (viewBoxWidth - legendWidth) / 2;
+  let legendX = legendStartX;
+
+  //start at first row
+  let legendRow = 0;
+
+  const legendRowHeight = 25;
 
   //for all datasets...
   for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
+
+    //if next item would overflow, move to next row
+    legendSpacing = name.length * 15;
+    if (legendX + legendSpacing > legendMaxX) {
+      legendX = legendStartX;
+      legendRow++;
+    }
+
+    const currentLegendY = legendY + (legendRow * legendRowHeight);
 
     //get line svg for legend sample line
     const legendLine = document.createElementNS(
@@ -642,8 +657,8 @@ function makeMultipleLineChart ({
     //set coordinates for sample line
     legendLine.setAttribute("x1", legendX);
     legendLine.setAttribute("x2", legendX + legendLineLength);
-    legendLine.setAttribute("y1", legendY);
-    legendLine.setAttribute("y2", legendY);
+    legendLine.setAttribute("y1", currentLegendY);
+    legendLine.setAttribute("y2", currentLegendY);
 
     legendLine.setAttribute("stroke", lineColors[i]);
     legendLine.setAttribute("stroke-width", "3");
@@ -666,7 +681,7 @@ function makeMultipleLineChart ({
     //set y-position of dataset name label
     legendText.setAttribute(
       "y",
-      legendY + 4
+      currentLegendY + 4
     );
 
     //set color, font, text position
@@ -691,6 +706,7 @@ function makeMultipleLineChart ({
     //add text to svg
     svg.appendChild(legendText);
 
+    //move right for next item
     legendX += legendSpacing;
 
   }
@@ -740,7 +756,10 @@ function makeLineChart({
     "#FF595E",
     "#8AC926",
     "#FFCA3A",
-    "#6A4C93"
+    "#6A4C93",
+    "#FF924C",
+    "#00C2A8",
+    "#F72585",
   ],
   pointColor = "#eafafa",
   gridColor = "#555",
@@ -987,10 +1006,32 @@ const monthly_lirr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_l
 const monthly_mnr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_from_mar_2020.json")
     .then(res => res.json());
 
-//CREATE LIST OF MNR AND LIRR ENTRIES SINCE MAR 2020
+//GET MONTHLY AAR ENTRIES SINCE MAR 2020
+const monthly_aar_entries_from_mar_2020_rows = await fetch("/src/json/monthly_aar_entries_from_mar_2020.json")
+    .then(res => res.json());
+
+//GET MONTHLY BUS ENTRIES SINCE MAR 2020
+const monthly_bus_entries_from_mar_2020_rows = await fetch("/src/json/monthly_bus_entries_from_mar_2020.json")
+    .then(res => res.json());
+
+//GET MONTHLY SIR ENTRIES SINCE MAR 2020
+const monthly_sir_entries_from_mar_2020_rows = await fetch("/src/json/monthly_sir_entries_from_mar_2020.json")
+    .then(res => res.json());
+
+//CREATE LIST OF MTA 6-MODE PUBLIC TRANSIT ENTRIES SINCE MAR 2020
 const monthly_multimodal_from_mar_2020_rows = {
+  "MNR Ridership": monthly_mnr_entries_from_mar_2020_rows,
   "LIRR Ridership": monthly_lirr_entries_from_mar_2020_rows,
-  "MNR Ridership": monthly_mnr_entries_from_mar_2020_rows
+  "Subway Ridership": monthly_entries_subway_from_mar_2020_rows,
+  "SIR Ridership": monthly_sir_entries_from_mar_2020_rows,
+  "Bus Ridership": monthly_bus_entries_from_mar_2020_rows,
+  "Access-a-Ride Ridership": monthly_aar_entries_from_mar_2020_rows,
+};
+
+//CREATE LIST OF MNR AND LIRR ENTRIES SINCE MAR 2020
+const monthly_lirr_mnr_from_mar_2020_rows = {
+  "MNR Ridership": monthly_mnr_entries_from_mar_2020_rows,
+  "LIRR Ridership": monthly_lirr_entries_from_mar_2020_rows,
 };
 
 //CREATE LIST OF PAST WEEK ENTRIES (DATE TEST)
@@ -999,12 +1040,21 @@ const entries_list_past_week = {
   "Bridge & Tunnel Entries": past_week_bridge_tunnel_rows
 }
 
-//CALL MULTI LINE CHART FUNCTION TEST
+//CALL MULTI LINE CHART FUNCTION
 makeMultipleLineChart({
-  datasetList: monthly_multimodal_from_mar_2020_rows,
+  datasetList: monthly_lirr_mnr_from_mar_2020_rows,
   containerId: "monthly_lirr_mnr_from_mar_2020_line",
   yAxisStep: 1_000_000,
-  timeOfInterest: "month"
+  timeOfInterest: "month",
+  aspectRatio: 3
+});
+
+makeMultipleLineChart({
+  datasetList: monthly_multimodal_from_mar_2020_rows,
+  containerId: "monthly_multimodal_from_mar_2020_line",
+  yAxisStep: 20_000_000,
+  timeOfInterest: "month",
+  aspectRatio: 1.5
 });
 
 makeMultipleLineChart({
@@ -1014,7 +1064,7 @@ makeMultipleLineChart({
   timeOfInterest: "date"
 });
 
-//CALL LINE CHART FUNCTION
+//CALL SINGLE LINE CHART FUNCTION
 makeLineChart({
   rows: monthly_entries_chart_from_2025_rows,
   name: "CRZ Entries",
