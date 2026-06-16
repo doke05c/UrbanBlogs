@@ -783,6 +783,10 @@ function makeBarChart({
 const past_week_entries_rows = await fetch("/src/json/last_7_days_cbd.json")
     .then(res => res.json());
 
+//GET LAST 7 DAYS OF BRIDGE_TUNNEL ENTRIES (intentionally offset from cbd)
+const past_week_bridge_tunnel_rows = await fetch("last_7_days_bridge_tunnel.json")
+    .then(res => res.json());
+
 //GET MONTHLY CRZ ENTRIES SINCE 2025
 const monthly_entries_chart_from_2025_rows = await fetch("/src/json/monthly_cbd.json")
     .then(res => res.json());
@@ -805,9 +809,10 @@ const monthly_multimodal_from_mar_2020_rows = {
   mnr: monthly_mnr_entries_from_mar_2020_rows
 };
 
-//CREATE "LIST" OF PAST WEEK ENTRIES (DATE TEST)
+//CREATE LIST OF PAST WEEK ENTRIES (DATE TEST)
 const entries_list_past_week = {
-  entries: past_week_entries_rows
+  crz: past_week_entries_rows,
+  bridge_tunnel: past_week_bridge_tunnel_rows
 }
 
 //CALL MULTI LINE CHART FUNCTION TEST

@@ -138,6 +138,31 @@ async function build() {
         JSON.stringify(last7d_entries)
     );
 
+    //past 7 days of bridge & tunnel crossings
+    const last_7d_bridge_tunnel = await query(`
+        
+        SELECT 
+            strftime(DATE(date), '%Y-%m-%d') AS date,
+            SUM(count) AS count
+            
+        FROM mta_overall_ridership_traffic
+
+        WHERE mode = 'BT'
+        AND DATE(date) >= (
+            SELECT MAX(DATE(date)) 
+            FROM mta_overall_ridership_traffic    
+        ) - INTERVAL 6 DAY
+            
+        GROUP BY DATE(date)
+        ORDER BY DATE(date)
+
+    `);
+
+    fs.writeFileSync(
+        "src/json/last_7_days_bridge_tunnel.json",
+        JSON.stringify(last_7d_bridge_tunnel)
+    );
+
     //monthly record of cbd entries
     const monthly_entries = await query(`
         WITH max_date AS (
