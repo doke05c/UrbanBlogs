@@ -10,7 +10,7 @@ function makeMultipleLineChart ({
   datasetList,
 
   //container name we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
-  containerId = "test", //<== REMOVE LATER
+  containerId,
 
   //what time scale are we graphing over? days, months?
   timeOfInterest,
@@ -120,9 +120,19 @@ function makeMultipleLineChart ({
   }
 
   //make chart loader
+  const multi_line = document.createElement(containerId); //<- Chart element
 
+  const multi_line_loader = document.createElement("div");
+  multi_line_loader.textContent = "Loading chart...";
+  multi_line_loader.style.display = "flex";
+  multi_line_loader.style.alignItems = "center";
+  multi_line_loader.style.justifyContent = "center";
+  multi_line_loader.style.height = "200px";
+  multi_line_loader.style.fontSize = "14px";
+  multi_line_loader.style.color = "#666";
+  multi_line.appendChild(multi_line_loader); //<- Make the "chart" the loader for now
 
-
+  document.getElementById(containerId).appendChild(multi_line) //<- Display
 
   //create SVG
 
@@ -784,7 +794,7 @@ const past_week_entries_rows = await fetch("/src/json/last_7_days_cbd.json")
     .then(res => res.json());
 
 //GET LAST 7 DAYS OF BRIDGE_TUNNEL ENTRIES (intentionally offset from cbd)
-const past_week_bridge_tunnel_rows = await fetch("last_7_days_bridge_tunnel.json")
+const past_week_bridge_tunnel_rows = await fetch("/src/json/last_7_days_bridge_tunnel.json")
     .then(res => res.json());
 
 //GET MONTHLY CRZ ENTRIES SINCE 2025
@@ -818,12 +828,14 @@ const entries_list_past_week = {
 //CALL MULTI LINE CHART FUNCTION TEST
 makeMultipleLineChart({
   datasetList: monthly_multimodal_from_mar_2020_rows,
+  containerId: "monthly_lirr_mnr_from_mar_2020_line",
   yAxisStep: 1_000_000,
   timeOfInterest: "month"
 });
 
 makeMultipleLineChart({
   datasetList: entries_list_past_week,
+  containerId: "past_week_crossing_crz_bt_line",
   yAxisStep: 100_000,
   timeOfInterest: "date"
 });

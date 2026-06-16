@@ -77,3 +77,13 @@ I reworked bar charts to work at all scales with all devices, though bar charts 
 <div id="monthly_entries_mnr_from_mar_2020_line"></div>
 <br>
 
+##### June 16, 2026: 1:00 PM, Jefferson Market Library:
+
+I'm starting to work on a multi-line chart that automatically sets boundaries and scales based on the combined data from all datasets to be plotted on the one chart. Starting with combined LIRR/MNRR monthly ridership and combined CRZ entries / Bridge&Tunnel entries over the most recent 7 days. (these are offset in the MTA database, which will be used as an intentional offset test)
+
+#### MTA LIRR/MNRR Monthly Ridership Since Mar 2020, Line:
+<div id="monthly_lirr_mnr_from_mar_2020_line"></div>
+<br>
+
+#### Most Recently Available Week CRZ Entries and Bridge/Tunnel Crossings, Line:
+<div id="past_week_crossing_crz_bt_line"></div>
