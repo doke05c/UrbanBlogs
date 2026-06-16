@@ -29,7 +29,12 @@ function makeMultipleLineChart ({
   enableMinorXGridlines,
 
   //set colors for elements
-  lineColor = "#e8e9de",
+  lineColors = [
+    "#FF595E",
+    "#8AC926",
+    "#FFCA3A",
+    "#6A4C93"
+  ],
   pointColor = "#4a90e2",
   gridColor = "#555",
   thick_gridColor = "#888",
@@ -157,6 +162,53 @@ function makeMultipleLineChart ({
   svg.style.width = "100%";
   svg.style.height = "auto";
   svg.style.aspectRatio = `${aspectRatio} / 1`;
+
+  //create list of coordinate paths for each dataset, will be filled out iteratively below:
+  const coordsList = {};
+
+  //for each dataset,
+  for (const [i, [name, dataset]] of Object.entries(datasetList)) {
+
+    //set points on line chart (time, value : x, y), get value as well
+    coordsList[name] = dataset.map((r, i) => ({
+      x:
+        paddingLeft +
+        i * (
+          (viewBoxWidth -
+          paddingLeft -
+          paddingRight) /
+          (pointCount)
+        ),  
+
+      y: viewBoxHeight - 
+        (Number(r.count) / yAxisMax) * 
+        viewBoxHeight,
+
+      value: r.count
+    }));
+  }
+
+  //create polylines for each dataset
+  for (const [name, dataset] of Object.entries(datasetList)) {
+
+    const line_polyline = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "polyline"
+    );
+
+    //set lines connecting points
+    line_polyline.setAttribute(
+      "points",
+      coordsList[name].map(p => `${p.x},${p.y}`).join(" ")
+    );
+
+    line_polyline.setAttribute("fill", "none");
+    line_polyline.setAttribute("stroke", lineColors[i]);
+    line_polyline.setAttribute("stroke-width", "2.5");
+
+    // svg.appendChild(line_polyline); //MOVED TO END TO GO OVER GRID
+  }
+
 
 }
 
