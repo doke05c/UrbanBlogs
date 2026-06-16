@@ -618,6 +618,87 @@ function makeMultipleLineChart ({
     });
   }
 
+  // LEGEND
+
+  //set height of the legend to be below the bottom of graph, past the x-axis labels
+  const legendY = viewBoxHeight + 55;
+
+  //set spacing apart between legend labels
+  const legendSpacing = 140;
+  const legendLineLength = 25;
+
+  //total width of legend block
+  const legendWidth =
+    Object.keys(datasetList).length * legendSpacing;
+
+  //center legend block
+  let legendX =
+    (viewBoxWidth - legendWidth) / 2;
+
+  //for all datasets...
+  for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
+
+    //get line svg for legend sample line
+    const legendLine = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "line"
+    );
+
+    //set coordinates for sample line
+    legendLine.setAttribute("x1", legendX);
+    legendLine.setAttribute("x2", legendX + legendLineLength);
+    legendLine.setAttribute("y1", legendY);
+    legendLine.setAttribute("y2", legendY);
+
+    legendLine.setAttribute("stroke", lineColors[i]);
+    legendLine.setAttribute("stroke-width", "3");
+
+    //add legend line to svg
+    svg.appendChild(legendLine);
+
+    //now time to add dataset name
+    const legendText = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+
+    //set x position of dataset name label
+    legendText.setAttribute(
+      "x",
+      legendX + legendLineLength + 8
+    );
+
+    //set y-position of dataset name label
+    legendText.setAttribute(
+      "y",
+      legendY + 4
+    );
+
+    //set color, font, text position
+
+    legendText.setAttribute(
+      "fill",
+      gridLabelColor
+    );
+
+    legendText.setAttribute(
+      "font-size",
+      `${100 / tickCount}`
+    );
+
+    legendText.setAttribute(
+      "text-anchor",
+      "start"
+    );
+
+    legendText.textContent = name;
+
+    //add text to svg
+    svg.appendChild(legendText);
+
+    legendX += legendSpacing;
+
+  }
 
   //add svg elements to chart
   multi_line.appendChild(svg);
@@ -627,9 +708,7 @@ function makeMultipleLineChart ({
 
   document.getElementById(containerId).appendChild(multi_line) //<- Display
 
-
-  //END LINE CHART
-
+  //END MULTI LINE CHART
 }
 
 //to be converted to a single-line driver function for makeMultipleLineChart
