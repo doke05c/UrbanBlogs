@@ -1028,6 +1028,15 @@ const monthly_multimodal_from_mar_2020_rows = {
   "Access-a-Ride Ridership": monthly_aar_entries_from_mar_2020_rows,
 };
 
+const monthly_multimodal_from_mar_2020_step_size_reference = {
+  "MNR Ridership": monthly_mnr_entries_from_mar_2020_rows,
+  "LIRR Ridership": monthly_lirr_entries_from_mar_2020_rows,
+  "Subway Ridership": monthly_entries_subway_from_mar_2020_rows,
+  "SIR Ridership": monthly_sir_entries_from_mar_2020_rows,
+  "Bus Ridership": monthly_bus_entries_from_mar_2020_rows,
+  "Access-a-Ride Ridership": monthly_aar_entries_from_mar_2020_rows,
+}
+
 //CREATE LIST OF MNR AND LIRR ENTRIES SINCE MAR 2020
 const monthly_lirr_mnr_from_mar_2020_rows = {
   "MNR Ridership": monthly_mnr_entries_from_mar_2020_rows,
@@ -1149,7 +1158,7 @@ document.getElementById("confirmDatasetInputButton").onclick = function(){
     let inputNewDatasetList = {};
 
     for (const [name, dataset] of Object.entries(monthly_multimodal_from_mar_2020_rows)) {
-      if (datasetText.includes(name) || datasetText.includes(name.replace(" Ridership", ""))) {
+      if (datasetText.toLowerCase().includes(name.toLowerCase()) || datasetText.toLowerCase().includes(name.replace(" Ridership", "").toLowerCase())) {
         inputNewDatasetList[name] = dataset;
       }
     }
