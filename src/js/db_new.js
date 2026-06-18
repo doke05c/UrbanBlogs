@@ -469,7 +469,7 @@ function makeMultipleLineChart ({
       );
 
       //establish point size relative to number of points
-      const circle_radius = Math.max((5.5 - ((pointCount/20) * Object.entries(datasetList).length/3)), 1.5);
+      const circle_radius = Math.max((5.5 - ((pointCount/20) * Object.entries(datasetList).length/3)), 3);
 
       line_circle.setAttribute("cx", p.x); //set x position of circle to our x
       line_circle.setAttribute("cy", p.y); //set y position of circle to our y
@@ -1127,3 +1127,43 @@ makeBarChart({
   containerId: "monthly_entries_subway_from_mar_2020_bar",
   timeOfInterest: "month"
 });
+
+//USER SELECTION SECTION
+
+let datasetText;
+
+if (datasetText == undefined) {
+  makeMultipleLineChart({
+    datasetList: monthly_multimodal_from_mar_2020_rows,
+    containerId: "monthly_selectmodal_from_mar_2020_line",
+    yAxisStep: 20_000_000,
+    timeOfInterest: "month",
+    aspectRatio: 1.5
+  });
+}
+
+document.getElementById("confirmDatasetInputButton").onclick = function(){
+  datasetText = document.getElementById("inputDatasetText").value;
+  console.log(datasetText);
+  if (datasetText != undefined) {
+    let inputNewDatasetList = {};
+
+    for (const [name, dataset] of Object.entries(monthly_multimodal_from_mar_2020_rows)) {
+      if (datasetText.includes(name) || datasetText.includes(name.replace(" Ridership", ""))) {
+        inputNewDatasetList[name] = dataset;
+      }
+    }
+
+    const container = document.getElementById("monthly_selectmodal_from_mar_2020_line");
+    container.innerHTML = "";  // remove old chart
+
+    makeMultipleLineChart({
+      datasetList: inputNewDatasetList,
+      containerId: "monthly_selectmodal_from_mar_2020_line",
+      yAxisStep: 20_000_000,
+      timeOfInterest: "month",
+      aspectRatio: 1.5
+    });
+  }
+} 
+

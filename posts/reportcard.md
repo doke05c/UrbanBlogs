@@ -96,3 +96,15 @@ Here's a multimodal monthly chart for all the public transit modes in the MTA Tr
 #### MTA Multimodal Ridership Since Mar 2020, Line:
 <div id="monthly_multimodal_from_mar_2020_line"></div>
 <br>
+
+##### June 18, 2026: 2:30PM, City College Cohen Library:
+
+It might be a little crowded in here... how about we just select only the datasets we want?
+(Just text for now, please input exact names (case and punctuation sensitive))
+
+<input id="inputDatasetText">
+<button id="confirmDatasetInputButton">Submit</button>
+
+#### MTA Ridership Since Mar 2020, Selected Modes, Line:
+<div id="monthly_selectmodal_from_mar_2020_line"></div>
+<br>
