@@ -100,7 +100,8 @@ Here's a multimodal monthly chart for all the public transit modes in the MTA Tr
 ##### June 18, 2026: 2:30PM, City College Cohen Library:
 
 It might be a little crowded in here... how about we just select only the datasets we want?
-(Just text for now, please input exact names (case and punctuation sensitive))
+Just text for now, please input mode names. (<b>separated by spaces if multiple modes</b>)
+Enter empty list to return to all modes.
 
 <input id="inputDatasetText">
 <button id="confirmDatasetInputButton">Submit</button>
