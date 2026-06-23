@@ -1000,7 +1000,6 @@ function typeSelectMultipleLineChart({
   //default yAxisStep is the yAxisStep were all datasets present (max of the stepsizereferences)
 
   timeOfInterest = "month",
-
   aspectRatio = 1.5,
 
 }) 
@@ -1081,15 +1080,7 @@ function clickSelectMultipleLineChart({
   checkBoxGroupId, //checkbox group id
   // ^^ taken from html-side of blogpost
 
-  // yAxisStepDefault = Math.max(
-  //     ...Object.keys(datasetList)
-  //       .map(name => datasetListStepSizeReference[name])
-  //       .filter(Boolean)
-  // ),
-  // //default yAxisStep is the yAxisStep were all datasets present (max of the stepsizereferences)
-
   timeOfInterest = "month",
-
   aspectRatio = 1.5,
 
 }) 
