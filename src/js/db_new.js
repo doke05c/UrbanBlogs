@@ -1139,69 +1139,108 @@ makeBarChart({
 
 //USER SELECTION SECTION
 
-let datasetText;
+function typeSelectMultipleLineChart({
+  datasetList,
 
-//if input text is empty, revert to default (all modes)
-if (datasetText == undefined) {
-  makeMultipleLineChart({
-    datasetList: monthly_multimodal_from_mar_2020_rows,
-    containerId: "monthly_selectmodal_from_mar_2020_line",
-    yAxisStep: 20_000_000,
-    timeOfInterest: "month",
-    aspectRatio: 1.5
-  });
-}
+  datasetListStepSizeReference,
 
-//upon receiving a click of input function...
-document.getElementById("confirmDatasetInputButton").onclick = function(){
-  datasetText = document.getElementById("inputDatasetText").value;
+  containerId,
 
-  //if not empty text,
-  if (datasetText != undefined) {
+  buttonId,
 
-    //start new dataset list
-    let inputNewDatasetList = {};
+  inputTextId,
 
-    //split input into multiple entries by spaces
-    const inputs = datasetText
-      .toLowerCase()
-      .split(/\s+/);  // splits on spaces
+  yAxisStepDefault = Math.max(
+      ...Object.keys(datasetList)
+        .map(name => datasetListStepSizeReference[name])
+        .filter(Boolean)
+  ),
 
-    //check lowercase-ized versions of each entry and see if theyre in any of the datasets we have
-    for (const [name, dataset] of Object.entries(monthly_multimodal_from_mar_2020_rows)) {
-      const cleanName = name.replace(" Ridership", "").toLowerCase();
+  timeOfInterest = "month",
 
-      //if any are present, add to new dataset list
-      if (
-        inputs.some(word => cleanName.includes(word))
-      ) {
-        inputNewDatasetList[name] = dataset;
+  aspectRatio = 1.5,
+
+}) 
+
+{
+
+  let datasetText;
+
+  //if input text is empty, revert to default (all modes)
+  if (datasetText == undefined) {
+    makeMultipleLineChart({
+      datasetList: datasetList,
+      containerId: containerId,
+      yAxisStep: yAxisStepDefault,
+      timeOfInterest: timeOfInterest,
+      aspectRatio: aspectRatio
+    });
+  }
+
+  //upon receiving a click of input function...
+  document.getElementById(buttonId).onclick = function(){
+    datasetText = document.getElementById(inputTextId).value;
+
+    //if not empty text,
+    if (datasetText != undefined) {
+
+      //start new dataset list
+      let inputNewDatasetList = {};
+
+      //split input into multiple entries by spaces
+      const inputs = datasetText
+        .toLowerCase()
+        .split(/\s+/);  // splits on spaces
+
+      //check lowercase-ized versions of each entry and see if theyre in any of the datasets we have
+      for (const [name, dataset] of Object.entries(datasetList)) {
+        const cleanName = name.replace(" Ridership", "").toLowerCase();
+
+        //if any are present, add to new dataset list
+        if (
+          inputs.some(word => cleanName.includes(word))
+        ) {
+          inputNewDatasetList[name] = dataset;
+        }
+
+        //remove old chart, prep for replacement with new one
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";  // remove old chart
+
+        //step size is determined by the maximum step size of the datasets we have present, 
+        //checked with step_size_reference list
+        const stepSize = Math.max(
+        ...Object.keys(inputNewDatasetList)
+          .map(name => datasetListStepSizeReference[name])
+          .filter(Boolean)
+        );
+
+        //make chart with new dataset list and new stepsize, put back into the containerid we used
+        makeMultipleLineChart({
+          datasetList: inputNewDatasetList,
+          containerId: containerId,
+          yAxisStep: stepSize,
+          timeOfInterest: timeOfInterest,
+          aspectRatio: aspectRatio
+        });
       }
 
-      //remove old chart, prep for replacement with new one
-      const container = document.getElementById("monthly_selectmodal_from_mar_2020_line");
-      container.innerHTML = "";  // remove old chart
-
-      //step size is determined by the maximum step size of the datasets we have present, 
-      //checked with step_size_reference list
-      const stepSize = Math.max(
-      ...Object.keys(inputNewDatasetList)
-        .map(name => monthly_multimodal_from_mar_2020_step_size_reference[name])
-        .filter(Boolean)
-      );
-
-      //make chart with new dataset list and new stepsize, put back into the containerid we used
-      makeMultipleLineChart({
-        datasetList: inputNewDatasetList,
-        containerId: "monthly_selectmodal_from_mar_2020_line",
-        yAxisStep: stepSize,
-        timeOfInterest: "month",
-        aspectRatio: 1.5
-      });
     }
+  } 
 
-  }
-} 
+}
+
+typeSelectMultipleLineChart({
+  datasetList: monthly_multimodal_from_mar_2020_rows,
+  datasetListStepSizeReference: monthly_multimodal_from_mar_2020_step_size_reference,
+
+  containerId: "monthly_selectmodal_from_mar_2020_line",
+  buttonId: "confirmDatasetInputButton",
+  inputTextId: "inputDatasetText",
+
+  timeOfInterest: "month",
+  aspectRatio: 1.5,
+});
 
 const checkboxContainer = document.getElementById("ridership-checkboxes");
 
