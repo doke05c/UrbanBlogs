@@ -982,6 +982,214 @@ function makeBarChart({
   document.getElementById(containerId).appendChild(container) //<- Display
 }
 
+//select datasets out of a list to graph on a line chart, user selects as text in a box
+function typeSelectMultipleLineChart({
+  datasetList, //list of actual datasets
+  datasetListStepSizeReference, //reference containing dataset names and advised yAxisStep size
+
+  containerId, //chart container id
+  buttonId, //button id
+  inputTextId, //input text id
+  // ^^ taken from html-side of blogpost
+
+  yAxisStepDefault = Math.max(
+      ...Object.keys(datasetList)
+        .map(name => datasetListStepSizeReference[name])
+        .filter(Boolean)
+  ),
+  //default yAxisStep is the yAxisStep were all datasets present (max of the stepsizereferences)
+
+  timeOfInterest = "month",
+
+  aspectRatio = 1.5,
+
+}) 
+
+{
+  let datasetText;
+
+  //if input text is empty, revert to default (all modes)
+  if (datasetText == undefined) {
+    makeMultipleLineChart({
+      datasetList: datasetList,
+      containerId: containerId,
+      yAxisStep: yAxisStepDefault,
+      timeOfInterest: timeOfInterest,
+      aspectRatio: aspectRatio
+    });
+  }
+
+  //upon receiving a click of input function...
+  document.getElementById(buttonId).onclick = function(){
+    datasetText = document.getElementById(inputTextId).value;
+
+    //if not empty text,
+    if (datasetText != undefined) {
+
+      //start new dataset list
+      let inputNewDatasetList = {};
+
+      //split input into multiple entries by spaces
+      const inputs = datasetText
+        .toLowerCase()
+        .split(/\s+/);  // splits on spaces
+
+      //check lowercase-ized versions of each entry and see if theyre in any of the datasets we have
+      for (const [name, dataset] of Object.entries(datasetList)) {
+        const cleanName = name.replace(" Ridership", "").toLowerCase();
+
+        //if any are present, add to new dataset list
+        if (
+          inputs.some(word => cleanName.includes(word))
+        ) {
+          inputNewDatasetList[name] = dataset;
+        }
+
+        //remove old chart, prep for replacement with new one
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";  // remove old chart
+
+        //step size is determined by the maximum step size of the datasets we have present, 
+        //checked with step_size_reference list
+        const stepSize = Math.max(
+        ...Object.keys(inputNewDatasetList)
+          .map(name => datasetListStepSizeReference[name])
+          .filter(Boolean)
+        );
+
+        //make chart with new dataset list and new stepsize, put back into the containerid we used
+        makeMultipleLineChart({
+          datasetList: inputNewDatasetList,
+          containerId: containerId,
+          yAxisStep: stepSize,
+          timeOfInterest: timeOfInterest,
+          aspectRatio: aspectRatio
+        });
+      }
+
+    }
+  } 
+
+}
+
+//select datasets out of a list to graph on a line chart, user selects as checked boxes
+function clickSelectMultipleLineChart({
+  datasetList, //list of actual datasets
+  datasetListStepSizeReference, //reference containing dataset names and advised yAxisStep size
+
+  containerId, //chart container id
+  checkBoxGroupId, //checkbox group id
+  // ^^ taken from html-side of blogpost
+
+  // yAxisStepDefault = Math.max(
+  //     ...Object.keys(datasetList)
+  //       .map(name => datasetListStepSizeReference[name])
+  //       .filter(Boolean)
+  // ),
+  // //default yAxisStep is the yAxisStep were all datasets present (max of the stepsizereferences)
+
+  timeOfInterest = "month",
+
+  aspectRatio = 1.5,
+
+}) 
+
+{
+  //get checkbox container from html side
+  const checkboxContainer = document.getElementById(checkBoxGroupId);
+
+  //for each item in the stepsize reference... (datasetlist is advisable as well, both are fine, just as long as indexing is consistent on both)
+  Object.keys(datasetListStepSizeReference).forEach((name, index) => {
+
+    //create a checkbox, name is the same as that of element from datasetlist
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = `dataset-${index}`;
+    checkbox.name = name;
+
+    const label = document.createElement("label");
+    label.htmlFor = checkbox.id;
+    label.textContent = " " + name;
+
+    //add checkbox and label and linebreak to the checkbox container
+    checkboxContainer.appendChild(checkbox);
+    checkboxContainer.appendChild(label);
+    checkboxContainer.appendChild(document.createElement("br"));
+  });
+
+  //create list of checked datasets to keep track of with each click
+  let checkedDatasets = {};
+
+  //stepsize calculated before render, updated with each click
+  let stepSize;
+
+  //create chart container, set it to clicking prompt for now
+  const container = document.getElementById(containerId);
+  container.textContent = "Select a dataset to start the chart.";
+
+  document
+    //give each checkbox in the checkbox set a listener for clicks
+    .querySelectorAll(`#${checkBoxGroupId} input[type='checkbox']`)
+    .forEach(checkbox => {
+
+      checkbox.addEventListener("change", () => {
+        //if a checkbox was clicked (in either direction)
+        if (checkbox.checked) {
+
+          //go to each name of the datasetlist to see which one has been clicked, 
+          for (const [name, dataset] of Object.entries(datasetList)) {
+            if (name == checkbox.name) {
+              //add to checked datasets if it was added
+              checkedDatasets[name] = dataset;
+            }
+          }
+        }
+
+        if (!(checkbox.checked)) {
+          //remove if it was removed
+          delete checkedDatasets[checkbox.name];
+        }
+
+        if (Object.entries(checkedDatasets).length > 0) { //if we have received anything to plot, then remove the old plot and put in the new one
+
+          //remove old chart, prep for replacement with new one
+          const container = document.getElementById(containerId);
+          container.innerHTML = "";  // remove old chart
+
+          for (const [name, dataset] of Object.entries(datasetList)) {
+
+            //step size is determined by the maximum step size of the datasets we have present, 
+            //checked with step_size_reference list
+            stepSize = Math.max(
+            ...Object.keys(checkedDatasets)
+              .map(name => datasetListStepSizeReference[name])
+              .filter(Boolean)
+            );
+          }
+
+
+          //make chart with new dataset list and new stepsize, put back into the containerid we used
+          makeMultipleLineChart({
+            datasetList: checkedDatasets,
+            containerId: containerId,
+            yAxisStep: stepSize,
+            timeOfInterest: timeOfInterest,
+            aspectRatio: aspectRatio
+          });
+
+        } else {
+          //remove chart, no data
+          const container = document.getElementById(containerId);
+          container.innerHTML = ""; //remove old chart
+
+          container.textContent = "Select a dataset to start the chart.";
+        }
+
+      });
+    });
+}
+
+
 //GET LAST 7 DAYS OF CRZ ENTRIES
 const past_week_entries_rows = await fetch("/src/json/last_7_days_cbd.json")
     .then(res => res.json());
@@ -1139,95 +1347,6 @@ makeBarChart({
 
 //USER SELECTION SECTION
 
-function typeSelectMultipleLineChart({
-  datasetList, //list of actual datasets
-  datasetListStepSizeReference, //reference containing dataset names and advised yAxisStep size
-
-  containerId, //chart container id
-  buttonId, //button id
-  inputTextId, //input text id
-  // ^^ taken from html-side of blogpost
-
-  yAxisStepDefault = Math.max(
-      ...Object.keys(datasetList)
-        .map(name => datasetListStepSizeReference[name])
-        .filter(Boolean)
-  ),
-  //default yAxisStep is the yAxisStep were all datasets present (max of the stepsizereferences)
-
-  timeOfInterest = "month",
-
-  aspectRatio = 1.5,
-
-}) 
-
-{
-  let datasetText;
-
-  //if input text is empty, revert to default (all modes)
-  if (datasetText == undefined) {
-    makeMultipleLineChart({
-      datasetList: datasetList,
-      containerId: containerId,
-      yAxisStep: yAxisStepDefault,
-      timeOfInterest: timeOfInterest,
-      aspectRatio: aspectRatio
-    });
-  }
-
-  //upon receiving a click of input function...
-  document.getElementById(buttonId).onclick = function(){
-    datasetText = document.getElementById(inputTextId).value;
-
-    //if not empty text,
-    if (datasetText != undefined) {
-
-      //start new dataset list
-      let inputNewDatasetList = {};
-
-      //split input into multiple entries by spaces
-      const inputs = datasetText
-        .toLowerCase()
-        .split(/\s+/);  // splits on spaces
-
-      //check lowercase-ized versions of each entry and see if theyre in any of the datasets we have
-      for (const [name, dataset] of Object.entries(datasetList)) {
-        const cleanName = name.replace(" Ridership", "").toLowerCase();
-
-        //if any are present, add to new dataset list
-        if (
-          inputs.some(word => cleanName.includes(word))
-        ) {
-          inputNewDatasetList[name] = dataset;
-        }
-
-        //remove old chart, prep for replacement with new one
-        const container = document.getElementById(containerId);
-        container.innerHTML = "";  // remove old chart
-
-        //step size is determined by the maximum step size of the datasets we have present, 
-        //checked with step_size_reference list
-        const stepSize = Math.max(
-        ...Object.keys(inputNewDatasetList)
-          .map(name => datasetListStepSizeReference[name])
-          .filter(Boolean)
-        );
-
-        //make chart with new dataset list and new stepsize, put back into the containerid we used
-        makeMultipleLineChart({
-          datasetList: inputNewDatasetList,
-          containerId: containerId,
-          yAxisStep: stepSize,
-          timeOfInterest: timeOfInterest,
-          aspectRatio: aspectRatio
-        });
-      }
-
-    }
-  } 
-
-}
-
 typeSelectMultipleLineChart({
   datasetList: monthly_multimodal_from_mar_2020_rows,
   datasetListStepSizeReference: monthly_multimodal_from_mar_2020_step_size_reference,
@@ -1240,121 +1359,6 @@ typeSelectMultipleLineChart({
   aspectRatio: 1.5,
 });
 
-function clickSelectMultipleLineChart({
-  datasetList, //list of actual datasets
-  datasetListStepSizeReference, //reference containing dataset names and advised yAxisStep size
-
-  containerId, //chart container id
-  checkBoxGroupId, //checkbox group id
-  // ^^ taken from html-side of blogpost
-
-  // yAxisStepDefault = Math.max(
-  //     ...Object.keys(datasetList)
-  //       .map(name => datasetListStepSizeReference[name])
-  //       .filter(Boolean)
-  // ),
-  // //default yAxisStep is the yAxisStep were all datasets present (max of the stepsizereferences)
-
-  timeOfInterest = "month",
-
-  aspectRatio = 1.5,
-
-}) 
-
-{
-  //get checkbox container from html side
-  const checkboxContainer = document.getElementById(checkBoxGroupId);
-
-  //for each item in the stepsize reference... (datasetlist is advisable as well, both are fine, just as long as indexing is consistent on both)
-  Object.keys(datasetListStepSizeReference).forEach((name, index) => {
-
-    //create a checkbox, name is the same as that of element from datasetlist
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = `dataset-${index}`;
-    checkbox.name = name;
-
-    const label = document.createElement("label");
-    label.htmlFor = checkbox.id;
-    label.textContent = " " + name;
-
-    //add checkbox and label and linebreak to the checkbox container
-    checkboxContainer.appendChild(checkbox);
-    checkboxContainer.appendChild(label);
-    checkboxContainer.appendChild(document.createElement("br"));
-  });
-
-  //create list of checked datasets to keep track of with each click
-  let checkedDatasets = {};
-
-  //stepsize calculated before render, updated with each click
-  let stepSize;
-
-  //create chart container, set it to clicking prompt for now
-  const container = document.getElementById(containerId);
-  container.textContent = "Select a dataset to start the chart.";
-
-  document
-    //give each checkbox in the checkbox set a listener for clicks
-    .querySelectorAll(`#${checkBoxGroupId} input[type='checkbox']`)
-    .forEach(checkbox => {
-
-      checkbox.addEventListener("change", () => {
-        //if a checkbox was clicked (in either direction)
-        if (checkbox.checked) {
-
-          //go to each name of the datasetlist to see which one has been clicked, 
-          for (const [name, dataset] of Object.entries(datasetList)) {
-            if (name == checkbox.name) {
-              //add to checked datasets if it was added
-              checkedDatasets[name] = dataset;
-            }
-          }
-        }
-
-        if (!(checkbox.checked)) {
-          //remove if it was removed
-          delete checkedDatasets[checkbox.name];
-        }
-
-        if (Object.entries(checkedDatasets).length > 0) { //if we have received anything to plot, then remove the old plot and put in the new one
-
-          //remove old chart, prep for replacement with new one
-          const container = document.getElementById(containerId);
-          container.innerHTML = "";  // remove old chart
-
-          for (const [name, dataset] of Object.entries(datasetList)) {
-
-            //step size is determined by the maximum step size of the datasets we have present, 
-            //checked with step_size_reference list
-            stepSize = Math.max(
-            ...Object.keys(checkedDatasets)
-              .map(name => datasetListStepSizeReference[name])
-              .filter(Boolean)
-            );
-          }
-
-
-          //make chart with new dataset list and new stepsize, put back into the containerid we used
-          makeMultipleLineChart({
-            datasetList: checkedDatasets,
-            containerId: containerId,
-            yAxisStep: stepSize,
-            timeOfInterest: timeOfInterest,
-            aspectRatio: aspectRatio
-          });
-
-        } else {
-          //remove chart, no data
-          const container = document.getElementById(containerId);
-          container.innerHTML = ""; //remove old chart
-
-          container.textContent = "Select a dataset to start the chart.";
-        }
-
-      });
-    });
-}
 
 clickSelectMultipleLineChart({
   datasetList: monthly_multimodal_from_mar_2020_rows,
