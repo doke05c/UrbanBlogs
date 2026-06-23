@@ -6,3 +6,5 @@ _site/
 
 
 .obsidian
+
+src/report_card.duckdb
