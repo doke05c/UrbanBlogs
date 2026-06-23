@@ -109,3 +109,13 @@ Enter empty list to return to all modes.
 #### MTA Ridership Since Mar 2020, Selected Modes, Line:
 <div id="monthly_selectmodal_from_mar_2020_line"></div>
 <br>
+
+##### June 23, 2026: 3:00PM, Roosevelt House Public Policy Insitute:
+
+Introducing a new, checkbox-based system to select datasets. No more confusion on what we can select!
+
+<div id="ridership-checkboxes"></div>
+
+#### MTA Ridership Since Mar 2020, Selected Modes, Line:
+<div id="monthly_selectmodal_box_from_mar_2020_line"></div>
+<br>

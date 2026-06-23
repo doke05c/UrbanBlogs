@@ -1203,3 +1203,87 @@ document.getElementById("confirmDatasetInputButton").onclick = function(){
   }
 } 
 
+const checkboxContainer = document.getElementById("ridership-checkboxes");
+
+Object.keys(monthly_multimodal_from_mar_2020_step_size_reference).forEach((name, index) => {
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.id = `dataset-${index}`;
+  checkbox.name = name;
+
+  const label = document.createElement("label");
+  label.htmlFor = checkbox.id;
+  label.textContent = " " + name;
+
+  checkboxContainer.appendChild(checkbox);
+  checkboxContainer.appendChild(label);
+  checkboxContainer.appendChild(document.createElement("br"));
+});
+
+let checkedDatasets = {};
+let stepSize;
+
+const container = document.getElementById("monthly_selectmodal_box_from_mar_2020_line");
+container.textContent = "Select a dataset to start the chart.";
+
+document
+  .querySelectorAll("#ridership-checkboxes input[type='checkbox']")
+  .forEach(checkbox => {
+
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) {
+        for (const [name, dataset] of Object.entries(monthly_multimodal_from_mar_2020_rows)) {
+          if (name == checkbox.name) {
+            checkedDatasets[name] = dataset;
+          }
+        }
+      }
+
+      if (!(checkbox.checked)) {
+        delete checkedDatasets[checkbox.name];
+      }
+
+      console.log(Object.entries(checkedDatasets).length);
+
+      if (Object.entries(checkedDatasets).length > 0) { //if we have received anything to plot, then remove the old plot and put in the new one
+
+        //remove old chart, prep for replacement with new one
+        const container = document.getElementById("monthly_selectmodal_box_from_mar_2020_line");
+        container.innerHTML = "";  // remove old chart
+
+        for (const [name, dataset] of Object.entries(monthly_multimodal_from_mar_2020_rows)) {
+
+          //step size is determined by the maximum step size of the datasets we have present, 
+          //checked with step_size_reference list
+          stepSize = Math.max(
+          ...Object.keys(checkedDatasets)
+            .map(name => monthly_multimodal_from_mar_2020_step_size_reference[name])
+            .filter(Boolean)
+          );
+
+          console.log(name, dataset);
+          console.log(checkedDatasets);
+          console.log(checkedDatasets[0]);
+        }
+
+
+        //make chart with new dataset list and new stepsize, put back into the containerid we used
+        makeMultipleLineChart({
+          datasetList: checkedDatasets,
+          containerId: "monthly_selectmodal_box_from_mar_2020_line",
+          yAxisStep: stepSize,
+          timeOfInterest: "month",
+          aspectRatio: 1.5
+        });
+
+      } else {
+        //remove chart, no data
+        const container = document.getElementById("monthly_selectmodal_box_from_mar_2020_line");
+        container.innerHTML = "";  // remove old chart
+
+        container.textContent = "Select a dataset to start the chart.";
+      }
+
+    });
+  });
+
