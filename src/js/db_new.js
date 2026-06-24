@@ -1324,7 +1324,7 @@ const monthly_weekday_subway_otp_rate_from_jan_2015_step_size_reference = Object
     "1", "2", "3", "4", "5", "6", "7",
     "S 42nd", "A", "B", "C", "D", "E", "F", "G",
     "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"
-  ].map(line => [line, 10])
+  ].map(line => [line, 20])
 );
 
 //CREATE LIST OF MNR AND LIRR ENTRIES SINCE MAR 2020
