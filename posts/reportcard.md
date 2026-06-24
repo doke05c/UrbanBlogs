@@ -119,3 +119,13 @@ Introducing a new, checkbox-based system to select datasets. No more confusion o
 #### MTA Ridership Since Mar 2020, Selected Modes, Line:
 <div id="monthly_selectmodal_box_from_mar_2020_line"></div>
 <br>
+
+##### June 24, 2026: 4:00PM, Roosevelt House Public Policy Institute:
+
+I stabilized the colors, meaning we can now do breakdowns of Subway data by line! Here's weekday on-time performance for each subway line by month:
+
+<div id="subway-otp-weekday-checkboxes"></div>
+
+#### MTA Monthly Subway On-Time Performance, Since Jan 2015, Weekdays, Line:
+<div id="monthly_weekday_subway_otp_from_jan_2015_select_box_line"></div>
+<br>

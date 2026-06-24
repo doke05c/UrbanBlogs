@@ -459,9 +459,6 @@ function makeMultipleLineChart ({
         "polyline"
       );
 
-      console.log("name:", name);
-      console.log("coordsList[name]:", coordsList[name]);
-
       //set lines connecting points
       line_polyline.setAttribute(
         "points",
@@ -692,7 +689,7 @@ function makeMultipleLineChart ({
     } else {
       legendLine.setAttribute("stroke", lineColors[i]);
     }
-    
+
     legendLine.setAttribute("stroke-width", "3");
 
     //add legend line to svg
@@ -1294,6 +1291,8 @@ const monthly_multimodal_from_mar_2020_rows = {
   "Access-a-Ride Ridership": monthly_aar_entries_from_mar_2020_rows,
 };
 
+console.log(monthly_mnr_entries_from_mar_2020_rows);
+
 const monthly_multimodal_from_mar_2020_step_size_reference = {
   "MNR Ridership": 1_000_000,
   "LIRR Ridership": 1_000_000,
@@ -1301,7 +1300,32 @@ const monthly_multimodal_from_mar_2020_step_size_reference = {
   "SIR Ridership": 50_000,
   "Bus Ridership": 5_000_000,
   "Access-a-Ride Ridership": 200_000,
+};
+
+//GET MONTHLY WEEKDAY SUBWAY OTP RATES SINCE JAN 2015
+
+const monthly_weekday_subway_otp_rate_from_jan_2015_rows = {};
+
+for (const subway_line of ["1", "2", "3", "4", "5", "6", "7", "S 42nd", "A", "B", "C", "D", "E", "F", "G", "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"]) {
+monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line] =
+  (await fetch(`/src/json/monthly_weekday_subway_otp_rate_from_jan_2015_${subway_line}.json`)
+    .then(res => res.json()))
+      .map(entry => ({
+        month: entry.month,
+        count: entry.otp_rate * 100
+      })
+      );
 }
+
+console.log(monthly_weekday_subway_otp_rate_from_jan_2015_rows);
+
+const monthly_weekday_subway_otp_rate_from_jan_2015_step_size_reference = Object.fromEntries(
+  [
+    "1", "2", "3", "4", "5", "6", "7",
+    "S 42nd", "A", "B", "C", "D", "E", "F", "G",
+    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"
+  ].map(line => [line, 10])
+);
 
 //CREATE LIST OF MNR AND LIRR ENTRIES SINCE MAR 2020
 const monthly_lirr_mnr_from_mar_2020_rows = {
@@ -1313,7 +1337,7 @@ const monthly_lirr_mnr_from_mar_2020_rows = {
 const entries_list_past_week = {
   "CRZ Entries": past_week_entries_rows,
   "Bridge & Tunnel Entries": past_week_bridge_tunnel_rows
-}
+};
 
 //CALL MULTI LINE CHART FUNCTION
 makeMultipleLineChart({
@@ -1428,3 +1452,61 @@ clickSelectMultipleLineChart({
   timeOfInterest: "month",
   aspectRatio: 1.5,
 });
+
+clickSelectMultipleLineChart({
+  datasetList: monthly_weekday_subway_otp_rate_from_jan_2015_rows,
+  datasetListStepSizeReference: monthly_weekday_subway_otp_rate_from_jan_2015_step_size_reference,
+
+  containerId: "monthly_weekday_subway_otp_from_jan_2015_select_box_line",
+  checkBoxGroupId: "subway-otp-weekday-checkboxes",
+  
+  timeOfInterest: "month",
+  aspectRatio: 1.5,
+
+  lineColors: [
+    //1, 2, 3
+    "#EE352E",
+    "#EE352E",
+    "#EE352E",
+
+    //4, 5, 6
+    "#00933C",
+    "#00933C",
+    "#00933C",
+
+    //7
+    "#B933AD",
+
+    //S 42nd
+    "#808183",
+
+    //A, B, C, D, E, F
+    "#0039A6",
+    "#FF6319",
+    "#0039A6",
+    "#FF6319",
+    "#0039A6",
+    "#FF6319",
+
+    //G
+    "#75c84e",
+
+    //J, Z
+    "#996633",
+
+    //L
+    "#A7A9AC",
+
+    //M
+    "#FF6319",
+
+    //N, Q, R
+    "#FCCC0A",
+    "#FCCC0A",
+    "#FCCC0A",
+
+    //S Franklin, S Rockaway
+    "#808183",
+    "#808183",
+  ]
+})
