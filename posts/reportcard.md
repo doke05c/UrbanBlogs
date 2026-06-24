@@ -126,6 +126,6 @@ I stabilized the colors, meaning we can now do breakdowns of Subway data by line
 
 <div id="subway-otp-weekday-checkboxes"></div>
 
-#### MTA Monthly Subway On-Time Performance, Since Jan 2015, Weekdays, Line:
+#### MTA Monthly Subway On-Time Performance Rate (%), Since Jan 2015, Weekdays, Line:
 <div id="monthly_weekday_subway_otp_from_jan_2015_select_box_line"></div>
 <br>
