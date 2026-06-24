@@ -35,6 +35,11 @@ function makeMultipleLineChart ({
     "#00C2A8",
     "#F72585",
   ],
+  passLineColorsAsStatic = false, //if set to true, the line colors will be index-paired with the datasetListStepSizeReference 
+  //(if datasetListStepSizeReference is longer than lineColors list, lineColors will loop over)
+
+  datasetListStepSizeReference = undefined, //not needed unless passLineColorsAsStatic is true
+
   pointColor = "#eafafa",
   gridColor = "#555",
   thick_gridColor = "#888",
@@ -127,6 +132,13 @@ function makeMultipleLineChart ({
   //set MinorXGridlines to be off when the pointLabelCutoffCount is reached
   if (enableMinorXGridlines == undefined) {
     enableMinorXGridlines = pointCount >= pointLabelCutoffCount ? 0 : 1;
+  }
+
+  //throw an error asking for datasetListStepSizeReference when passLineColorsAsStatic is true
+  if (passLineColorsAsStatic && datasetListStepSizeReference === undefined) {
+    throw new Error(
+      "datasetListStepSizeReference is required when passLineColorsAsStatic is true"
+    );
   }
 
   //make chart loader
@@ -438,25 +450,38 @@ function makeMultipleLineChart ({
   });
 
   //create polylines for each dataset, MOVED TO END TO GO OVER GRID
-  for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
 
-    const line_polyline = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "polyline"
-    );
+    for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
+    //new version of for loop with datasetListStepSizeReference instead if passLineColorsAsStatic is true, 
 
-    //set lines connecting points
-    line_polyline.setAttribute(
-      "points",
-      coordsList[name].map(p => `${p.x},${p.y}`).join(" ")
-    );
+      const line_polyline = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "polyline"
+      );
 
-    line_polyline.setAttribute("fill", "none");
-    line_polyline.setAttribute("stroke", lineColors[i]);
-    line_polyline.setAttribute("stroke-width", "2.5");
+      console.log("name:", name);
+      console.log("coordsList[name]:", coordsList[name]);
 
-    svg.appendChild(line_polyline);
-  }
+      //set lines connecting points
+      line_polyline.setAttribute(
+        "points",
+        coordsList[name].map(p => `${p.x},${p.y}`).join(" ")
+      );
+
+      line_polyline.setAttribute("fill", "none");
+
+      if (passLineColorsAsStatic) {
+        //find index of name ^ in datasetListStepSizeReference, and then set index lineColors[index] of this found index
+        const index = Object.keys(datasetListStepSizeReference).indexOf(name);
+        line_polyline.setAttribute("stroke", lineColors[index % lineColors.length]); //<- do the remainder to ensure loopability when needed
+      } else {
+        line_polyline.setAttribute("stroke", lineColors[i]);
+      }
+
+      line_polyline.setAttribute("stroke-width", "2.5");
+
+      svg.appendChild(line_polyline);
+    }
 
   //POINTS
   for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
@@ -660,7 +685,14 @@ function makeMultipleLineChart ({
     legendLine.setAttribute("y1", currentLegendY);
     legendLine.setAttribute("y2", currentLegendY);
 
-    legendLine.setAttribute("stroke", lineColors[i]);
+    if (passLineColorsAsStatic) {
+      //find index of name ^ in datasetListStepSizeReference, and then set index lineColors[index] of this found index
+      const index = Object.keys(datasetListStepSizeReference).indexOf(name);
+      legendLine.setAttribute("stroke", lineColors[index % lineColors.length]); //<- do the remainder to ensure loopability when needed
+    } else {
+      legendLine.setAttribute("stroke", lineColors[i]);
+    }
+    
     legendLine.setAttribute("stroke-width", "3");
 
     //add legend line to svg
@@ -761,6 +793,11 @@ function makeLineChart({
     "#00C2A8",
     "#F72585",
   ],
+  passLineColorsAsStatic = false, //if set to true, the line colors will be index-paired with the datasetList 
+  //(if datasetList is longer than lineColors list, lineColors will loop over)
+
+  datasetListStepSizeReference = undefined, //not needed unless passLineColorsAsStatic is true
+
   pointColor = "#eafafa",
   gridColor = "#555",
   thick_gridColor = "#888",
@@ -793,6 +830,8 @@ function makeLineChart({
     gridLabelColor,
 
     lineColors,
+    passLineColorsAsStatic,
+
     pointColor,
     gridColor,
     thick_gridColor,
@@ -1002,6 +1041,17 @@ function typeSelectMultipleLineChart({
   timeOfInterest = "month",
   aspectRatio = 1.5,
 
+  lineColors = [
+    "#FF595E",
+    "#8AC926",
+    "#FFCA3A",
+    "#6A4C93",
+    "#FF924C",
+    "#00C2A8",
+    "#F72585",
+  ],
+  passLineColorsAsStatic = true
+
 }) 
 
 {
@@ -1062,7 +1112,10 @@ function typeSelectMultipleLineChart({
           containerId: containerId,
           yAxisStep: stepSize,
           timeOfInterest: timeOfInterest,
-          aspectRatio: aspectRatio
+          aspectRatio: aspectRatio,
+          lineColors: lineColors,
+          passLineColorsAsStatic: passLineColorsAsStatic,
+          datasetListStepSizeReference: datasetListStepSizeReference
         });
       }
 
@@ -1082,6 +1135,17 @@ function clickSelectMultipleLineChart({
 
   timeOfInterest = "month",
   aspectRatio = 1.5,
+
+    lineColors = [
+    "#FF595E",
+    "#8AC926",
+    "#FFCA3A",
+    "#6A4C93",
+    "#FF924C",
+    "#00C2A8",
+    "#F72585",
+  ],
+  passLineColorsAsStatic = true
 
 }) 
 
@@ -1165,7 +1229,10 @@ function clickSelectMultipleLineChart({
             containerId: containerId,
             yAxisStep: stepSize,
             timeOfInterest: timeOfInterest,
-            aspectRatio: aspectRatio
+            aspectRatio: aspectRatio,
+            lineColors: lineColors,
+            passLineColorsAsStatic: passLineColorsAsStatic,
+            datasetListStepSizeReference: datasetListStepSizeReference
           });
 
         } else {
