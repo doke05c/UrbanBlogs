@@ -662,7 +662,7 @@ function makeMultipleLineChart ({
   for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
 
     //if next item would overflow, move to next row
-    legendSpacing = name.length * 15;
+    legendSpacing = Math.max((name.length * 15), (6 * 15)); //minimum "name.length" should be 6 in case name is shorter than 6 char
     if (legendX + legendSpacing > legendMaxX) {
       legendX = legendStartX;
       legendRow++;
