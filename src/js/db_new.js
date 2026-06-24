@@ -1150,6 +1150,11 @@ function clickSelectMultipleLineChart({
   //get checkbox container from html side
   const checkboxContainer = document.getElementById(checkBoxGroupId);
 
+  //set grid style for checkboxes, with set spacing
+  checkboxContainer.style.display = "grid";
+  checkboxContainer.style.gridTemplateColumns = "repeat(8, auto)";
+  checkboxContainer.style.columnGap = "5px";
+
   //for each item in the stepsize reference... (datasetlist is advisable as well, both are fine, just as long as indexing is consistent on both)
   Object.keys(datasetListStepSizeReference).forEach((name, index) => {
 
@@ -1166,7 +1171,13 @@ function clickSelectMultipleLineChart({
     //add checkbox and label and linebreak to the checkbox container
     checkboxContainer.appendChild(checkbox);
     checkboxContainer.appendChild(label);
-    checkboxContainer.appendChild(document.createElement("br"));
+
+  //   //line break every 7 items
+  //   if ((index + 1) % 7 === 0) {
+  //     checkboxContainer.appendChild(document.createElement("br"));
+  //   } else {
+  //     checkboxContainer.appendChild(document.createTextNode("\u00A0".repeat(10))); //u00A0 is space. repeat space char.
+  //   }
   });
 
   //create list of checked datasets to keep track of with each click
