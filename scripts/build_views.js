@@ -210,6 +210,27 @@ async function build() {
         JSON.stringify(monthly_aar_entries_from_mar_2020)
     );
 
+    //entire history of weekday monthly otp subway since 01/2015
+    for (const subway_line of ["1", "2", "3", "4", "5", "6", "7", "S 42nd", "A", "B", "C", "D", "E", "F", "G", "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"]) {
+        const monthly_weekday_subway_otp_rate_from_jan_2015 = await query (`
+            SELECT
+                strftime(month, '%Y-%m') AS month,
+                terminal_on_time_performance AS otp_rate
+            FROM mta_subway_otp
+
+            WHERE line = '${subway_line}'
+                AND day_type = 1
+                AND month >= DATE '2015-01-01'
+
+            ORDER BY month;
+        `);
+
+        fs.writeFileSync(
+            `src/json/monthly_weekday_subway_otp_rate_from_jan_2015_${subway_line}.json`,
+            JSON.stringify(monthly_weekday_subway_otp_rate_from_jan_2015)
+        )
+    }
+
     //past 7 days of cbd entries
     const last7d_entries = await query(`
         SELECT
