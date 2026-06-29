@@ -1325,9 +1325,17 @@ const monthly_multimodal_from_mar_2020_step_size_reference = {
 
 //GET MONTHLY WEEKDAY SUBWAY OTP RATES SINCE JAN 2015
 
+//list of subway lines:
+const subway_line_list =
+[
+  "1", "2", "3", "4", "5", "6", "7",
+  "S 42nd", "A", "B", "C", "D", "E", "F", "G", "J",
+  "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"
+]
+
 const monthly_weekday_subway_otp_rate_from_jan_2015_rows = {};
 
-for (const subway_line of ["1", "2", "3", "4", "5", "6", "7", "S 42nd", "A", "B", "C", "D", "E", "F", "G", "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"]) {
+for (const subway_line of subway_line_list) {
 monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line] =
   (await fetch(`/src/json/monthly_weekday_subway_otp_rate_from_jan_2015_${subway_line}.json`)
     .then(res => res.json()))
@@ -1344,7 +1352,7 @@ monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line] =
 
 const monthly_weekend_subway_otp_rate_from_jan_2015_rows = {};
 
-for (const subway_line of ["1", "2", "3", "4", "5", "6", "7", "S 42nd", "A", "B", "C", "D", "E", "F", "G", "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"]) {
+for (const subway_line of subway_line_list) {
 monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line] =
   (await fetch(`/src/json/monthly_weekend_subway_otp_rate_from_jan_2015_${subway_line}.json`)
     .then(res => res.json()))
@@ -1362,11 +1370,7 @@ monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line] =
 const monthly_overall_subway_otp_rate_from_jan_2015_rows = {};
 
 //for each subway line...
-for (const subway_line of [
-  "1", "2", "3", "4", "5", "6", "7",
-  "S 42nd", "A", "B", "C", "D", "E", "F", "G",
-  "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"
-]) {
+for (const subway_line of subway_line_list) {
 
   //create a weekday and weekend series for each subway line
   const weekday = monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line];
@@ -1447,7 +1451,7 @@ monthly_overall_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
 const monthly_subway_otp_rate_step_size_reference = Object.fromEntries(
   [
     "1", "2", "3", "4", "5", "6", "7",
-    "S 42nd", "A", "B", "C", "D", "E", "F", "G",
+    "S 42nd", "A", "B", "C", "D", "E", "F", "G", "J",
     "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock", "Systemwide"
   ].map(line => [line, 20])
 );
@@ -1626,6 +1630,7 @@ clickSelectMultipleLineChart({
 
       //J, Z
       "#996633",
+      "#996633",
 
       //L
       "#A7A9AC",
@@ -1690,6 +1695,7 @@ select.addEventListener("change", function () {
         "#75c84e",
 
         //J, Z
+        "#996633",
         "#996633",
 
         //L
