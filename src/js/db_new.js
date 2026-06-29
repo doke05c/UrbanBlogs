@@ -1302,8 +1302,6 @@ const monthly_multimodal_from_mar_2020_rows = {
   "Access-a-Ride Ridership": monthly_aar_entries_from_mar_2020_rows,
 };
 
-console.log(monthly_mnr_entries_from_mar_2020_rows);
-
 const monthly_multimodal_from_mar_2020_step_size_reference = {
   "MNR Ridership": 1_000_000,
   "LIRR Ridership": 1_000_000,
@@ -1323,20 +1321,86 @@ monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line] =
     .then(res => res.json()))
       .map(entry => ({
         month: entry.month,
+        on_time_trips: entry.num_on_time_trips,
+        sched_trips: entry.num_sched_trips,
         count: entry.otp_rate * 100
       })
       );
 }
 
-console.log(monthly_weekday_subway_otp_rate_from_jan_2015_rows);
+//GET MONTHLY WEEKEND SUBWAY OTP RATES SINCE JAN 2015
 
-const monthly_weekday_subway_otp_rate_from_jan_2015_step_size_reference = Object.fromEntries(
+const monthly_weekend_subway_otp_rate_from_jan_2015_rows = {};
+
+for (const subway_line of ["1", "2", "3", "4", "5", "6", "7", "S 42nd", "A", "B", "C", "D", "E", "F", "G", "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"]) {
+monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line] =
+  (await fetch(`/src/json/monthly_weekend_subway_otp_rate_from_jan_2015_${subway_line}.json`)
+    .then(res => res.json()))
+      .map(entry => ({
+        month: entry.month,
+        on_time_trips: entry.num_on_time_trips,
+        sched_trips: entry.num_sched_trips,
+        count: entry.otp_rate * 100
+      })
+      );
+}
+
+//GET MONTHLY OVERALL SUBWAY OTP RATES SINCE JAN 2015
+
+const monthly_overall_subway_otp_rate_from_jan_2015_rows = {};
+
+//for each subway line...
+for (const subway_line of [
+  "1", "2", "3", "4", "5", "6", "7",
+  "S 42nd", "A", "B", "C", "D", "E", "F", "G",
+  "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"
+]) {
+
+  //create a weekday and weekend series for each subway line
+  const weekday = monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line];
+  const weekend = monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line];
+
+  //build a lookup: month -> weekend entry for each series
+  const weekendByMonth = Object.fromEntries(
+    weekend.map(entry => [entry.month, entry])
+  );
+
+  //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
+  monthly_overall_subway_otp_rate_from_jan_2015_rows[subway_line] =
+    weekday
+      .filter(weekdayEntry => weekendByMonth[weekdayEntry.month])
+      .map(weekdayEntry => {
+
+        const weekendEntry = weekendByMonth[weekdayEntry.month];
+
+        const on_time_trips =
+          weekdayEntry.on_time_trips + weekendEntry.on_time_trips;
+
+        const sched_trips =
+          weekdayEntry.sched_trips + weekendEntry.sched_trips;
+
+        //combine into overall database
+        return {
+          month: weekdayEntry.month,
+          on_time_trips,
+          sched_trips,
+          count: on_time_trips / sched_trips * 100
+        };
+      });
+}
+
+const monthly_subway_otp_rate_step_size_reference = Object.fromEntries(
   [
     "1", "2", "3", "4", "5", "6", "7",
     "S 42nd", "A", "B", "C", "D", "E", "F", "G",
     "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"
   ].map(line => [line, 20])
 );
+
+
+console.log(monthly_weekday_subway_otp_rate_from_jan_2015_rows);
+console.log(monthly_weekend_subway_otp_rate_from_jan_2015_rows);
+console.log(monthly_overall_subway_otp_rate_from_jan_2015_rows);
 
 //CREATE LIST OF MNR AND LIRR ENTRIES SINCE MAR 2020
 const monthly_lirr_mnr_from_mar_2020_rows = {
@@ -1464,60 +1528,133 @@ clickSelectMultipleLineChart({
   aspectRatio: 1.5,
 });
 
+//go through the selected choices btwn weekday, weekend, and overall
+//depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
+const subwayOTPDatasets = {
+    "Overall": monthly_overall_subway_otp_rate_from_jan_2015_rows,
+    "Weekday": monthly_weekday_subway_otp_rate_from_jan_2015_rows,
+    "Weekend": monthly_weekend_subway_otp_rate_from_jan_2015_rows
+};
+
+console.log(subwayOTPDatasets["Overall"]);
+
+const select = document.getElementById("subwayOTPDaySelect");
+
 clickSelectMultipleLineChart({
-  datasetList: monthly_weekday_subway_otp_rate_from_jan_2015_rows,
-  datasetListStepSizeReference: monthly_weekday_subway_otp_rate_from_jan_2015_step_size_reference,
+    datasetList: subwayOTPDatasets[select.value],
+    datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
+    containerId: "monthly_subway_otp_from_jan_2015_select_box_line",
+    checkBoxGroupId: "subway-otp-checkboxes",
+    timeOfInterest: "month",
+    aspectRatio: 1.5,
+    lineColors: [
+      //1, 2, 3
+      "#EE352E",
+      "#EE352E",
+      "#EE352E",
 
-  containerId: "monthly_weekday_subway_otp_from_jan_2015_select_box_line",
-  checkBoxGroupId: "subway-otp-weekday-checkboxes",
-  
-  timeOfInterest: "month",
-  aspectRatio: 1.5,
+      //4, 5, 6
+      "#00933C",
+      "#00933C",
+      "#00933C",
 
-  lineColors: [
-    //1, 2, 3
-    "#EE352E",
-    "#EE352E",
-    "#EE352E",
+      //7
+      "#B933AD",
 
-    //4, 5, 6
-    "#00933C",
-    "#00933C",
-    "#00933C",
+      //S 42nd
+      "#808183",
 
-    //7
-    "#B933AD",
+      //A, B, C, D, E, F
+      "#0039A6",
+      "#FF6319",
+      "#0039A6",
+      "#FF6319",
+      "#0039A6",
+      "#FF6319",
 
-    //S 42nd
-    "#808183",
+      //G
+      "#75c84e",
 
-    //A, B, C, D, E, F
-    "#0039A6",
-    "#FF6319",
-    "#0039A6",
-    "#FF6319",
-    "#0039A6",
-    "#FF6319",
+      //J, Z
+      "#996633",
 
-    //G
-    "#75c84e",
+      //L
+      "#A7A9AC",
 
-    //J, Z
-    "#996633",
+      //M
+      "#FF6319",
 
-    //L
-    "#A7A9AC",
+      //N, Q, R
+      "#FCCC0A",
+      "#FCCC0A",
+      "#FCCC0A",
 
-    //M
-    "#FF6319",
+      //S Franklin, S Rockaway
+      "#808183",
+      "#808183",
+    ]
+});
 
-    //N, Q, R
-    "#FCCC0A",
-    "#FCCC0A",
-    "#FCCC0A",
+select.addEventListener("change", function () {
+    const container = document.getElementById("monthly_subway_otp_from_jan_2015_select_box_line");
+    container.innerHTML = ""; //remove old chart
 
-    //S Franklin, S Rockaway
-    "#808183",
-    "#808183",
-  ]
-})
+    const checkboxset = document.getElementById("subway-otp-checkboxes");
+    checkboxset.innerHTML = ""; //remove old checkbox set
+
+  clickSelectMultipleLineChart({
+      datasetList: subwayOTPDatasets[select.value],
+      datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
+      containerId: "monthly_subway_otp_from_jan_2015_select_box_line",
+      checkBoxGroupId: "subway-otp-checkboxes",
+      timeOfInterest: "month",
+      aspectRatio: 1.5,
+      lineColors: [
+        //1, 2, 3
+        "#EE352E",
+        "#EE352E",
+        "#EE352E",
+
+        //4, 5, 6
+        "#00933C",
+        "#00933C",
+        "#00933C",
+
+        //7
+        "#B933AD",
+
+        //S 42nd
+        "#808183",
+
+        //A, B, C, D, E, F
+        "#0039A6",
+        "#FF6319",
+        "#0039A6",
+        "#FF6319",
+        "#0039A6",
+        "#FF6319",
+
+        //G
+        "#75c84e",
+
+        //J, Z
+        "#996633",
+
+        //L
+        "#A7A9AC",
+
+        //M
+        "#FF6319",
+
+        //N, Q, R
+        "#FCCC0A",
+        "#FCCC0A",
+        "#FCCC0A",
+
+        //S Franklin, S Rockaway
+        "#808183",
+        "#808183",
+      ]
+  });
+});
+

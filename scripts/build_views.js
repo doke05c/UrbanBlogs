@@ -215,6 +215,8 @@ async function build() {
         const monthly_weekday_subway_otp_rate_from_jan_2015 = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
+                num_on_time_trips AS num_on_time_trips,
+                num_sched_trips AS num_sched_trips,
                 terminal_on_time_performance AS otp_rate
             FROM mta_subway_otp
 
@@ -228,6 +230,29 @@ async function build() {
         fs.writeFileSync(
             `src/json/monthly_weekday_subway_otp_rate_from_jan_2015_${subway_line}.json`,
             JSON.stringify(monthly_weekday_subway_otp_rate_from_jan_2015)
+        )
+    }
+
+    //entire history of weekend monthly otp subway since 01/2015
+    for (const subway_line of ["1", "2", "3", "4", "5", "6", "7", "S 42nd", "A", "B", "C", "D", "E", "F", "G", "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"]) {
+        const monthly_weekend_subway_otp_rate_from_jan_2015 = await query (`
+            SELECT
+                strftime(month, '%Y-%m') AS month,
+                num_on_time_trips AS num_on_time_trips,
+                num_sched_trips AS num_sched_trips,
+                terminal_on_time_performance AS otp_rate
+            FROM mta_subway_otp
+
+            WHERE line = '${subway_line}'
+                AND day_type = 2
+                AND month >= DATE '2015-01-01'
+
+            ORDER BY month;
+        `);
+
+        fs.writeFileSync(
+            `src/json/monthly_weekend_subway_otp_rate_from_jan_2015_${subway_line}.json`,
+            JSON.stringify(monthly_weekend_subway_otp_rate_from_jan_2015)
         )
     }
 

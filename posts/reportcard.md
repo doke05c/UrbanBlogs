@@ -124,8 +124,20 @@ Introducing a new, checkbox-based system to select datasets. No more confusion o
 
 I stabilized the colors, meaning we can now do breakdowns of Subway data by line! Here's weekday on-time performance for each subway line by month:
 
-<div id="subway-otp-weekday-checkboxes"></div>
 
-#### MTA Monthly Subway On-Time Performance Rate (%), Since Jan 2015, Weekdays, Line:
-<div id="monthly_weekday_subway_otp_from_jan_2015_select_box_line"></div>
+##### June 29, 2026: 1:30PM, City College Cohen Library:
+
+What if we wanted to look at more than just weekday data? Not a problem! Check off which days of Subway on-time performance to graph:
+
+<label for="subwayOTPDaySelect">Day Type:</label><br>
+<select id="subwayOTPDaySelect">
+    <option value="Overall">Overall</option>
+    <option value="Weekday">Weekday</option>
+    <option value="Weekend">Weekend</option>
+</select>
+
+<div id="subway-otp-checkboxes"></div>
+
+#### MTA Monthly Subway On-Time Performance Rate (%), Since Jan 2015, Line:
+<div id="monthly_subway_otp_from_jan_2015_select_box_line"></div>
 <br>
