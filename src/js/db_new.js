@@ -1755,7 +1755,8 @@ select.addEventListener("change", function () {
         //7
         "#B933AD",
 
-        //S 42nd
+        //S 42nd, and its buggy duplicate
+        "#808183",
         "#808183",
 
         //A, B, C, D, E, F
@@ -1784,7 +1785,9 @@ select.addEventListener("change", function () {
         "#FCCC0A",
         "#FCCC0A",
 
-        //S Franklin, S Rockaway
+        //S Franklin, S Rockaway, and their buggy duplicates
+        "#808183",
+        "#808183",
         "#808183",
         "#808183",
 
