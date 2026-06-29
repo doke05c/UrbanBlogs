@@ -1329,8 +1329,8 @@ const monthly_multimodal_from_mar_2020_step_size_reference = {
 const subway_line_list =
 [
   "1", "2", "3", "4", "5", "6", "7",
-  "S 42nd", "A", "B", "C", "D", "E", "F", "G", "J",
-  "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"
+  "S 42nd", "GS", "A", "B", "C", "D", "E", "F", "G", "J",
+  "JZ", "L", "M", "N", "Q", "R", "S Fkln", "FS", "S Rock", "H"
 ]
 
 const monthly_weekday_subway_otp_rate_from_jan_2015_rows = {};
@@ -1451,8 +1451,8 @@ monthly_overall_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
 const monthly_subway_otp_rate_step_size_reference = Object.fromEntries(
   [
     "1", "2", "3", "4", "5", "6", "7",
-    "S 42nd", "A", "B", "C", "D", "E", "F", "G", "J",
-    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock", "Systemwide"
+    "S 42nd", "GS", "A", "B", "C", "D", "E", "F", "G", "J",
+    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "FS", "S Rock", "H", "Systemwide"
   ].map(line => [line, 20])
 );
 
@@ -1614,7 +1614,8 @@ clickSelectMultipleLineChart({
       //7
       "#B933AD",
 
-      //S 42nd
+      //S 42nd, and its buggy duplicate
+      "#808183",
       "#808183",
 
       //A, B, C, D, E, F
@@ -1643,7 +1644,9 @@ clickSelectMultipleLineChart({
       "#FCCC0A",
       "#FCCC0A",
 
-      //S Franklin, S Rockaway
+      //S Franklin, S Rockaway, and their buggy duplicates
+      "#808183",
+      "#808183",
       "#808183",
       "#808183",
 
