@@ -471,25 +471,97 @@ function makeMultipleLineChart ({
         "polyline"
       );
 
-      //set lines connecting points
-      line_polyline.setAttribute(
-        "points",
-        coordsList[name].map(p => `${p.x},${p.y}`).join(" ")
-      );
+      //set lines connecting points if they are consecutive
 
-      line_polyline.setAttribute("fill", "none");
+      //checker process for if we skipped any points. any non-consecutive points must NOT be coonected
+      let currentPoints = [];
 
-      if (passLineColorsAsStatic) {
-        //find index of name ^ in datasetListStepSizeReference, and then set index lineColors[index] of this found index
-        const index = Object.keys(datasetListStepSizeReference).indexOf(name);
-        line_polyline.setAttribute("stroke", lineColors[index % lineColors.length]); //<- do the remainder to ensure loopability when needed
-      } else {
-        line_polyline.setAttribute("stroke", lineColors[i]);
+      for (let j = 0; j < coordsList[name].length; j++) {
+
+        const p = coordsList[name][j];
+
+        if (j > 0) {
+
+          const prevDate = coordsList[name][j - 1].date;
+          const currDate = p.date;
+
+          let expectedNext;
+
+          if (timeOfInterest == "month") {
+            expectedNext = new Date(
+              prevDate.getFullYear(),
+              prevDate.getMonth() + 1,
+              1
+            );
+          }
+
+          if (timeOfInterest == "date") {
+            expectedNext = new Date(prevDate);
+            expectedNext.setDate(prevDate.getDate() + 1);
+          }
+
+          //gap found -> draw previous segment, then restart
+          if (currDate.getTime() !== expectedNext.getTime()) {
+
+            const gap_polyline = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "polyline"
+            );
+
+            gap_polyline.setAttribute(
+              "points",
+              currentPoints.map(p => `${p.x},${p.y}`).join(" ")
+            );
+
+            gap_polyline.setAttribute("fill", "none");
+
+            if (passLineColorsAsStatic) {
+              //find index of name ^ in datasetListStepSizeReference, and then set index lineColors[index] of this found index
+              const index = Object.keys(datasetListStepSizeReference).indexOf(name);
+              gap_polyline.setAttribute("stroke", lineColors[index % lineColors.length]); //<- do the remainder to ensure loopability when needed
+            } else {
+              gap_polyline.setAttribute("stroke", lineColors[i]);
+            }
+
+            gap_polyline.setAttribute("stroke-width", "2.5");
+
+            svg.appendChild(gap_polyline);
+
+            currentPoints = [];
+          }
+        }
+
+        currentPoints.push(p);
       }
 
-      line_polyline.setAttribute("stroke-width", "2.5");
 
-      svg.appendChild(line_polyline);
+      //draw final segment
+      if (currentPoints.length > 1) {
+
+        const gap_polyline = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "polyline"
+        );
+
+        gap_polyline.setAttribute(
+          "points",
+          currentPoints.map(p => `${p.x},${p.y}`).join(" ")
+        );
+
+        gap_polyline.setAttribute("fill", "none");
+
+        if (passLineColorsAsStatic) {
+          //find index of name ^ in datasetListStepSizeReference, and then set index lineColors[index] of this found index
+          const index = Object.keys(datasetListStepSizeReference).indexOf(name);
+          gap_polyline.setAttribute("stroke", lineColors[index % lineColors.length]); //<- do the remainder to ensure loopability when needed
+        } else {
+          gap_polyline.setAttribute("stroke", lineColors[i]);
+        }
+
+        gap_polyline.setAttribute("stroke-width", "2.5");
+
+        svg.appendChild(gap_polyline);
+      }
     }
 
   //POINTS
@@ -674,7 +746,7 @@ function makeMultipleLineChart ({
   for (const [i, [name, dataset]] of Object.entries(datasetList).entries()) {
 
     //if next item would overflow, move to next row
-    legendSpacing = Math.max((name.length * 15), (6 * 15)); //minimum "name.length" should be 6 in case name is shorter than 6 char
+    legendSpacing = Math.max((name.length * 15), (7 * 15)); //minimum "name.length" should be 6 in case name is shorter than 6 char
     if (legendX + legendSpacing > legendMaxX) {
       legendX = legendStartX;
       legendRow++;
