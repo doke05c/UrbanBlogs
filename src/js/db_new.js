@@ -112,6 +112,18 @@ function makeMultipleLineChart ({
     }
   }
 
+  //throw error if no counts for a dataset
+  if (rows_max_val === undefined || rows_max_val === 0 || Number.isNaN(rows_max_val)) {
+
+      const container = document.getElementById(containerId);
+
+      container.innerHTML = "";
+      container.textContent = "Dataset contains undefined or missing values, try something else";
+
+      console.error("Invalid count:", rows_max_val);
+      throw new Error("Dataset contains undefined or missing values, try something else");
+  }
+
   //point count is determined separately by timeofinterest, taken as difference of max date and min date
   let pointCount;
 
@@ -228,7 +240,7 @@ function makeMultipleLineChart ({
       y: viewBoxHeight - 
         (Number(r.count) / yAxisMax) * 
         viewBoxHeight,
-
+      
       value: r.count,
 
       date: d
@@ -1362,22 +1374,21 @@ for (const subway_line of [
 
   //build a lookup: month -> weekend entry for each series
   const weekendByMonth = Object.fromEntries(
-    weekend.map(entry => [entry.month, entry])
+    (weekend ?? []).map(entry => [entry.month, entry])
   );
 
   //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
   monthly_overall_subway_otp_rate_from_jan_2015_rows[subway_line] =
     weekday
-      .filter(weekdayEntry => weekendByMonth[weekdayEntry.month])
       .map(weekdayEntry => {
 
         const weekendEntry = weekendByMonth[weekdayEntry.month];
 
         const on_time_trips =
-          weekdayEntry.on_time_trips + weekendEntry.on_time_trips;
+          weekdayEntry.on_time_trips + (weekendEntry?.on_time_trips ?? 0);
 
         const sched_trips =
-          weekdayEntry.sched_trips + weekendEntry.sched_trips;
+          weekdayEntry.sched_trips + (weekendEntry?.sched_trips ?? 0);
 
         //combine into overall database
         return {
@@ -1389,18 +1400,58 @@ for (const subway_line of [
       });
 }
 
+//function to create systemwide otp entry "line" (for each weekday, weekend, overall)
+function createSystemwideOTP(dataset) {
+
+    const monthlyTotals = {};
+
+    //for each subway line...
+    for (const subway_line of Object.keys(dataset)) {
+        
+        //for each month in each subway line
+        for (const entry of dataset[subway_line]) {
+
+            //if there is yet to be a monthly value for the number of scheduled and on time trips, create a month element and fill it with 0 for now. 
+            if (!monthlyTotals[entry.month]) {
+                monthlyTotals[entry.month] = {
+                    on_time_trips: 0,
+                    sched_trips: 0
+                };
+            }
+
+            //add values to total
+            monthlyTotals[entry.month].on_time_trips += entry.on_time_trips;
+            monthlyTotals[entry.month].sched_trips += entry.sched_trips;
+        }
+    }
+
+    //create a new entry "line" for systemwide, add our values to it
+    return Object.entries(monthlyTotals).map(([month, totals]) => ({
+        month,
+        on_time_trips: totals.on_time_trips,
+        sched_trips: totals.sched_trips,
+        count: totals.on_time_trips / totals.sched_trips * 100
+    }));
+}
+
+//add systemwide to dataset for each of weekday, weekend, overall
+monthly_weekday_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
+    createSystemwideOTP(monthly_weekday_subway_otp_rate_from_jan_2015_rows);
+  
+monthly_weekend_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
+    createSystemwideOTP(monthly_weekend_subway_otp_rate_from_jan_2015_rows);
+
+monthly_overall_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
+    createSystemwideOTP(monthly_overall_subway_otp_rate_from_jan_2015_rows);
+
 const monthly_subway_otp_rate_step_size_reference = Object.fromEntries(
   [
     "1", "2", "3", "4", "5", "6", "7",
     "S 42nd", "A", "B", "C", "D", "E", "F", "G",
-    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock"
+    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock", "Systemwide"
   ].map(line => [line, 20])
 );
 
-
-console.log(monthly_weekday_subway_otp_rate_from_jan_2015_rows);
-console.log(monthly_weekend_subway_otp_rate_from_jan_2015_rows);
-console.log(monthly_overall_subway_otp_rate_from_jan_2015_rows);
 
 //CREATE LIST OF MNR AND LIRR ENTRIES SINCE MAR 2020
 const monthly_lirr_mnr_from_mar_2020_rows = {
@@ -1536,8 +1587,6 @@ const subwayOTPDatasets = {
     "Weekend": monthly_weekend_subway_otp_rate_from_jan_2015_rows
 };
 
-console.log(subwayOTPDatasets["Overall"]);
-
 const select = document.getElementById("subwayOTPDaySelect");
 
 clickSelectMultipleLineChart({
@@ -1592,6 +1641,9 @@ clickSelectMultipleLineChart({
       //S Franklin, S Rockaway
       "#808183",
       "#808183",
+
+      //systemwide
+      "#00aaff"
     ]
 });
 
@@ -1654,6 +1706,9 @@ select.addEventListener("change", function () {
         //S Franklin, S Rockaway
         "#808183",
         "#808183",
+
+        //systemwide
+        "#00aaff"
       ]
   });
 });
