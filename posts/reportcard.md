@@ -141,3 +141,11 @@ What if we wanted to look at more than just weekday data? Not a problem! Check o
 #### MTA Monthly Subway On-Time Performance Rate (%), Since Jan 2015, Line:
 <div id="monthly_subway_otp_from_jan_2015_select_box_line"></div>
 <br>
+
+##### July 1, 2026: 5:00PM, Hunter College Cooperman Library:
+
+Some datasets can be challenging to look at across the entire time series. Let's try to look at this bar chart only with a certain time selection:
+
+#### MTA Subway Monthly Ridership, Custom Date Range, Bar:
+<div id="monthly_entries_subway_from_mar_2020_bar_date_range"></div>
+<br>

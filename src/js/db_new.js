@@ -944,7 +944,12 @@ function makeBarChart({
   paddingTop = 25,
   paddingBottom = 45,
   paddingLeft = 5,
-  paddingRight = 5
+  paddingRight = 5,
+
+  importedDateRange = [
+    new Date(1900, 1, 1, 0, 0),
+    new Date(2099, 12, 31, 23, 59)
+  ]
 }) {
 
   //create container for bar chart
@@ -962,6 +967,26 @@ function makeBarChart({
 
   document.getElementById(containerId).appendChild(container) //<- Display
 
+  //filter out rows that are not in given date range (date range is set to 1900-2099 by default)
+  rows = rows.filter(r => {
+    let d;
+
+    //for month
+    if (timeOfInterest === "month") {
+      const [year, month] = r.month.split("-").map(Number);
+      d = new Date(year, month - 1, 1);
+
+    //for date
+    } else if (timeOfInterest === "date") {
+      const [year, month, day] = r.date.split("-").map(Number);
+      d = new Date(year, month - 1, day);
+    }
+
+    //if row date is within range, return the row as having passed filter
+
+    console.log("Range: ", importedDateRange[0], "-", importedDateRange[1], ". Date of element: ", d);
+    return d >= importedDateRange[0] && d <= importedDateRange[1];
+  });
 
   //get highest value of the dataset, made to scale bar chart
   const maxVal = Math.max(...rows.map(r => Number(r.count)));
@@ -986,6 +1011,7 @@ function makeBarChart({
 
   //for each item in the dataset...
   rows.forEach((r, i) => {
+
     const value = Number(r.count);
     
     //set bar height relative to maximum
@@ -1628,6 +1654,16 @@ makeBarChart({
   containerId: "monthly_entries_subway_from_mar_2020_bar",
   timeOfInterest: "month"
 });
+
+//DATE RANGE BAR
+makeBarChart({
+  rows: monthly_entries_subway_from_mar_2020_rows,
+  containerId: "monthly_entries_subway_from_mar_2020_bar_date_range",
+  timeOfInterest: "month",
+  importedDateRange: [new Date(2024, 0, 1, 0, 0, 0, 0), 
+                      new Date(2025, 11, 31, 23, 59, 59, 59)]
+});
+
 
 //USER SELECTION SECTION
 
