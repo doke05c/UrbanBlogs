@@ -152,16 +152,6 @@ Some datasets can be challenging to look at across the entire time series. Let's
         <input id="toSlider" type="range" value="40" min="0"/> 
         <span id="fromLabel"></span> <span id="toLabel"></span>
     </div>
-    <div class="form_control">
-        <div class="form_control_container">
-            <div class="form_control_container__time">Min</div>
-            <input class="form_control_container__time__input" type="number" id="fromInput" value="10" min="0"/>
-        </div>
-        <div class="form_control_container">
-            <div class="form_control_container__time">Max</div>
-            <input class="form_control_container__time__input" type="number" id="toInput" value="40" min="0"/>
-        </div>
-    </div>
 </div>
 
 
