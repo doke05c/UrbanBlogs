@@ -939,10 +939,10 @@ function makeBarChart({
   barColor = "#4a90e2",
 
   width = 1000,
-  height = 300,
+  height = 400,
 
   paddingTop = 25,
-  paddingBottom = 45,
+  paddingBottom = 150,
   paddingLeft = 5,
   paddingRight = 5,
 
@@ -1092,10 +1092,10 @@ function makeBarChart({
     );
 
     labelText.setAttribute("x", x + barWidth * 0.4);
-    labelText.setAttribute("y", height - paddingBottom + (barWidth * 0.25));
+    labelText.setAttribute("y", height - paddingBottom + Math.min((barWidth * 0.25), 56));
     labelText.setAttribute("text-anchor", "middle");
     labelText.setAttribute("fill", textColor);
-    labelText.setAttribute("font-size", `${barWidth * 0.18}`);
+    labelText.setAttribute("font-size", `${Math.min(barWidth * 0.18, 40)}`);
 
     //monthly x-labels
     if (timeOfInterest === "month") {
@@ -2003,3 +2003,5 @@ toSlider.oninput = function() {
   });
 }
 
+//RE-ENABLE SITE VISIBILITY
+document.getElementById("report-card-content").style.visibility = "visible";

@@ -46,7 +46,7 @@ p {
     font-size: 19px;
 }
 
-main > * {
+main > #report-card-content > * {
     margin-block: 35px;
 }
 
@@ -100,6 +100,12 @@ li {
 li p{
     display: inline;
 }
+
+/*SSTRP REPORT CARD SHOULD NOT LOAD UNTIL ASSETS ARE READY*/
+#report-card-content {
+    visibility: hidden;
+}
+
 
 
 /*DATE SLIDER CONTROLS*/
