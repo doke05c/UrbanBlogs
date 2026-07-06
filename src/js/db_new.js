@@ -1912,14 +1912,93 @@ function setToggleAccessible(currentTarget) {
   }
 }
 
+//SET MONTH COUNT
+const numOfMonths = 150;
+
+//month labels list
+let monthLabels = [];
+
+//set start month to make labels list
+const start = new Date(2015, 0, 1); //January 2015
+
+//iterator
+const current = new Date(start);
+
+//loop
+for (let i = 0; i < numOfMonths + 1; i++) {
+  monthLabels.push(`${current.getMonth() + 1}/1/${current.getFullYear()}`);
+  current.setMonth(current.getMonth()+1);
+}
+
+
 const fromSlider = document.querySelector('#fromSlider');
 const toSlider = document.querySelector('#toSlider');
 const fromInput = document.querySelector('#fromInput');
 const toInput = document.querySelector('#toInput');
+
+document.getElementById("fromSlider").max = numOfMonths;
+document.getElementById("toSlider").max = numOfMonths;
+document.getElementById("fromInput").max = numOfMonths;
+document.getElementById("toInput").max = numOfMonths;
+
+const fromLabel = document.getElementById("fromLabel");
+const toLabel = document.getElementById("toLabel");
+
 fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
 setToggleAccessible(toSlider);
 
-fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider, fromInput);
-toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toInput);
-fromInput.oninput = () => controlFromInput(fromSlider, fromInput, toInput, toSlider);
-toInput.oninput = () => controlToInput(toSlider, fromInput, toInput, toSlider);
+let left_percent = fromSlider.value / fromSlider.max * 100;
+let right_percent = toSlider.value / toSlider.max * 100;
+
+fromLabel.textContent = monthLabels[fromSlider.value];
+
+let left_draw_pos = left_percent;
+fromLabel.style.left = `calc(${Math.min(left_draw_pos)}%)`;
+
+
+toLabel.textContent = monthLabels[toSlider.value];
+
+let right_draw_pos = right_percent;
+toLabel.style.left = `calc(${Math.max(right_draw_pos)}%)`;
+
+fromSlider.oninput = function() { 
+  controlFromSlider(fromSlider, toSlider, fromInput); 
+  fromLabel.textContent = monthLabels[fromSlider.value];
+  left_percent = fromSlider.value / fromSlider.max * 100;
+  if (left_percent > 80) {
+    left_draw_pos = Math.min(left_draw_pos, 80);
+  } else if ((Math.abs(right_percent - left_percent) <= 20) || (right_draw_pos <= 20)) {
+    left_draw_pos = Math.min(left_percent, right_draw_pos - 20);
+  } else {
+    left_draw_pos = left_percent;
+  }
+  fromLabel.style.left = `calc(${left_draw_pos}%)`;
+
+  console.log("Left pct:", left_percent, "Right pct:", right_percent);
+  console.log("Left draw pos:", left_draw_pos, "Right draw pos:", right_draw_pos);
+
+}
+
+toSlider.oninput = function() { 
+  controlToSlider(fromSlider, toSlider, toInput); 
+  toLabel.textContent = monthLabels[toSlider.value];
+  right_percent = toSlider.value / toSlider.max * 100;
+  if (right_percent < 20) {
+    right_draw_pos = Math.max(right_draw_pos, 20);
+  } else if ((Math.abs(right_percent - left_percent) <= 20) || (left_draw_pos >= 80)) {
+    right_draw_pos = Math.max(left_draw_pos + 20, right_percent);
+  } else {
+    right_draw_pos = right_percent;
+  }
+  toLabel.style.left = `calc(${Math.max(right_draw_pos)}%)`;
+
+  console.log("Left pct:", left_percent, "Right pct:", right_percent);
+  console.log("Left draw pos:", left_draw_pos, "Right draw pos:", right_draw_pos);
+}
+
+
+
+
+fromInput.oninput = function(){ controlFromInput(fromSlider, fromInput, toInput, toSlider); }
+toInput.oninput = function(){ controlToInput(toSlider, fromInput, toInput, toSlider); }
+
