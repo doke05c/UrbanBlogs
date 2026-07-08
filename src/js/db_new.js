@@ -1093,8 +1093,6 @@ function makeBarChart({
     valueText.setAttribute("font-size", `${Math.min(70, 1.4 * barWidth / valueText.textContent.length)}`);
     //max size 70
 
-    console.log(valueText.getAttribute("font-size"));
-
     //added top of bar label to svg
     svg.appendChild(valueText);
 
@@ -1842,6 +1840,7 @@ select.addEventListener("change", function () {
 
 //DATE SLIDERS
 
+
 function controlFromSlider(fromSlider, toSlider) {
   const [from, to] = getParsed(fromSlider, toSlider);
   fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
@@ -1890,133 +1889,171 @@ function setToggleAccessible(currentTarget) {
   }
 }
 
-//SET MONTH COUNT
-const numOfMonths = 150;
+//MAKE MULTIPLE CHARTS UNDER A SLIDER. 
+// WARNING: SLIDER DOES NOT MAKE CHARTS, CHART FUNCTION CALLS MUST BE PASSED VIA 
+//          whichChartsToUpdate
+function sliderMakerMultipleChart({
 
-//month labels list
-let monthLabels = [];
+  //get id for fromSlider from input
+  fromSliderId,
 
-//set start month to make labels list
-const start = new Date(2015, 0, 1); //January 2015
+  //get id for toSlider from input
+  toSliderId,
 
-//iterator
-const current = new Date(start);
+  //get starting date of slider from input
+  startDate,
 
-//loop
-for (let i = 0; i < numOfMonths + 1; i++) {
-  monthLabels.push(`${current.getMonth() + 1}/1/${current.getFullYear()}`);
-  current.setMonth(current.getMonth()+1);
-}
+  //get ending date of slider from input
+  endDate,
 
-//get sliders
-const fromSlider = document.querySelector('#fromSlider');
-const toSlider = document.querySelector('#toSlider');
+  //get charts to track with this slider from input
+  updateChartsFunction,
+}) {
 
-//set max values to the amount of "ticks" (months) available
-document.getElementById("fromSlider").max = numOfMonths;
-document.getElementById("toSlider").max = numOfMonths;
+  //get sliders
+  const fromSlider = document.querySelector(fromSliderId);
+  const toSlider = document.querySelector(toSliderId);
 
-//get labels
-const fromLabel = document.getElementById("fromLabel");
-const toLabel = document.getElementById("toLabel");
+  //set start month and end month to make labels list
+  const start = startDate;
+  const end = endDate;
 
-//fill slider with content
-fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
-setToggleAccessible(toSlider);
+  //calculate num of months
+  const numOfMonths =
+      (end.getFullYear() - start.getFullYear()) * 12 +
+      (end.getMonth() - start.getMonth());
 
-//set initials: percentages and label positions, and chart
-let left_percent = fromSlider.value / fromSlider.max * 100;
-let right_percent = toSlider.value / toSlider.max * 100;
-
-
-fromLabel.textContent = monthLabels[fromSlider.value];
-let left_draw_pos = left_percent;
-fromLabel.style.left = `calc(${Math.min(left_draw_pos)}%)`;
+  //month labels list
+  let monthLabels = [];
 
 
-toLabel.textContent = monthLabels[toSlider.value];
-let right_draw_pos = right_percent;
-toLabel.style.left = `calc(${Math.max(right_draw_pos)}%)`;
+  //iterator
+  const current = new Date(start);
 
-//DATE RANGE BAR
-makeBarChart({
-  rows: monthly_entries_subway_from_mar_2020_rows,
-  containerId: "monthly_entries_subway_from_mar_2020_bar_date_range",
-  timeOfInterest: "month",
-  importedDateRange: [new Date(monthLabels[fromSlider.value]), 
-                      new Date(monthLabels[toSlider.value])]
-});
+  //loop
+  for (let i = 0; i < numOfMonths + 1; i++) {
+    monthLabels.push(`${current.getMonth() + 1}/1/${current.getFullYear()}`);
+    current.setMonth(current.getMonth()+1);
+  }
 
-//on click of left slider, update labels and position of slider button as needed. [TO-DO: CHART]
-fromSlider.oninput = function() { 
+  //set max values to the amount of "ticks" (months) available
+  fromSlider.max = numOfMonths;
+  toSlider.max = numOfMonths;
 
-  //update button
-  controlFromSlider(fromSlider, toSlider); 
-  
-  //update text with month of slider value
+  //fill slider with content
+  fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
+  setToggleAccessible(toSlider);
+
+  //set initials: percentages and label positions, and chart
+  let left_percent = fromSlider.value / fromSlider.max * 100;
+  let right_percent = toSlider.value / toSlider.max * 100;
+
+
   fromLabel.textContent = monthLabels[fromSlider.value];
-  
-  //update percent value along slider
-  left_percent = fromSlider.value / fromSlider.max * 100;
+  let left_draw_pos = left_percent;
+  fromLabel.style.left = `calc(${Math.min(left_draw_pos)}%)`;
 
-  //collision control to put text down
-  if (left_percent > 80) {
-    left_draw_pos = Math.min(left_draw_pos, 80);
-  } else if ((Math.abs(right_percent - left_percent) <= 20) || (right_draw_pos <= 20)) {
-    left_draw_pos = Math.min(left_percent, right_draw_pos - 20);
-  } else {
-    left_draw_pos = left_percent;
-  }
-  fromLabel.style.left = `calc(${left_draw_pos}%)`;
 
-  const container = document.getElementById("monthly_entries_subway_from_mar_2020_bar_date_range");
-  container.innerHTML = "";  // remove old chart
-
-  //DATE RANGE BAR
-  makeBarChart({
-    rows: monthly_entries_subway_from_mar_2020_rows,
-    containerId: "monthly_entries_subway_from_mar_2020_bar_date_range",
-    timeOfInterest: "month",
-    importedDateRange: [new Date(monthLabels[fromSlider.value]), 
-                        new Date(monthLabels[toSlider.value])]
-  });
-
-}
-
-//on click of right slider, update labels and position of slider button as needed. [TO-DO: CHART]
-toSlider.oninput = function() { 
-
-  //update button
-  controlToSlider(fromSlider, toSlider); 
-
-  //update text with month of slider value
   toLabel.textContent = monthLabels[toSlider.value];
-
-  //update percent value along slider
-  right_percent = toSlider.value / toSlider.max * 100;
-
-  //collision control to put text down
-  if (right_percent < 20) {
-    right_draw_pos = Math.max(right_draw_pos, 20);
-  } else if ((Math.abs(right_percent - left_percent) <= 20) || (left_draw_pos >= 80)) {
-    right_draw_pos = Math.max(left_draw_pos + 20, right_percent);
-  } else {
-    right_draw_pos = right_percent;
-  }
+  let right_draw_pos = right_percent;
   toLabel.style.left = `calc(${Math.max(right_draw_pos)}%)`;
-  
-  const container = document.getElementById("monthly_entries_subway_from_mar_2020_bar_date_range");
-  container.innerHTML = "";  // remove old chart
 
-  //DATE RANGE BAR
+  //UPDATE CHART(S)
+  updateChartsFunction(
+    new Date(monthLabels[fromSlider.value]),
+    new Date(monthLabels[toSlider.value])
+  );
+
+  //on click of left slider, update labels and position of slider button as needed. [TO-DO: CHART]
+  fromSlider.oninput = function() { 
+
+    //update button
+    controlFromSlider(fromSlider, toSlider); 
+    
+    //update text with month of slider value
+    fromLabel.textContent = monthLabels[fromSlider.value];
+    
+    //update percent value along slider
+    left_percent = fromSlider.value / fromSlider.max * 100;
+
+    //collision control to put text down
+    if (left_percent > 80) {
+      left_draw_pos = Math.min(left_draw_pos, 80);
+    } else if ((Math.abs(right_percent - left_percent) <= 20) || (right_draw_pos <= 20)) {
+      left_draw_pos = Math.min(left_percent, right_draw_pos - 20);
+    } else {
+      left_draw_pos = left_percent;
+    }
+    fromLabel.style.left = `calc(${left_draw_pos}%)`;
+
+    //UPDATE CHART(S)
+    updateChartsFunction(
+      new Date(monthLabels[fromSlider.value]),
+      new Date(monthLabels[toSlider.value])
+    );
+
+  }
+
+  //on click of right slider, update labels and position of slider button as needed. [TO-DO: CHART]
+  toSlider.oninput = function() { 
+
+    //update button
+    controlToSlider(fromSlider, toSlider); 
+
+    //update text with month of slider value
+    toLabel.textContent = monthLabels[toSlider.value];
+
+    //update percent value along slider
+    right_percent = toSlider.value / toSlider.max * 100;
+
+    //collision control to put text down
+    if (right_percent < 20) {
+      right_draw_pos = Math.max(right_draw_pos, 20);
+    } else if ((Math.abs(right_percent - left_percent) <= 20) || (left_draw_pos >= 80)) {
+      right_draw_pos = Math.max(left_draw_pos + 20, right_percent);
+    } else {
+      right_draw_pos = right_percent;
+    }
+    toLabel.style.left = `calc(${Math.max(right_draw_pos)}%)`;
+    
+    //UPDATE CHART(S)
+    updateChartsFunction(
+      new Date(monthLabels[fromSlider.value]),
+      new Date(monthLabels[toSlider.value])
+    );
+
+  }
+}
+
+function whichChartsToUpdate(startDate, endDate) {
+
+  //go through all charts which are to be updated, clear them before making new ones
+  for (const oldContainerId of ["monthly_entries_subway_from_mar_2020_bar_date_range"]) {
+    const container = document.getElementById(oldContainerId);
+    container.innerHTML = "";  // remove old chart
+  }
+
+  //make new charts. here is one
   makeBarChart({
     rows: monthly_entries_subway_from_mar_2020_rows,
     containerId: "monthly_entries_subway_from_mar_2020_bar_date_range",
     timeOfInterest: "month",
-    importedDateRange: [new Date(monthLabels[fromSlider.value]), 
-                        new Date(monthLabels[toSlider.value])]
+    importedDateRange: [new Date(startDate), 
+                        new Date(endDate)]
   });
 }
+
+sliderMakerMultipleChart({
+  fromSliderId: '#fromSlider',
+  toSliderId: '#toSlider',
+  startDate: new Date(2015, 0, 1), //Jan 2015
+  endDate: new Date(2026, 6, 1), //Jul 2026
+  updateChartsFunction: (startDate, endDate) => {
+    whichChartsToUpdate(startDate, endDate);
+  }
+})
+
+
 
 //RE-ENABLE SITE VISIBILITY
 document.getElementById("report-card-content").style.visibility = "visible";
