@@ -454,7 +454,6 @@ function makeMultipleLineChart ({
       1,
       Math.round(pointCount / ( viewBoxWidth / (100 / tickCount) / x_axis_label.textContent.length))
     );  //result cannot be less than 1
-    console.log(skip_amount);
 
     //put down x-label, skipping the amount of labels we calculated earlier
     if (i % skip_amount == 0) {
@@ -1332,9 +1331,54 @@ function clickSelectMultipleLineChart({
     new Date(2099, 11, 31)
   ],
 
+  //need to initialize before function begins to avoid wiping checked dataset selection on each date slider change
+  checkedDatasets = {}, 
+
 }) 
 
 {
+  //refresh render to run the graphing process again in the function as needed, either after date range or checkbox change
+  function refreshRender() {
+    if (Object.entries(checkedDatasets).length > 0) { //if we have received anything to plot, then remove the old plot and put in the new one
+
+      //remove old chart, prep for replacement with new one
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";  // remove old chart
+
+      for (const [name, dataset] of Object.entries(datasetList)) {
+
+        //step size is determined by the maximum step size of the datasets we have present, 
+        //checked with step_size_reference list
+        stepSize = Math.max(
+        ...Object.keys(checkedDatasets)
+          .map(name => datasetListStepSizeReference[name])
+          .filter(Boolean)
+        );
+      }
+
+
+      //make chart with new dataset list and new stepsize, put back into the containerid we used
+      makeMultipleLineChart({
+        datasetList: checkedDatasets,
+        containerId: containerId,
+        yAxisStep: stepSize,
+        timeOfInterest: timeOfInterest,
+        aspectRatio: aspectRatio,
+        lineColors: lineColors,
+        passLineColorsAsStatic: passLineColorsAsStatic,
+        datasetListStepSizeReference: datasetListStepSizeReference,
+        importedDateRange: importedDateRange
+      });
+
+    } else {
+      //remove chart, no data
+      const container = document.getElementById(containerId);
+      container.innerHTML = ""; //remove old chart
+
+      container.textContent = "Select a dataset to start the chart.";
+    }
+  }
+
   //get checkbox container from html side
   const checkboxContainer = document.getElementById(checkBoxGroupId);
 
@@ -1344,32 +1388,36 @@ function clickSelectMultipleLineChart({
   checkboxContainer.style.columnGap = "5px";
 
   //for each item in the stepsize reference... (datasetlist is advisable as well, both are fine, just as long as indexing is consistent on both)
-  Object.keys(datasetListStepSizeReference).forEach((name, index) => {
+  
+  //ONLY DO IF THE LIST OF CHECKED ITEMS IS EMPTY:
+  if (checkboxContainer.children.length === 0) {
+    Object.keys(datasetListStepSizeReference).forEach((name, index) => {
 
-    //create a checkbox, name is the same as that of element from datasetlist
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = `dataset-${index}`;
-    checkbox.name = name;
+      //create a checkbox, name is the same as that of element from datasetlist
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = `dataset-${index}`;
+      checkbox.name = name;
 
-    const label = document.createElement("label");
-    label.htmlFor = checkbox.id;
-    label.textContent = " " + name;
+      const label = document.createElement("label");
+      label.htmlFor = checkbox.id;
+      label.textContent = " " + name;
 
-    //add checkbox and label and linebreak to the checkbox container
-    checkboxContainer.appendChild(checkbox);
-    checkboxContainer.appendChild(label);
+      //add checkbox and label and linebreak to the checkbox container
+      checkboxContainer.appendChild(checkbox);
+      checkboxContainer.appendChild(label);
 
-  //   //line break every 7 items
-  //   if ((index + 1) % 7 === 0) {
-  //     checkboxContainer.appendChild(document.createElement("br"));
-  //   } else {
-  //     checkboxContainer.appendChild(document.createTextNode("\u00A0".repeat(10))); //u00A0 is space. repeat space char.
-  //   }
-  });
+    //   //line break every 7 items
+    //   if ((index + 1) % 7 === 0) {
+    //     checkboxContainer.appendChild(document.createElement("br"));
+    //   } else {
+    //     checkboxContainer.appendChild(document.createTextNode("\u00A0".repeat(10))); //u00A0 is space. repeat space char.
+    //   }
+    });
+  }
 
   //create list of checked datasets to keep track of with each click
-  let checkedDatasets = {};
+  // let checkedDatasets = {}; //<- REMOVED TO PUT AT START OF FUNCTION
 
   //stepsize calculated before render, updated with each click
   let stepSize;
@@ -1377,6 +1425,8 @@ function clickSelectMultipleLineChart({
   //create chart container, set it to clicking prompt for now
   const container = document.getElementById(containerId);
   container.textContent = "Select a dataset to start the chart.";
+
+  refreshRender();
 
   document
     //give each checkbox in the checkbox set a listener for clicks
@@ -1401,44 +1451,7 @@ function clickSelectMultipleLineChart({
           delete checkedDatasets[checkbox.name];
         }
 
-        if (Object.entries(checkedDatasets).length > 0) { //if we have received anything to plot, then remove the old plot and put in the new one
-
-          //remove old chart, prep for replacement with new one
-          const container = document.getElementById(containerId);
-          container.innerHTML = "";  // remove old chart
-
-          for (const [name, dataset] of Object.entries(datasetList)) {
-
-            //step size is determined by the maximum step size of the datasets we have present, 
-            //checked with step_size_reference list
-            stepSize = Math.max(
-            ...Object.keys(checkedDatasets)
-              .map(name => datasetListStepSizeReference[name])
-              .filter(Boolean)
-            );
-          }
-
-
-          //make chart with new dataset list and new stepsize, put back into the containerid we used
-          makeMultipleLineChart({
-            datasetList: checkedDatasets,
-            containerId: containerId,
-            yAxisStep: stepSize,
-            timeOfInterest: timeOfInterest,
-            aspectRatio: aspectRatio,
-            lineColors: lineColors,
-            passLineColorsAsStatic: passLineColorsAsStatic,
-            datasetListStepSizeReference: datasetListStepSizeReference,
-            importedDateRange: importedDateRange
-          });
-
-        } else {
-          //remove chart, no data
-          const container = document.getElementById(containerId);
-          container.innerHTML = ""; //remove old chart
-
-          container.textContent = "Select a dataset to start the chart.";
-        }
+        refreshRender();
 
       });
     });
@@ -2035,10 +2048,18 @@ function sliderMakerMultipleChart({
   toLabel.style.left = `calc(${Math.max(right_draw_pos)}%)`;
 
   //UPDATE CHART(S)
-  updateChartsFunction(
-    new Date(monthLabels[fromSlider.value]),
-    new Date(monthLabels[toSlider.value])
-  );
+  let newStartDate = new Date(monthLabels[fromSlider.value]);
+  let newEndDate = new Date(monthLabels[toSlider.value]);
+
+  //send off event to let other functions know dates changed
+  document.dispatchEvent(new CustomEvent("dateRangeChanged", {
+      detail: {
+          newStartDate,
+          newEndDate
+      }
+  }));
+
+  updateChartsFunction(newStartDate, newEndDate);
 
   //on click of left slider, update labels and position of slider button as needed. [TO-DO: CHART]
   fromSlider.oninput = function() { 
@@ -2063,10 +2084,18 @@ function sliderMakerMultipleChart({
     fromLabel.style.left = `calc(${left_draw_pos}%)`;
 
     //UPDATE CHART(S)
-    updateChartsFunction(
-      new Date(monthLabels[fromSlider.value]),
-      new Date(monthLabels[toSlider.value])
-    );
+    newStartDate = new Date(monthLabels[fromSlider.value]);
+    newEndDate = new Date(monthLabels[toSlider.value]);
+
+    //send off event to let other functions know dates changed
+    document.dispatchEvent(new CustomEvent("dateRangeChanged", {
+        detail: {
+            newStartDate,
+            newEndDate
+        }
+    }));
+
+    updateChartsFunction(newStartDate, newEndDate);
 
   }
 
@@ -2093,20 +2122,31 @@ function sliderMakerMultipleChart({
     toLabel.style.left = `calc(${Math.max(right_draw_pos)}%)`;
     
     //UPDATE CHART(S)
-    updateChartsFunction(
-      new Date(monthLabels[fromSlider.value]),
-      new Date(monthLabels[toSlider.value])
-    );
+    newStartDate = new Date(monthLabels[fromSlider.value]);
+    newEndDate = new Date(monthLabels[toSlider.value]);
+
+    //send off event to let other functions know dates changed
+    document.dispatchEvent(new CustomEvent("dateRangeChanged", {
+        detail: {
+            newStartDate,
+            newEndDate
+        }
+    }));
+
+    updateChartsFunction(newStartDate, newEndDate);
 
   }
 }
+
+const ridershipCheckedDatasets = {}; //KEEP CHECKBOXES PERSISTENT THROUGH DATE SLIDING
 
 function whichChartsToUpdate(startDate, endDate) {
 
   //go through all charts which are to be updated, clear them before making new ones
   for (const oldContainerId of [
     "monthly_entries_subway_from_mar_2020_bar_date_range", 
-    "monthly_entries_subway_from_mar_2020_line_date_range"
+    "monthly_entries_subway_from_mar_2020_line_date_range",
+    "monthly_selectmodal_box_from_mar_2020_line_date_range",
   ]) {
 
     const container = document.getElementById(oldContainerId);
@@ -2114,7 +2154,7 @@ function whichChartsToUpdate(startDate, endDate) {
 
   }
 
-  //make new charts. here is one
+  //make new charts.
   makeBarChart({
     rows: monthly_entries_subway_from_mar_2020_rows,
     containerId: "monthly_entries_subway_from_mar_2020_bar_date_range",
@@ -2130,6 +2170,21 @@ function whichChartsToUpdate(startDate, endDate) {
     containerId: "monthly_entries_subway_from_mar_2020_line_date_range",
     timeOfInterest: "month",
     aspectRatio: 2.5,
+    importedDateRange: [new Date(startDate), 
+                        new Date(endDate)]
+  });
+
+  clickSelectMultipleLineChart({
+    datasetList: monthly_multimodal_from_mar_2020_rows,
+    datasetListStepSizeReference: monthly_multimodal_from_mar_2020_step_size_reference,
+
+    containerId: "monthly_selectmodal_box_from_mar_2020_line_date_range",
+    checkBoxGroupId: "date_range_ridership-checkboxes",
+
+    checkedDatasets: ridershipCheckedDatasets,
+
+    timeOfInterest: "month",
+    aspectRatio: 1.5,
     importedDateRange: [new Date(startDate), 
                         new Date(endDate)]
   });

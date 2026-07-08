@@ -165,7 +165,14 @@ description: "The New York City region has been missing a centralized location w
 
   #### MTA Subway Monthly Ridership, Custom Date Range, Line:
   <div id="monthly_entries_subway_from_mar_2020_line_date_range"></div>
+  <br>
 
+
+  <div id="date_range_ridership-checkboxes"></div>
+
+  #### MTA Ridership Since Mar 2020, Selected Modes, Custon Date Range, Line:
+  <div id="monthly_selectmodal_box_from_mar_2020_line_date_range"></div>
+  <br>
 
 
 
