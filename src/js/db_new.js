@@ -1303,6 +1303,9 @@ function typeSelectMultipleLineChart({
 
 }
 
+//establish listener callback operation set
+const checkboxCallbacks = {};
+
 //select datasets out of a list to graph on a line chart, user selects as checked boxes
 function clickSelectMultipleLineChart({
   datasetList, //list of actual datasets
@@ -1433,7 +1436,20 @@ function clickSelectMultipleLineChart({
     .querySelectorAll(`#${checkBoxGroupId} input[type='checkbox']`)
     .forEach(checkbox => {
 
-      checkbox.addEventListener("change", () => {
+      //remove old listener if it exists
+      if (checkboxCallbacks[checkbox.name]) {
+        checkbox.removeEventListener(
+          "change",
+          checkboxCallbacks[checkbox.name]
+        );
+      }
+
+      //set operations for listeners
+      const checkboxCallback = () => {
+
+        //DEBUG FOR MEMORY MANAGEMENT
+        // console.count("checkbox change");
+
         //if a checkbox was clicked (in either direction)
         if (checkbox.checked) {
 
@@ -1453,7 +1469,14 @@ function clickSelectMultipleLineChart({
 
         refreshRender();
 
-      });
+      };
+
+      //save reference
+      checkboxCallbacks[checkbox.name] = checkboxCallback;
+
+      //add new listener
+      checkbox.addEventListener("change", checkboxCallback);
+
     });
 }
 
@@ -2051,13 +2074,13 @@ function sliderMakerMultipleChart({
   let newStartDate = new Date(monthLabels[fromSlider.value]);
   let newEndDate = new Date(monthLabels[toSlider.value]);
 
-  //send off event to let other functions know dates changed
-  document.dispatchEvent(new CustomEvent("dateRangeChanged", {
-      detail: {
-          newStartDate,
-          newEndDate
-      }
-  }));
+  // //send off event to let other functions know dates changed
+  // document.dispatchEvent(new CustomEvent("dateRangeChanged", {
+  //     detail: {
+  //         newStartDate,
+  //         newEndDate
+  //     }
+  // }));
 
   updateChartsFunction(newStartDate, newEndDate);
 
@@ -2087,13 +2110,13 @@ function sliderMakerMultipleChart({
     newStartDate = new Date(monthLabels[fromSlider.value]);
     newEndDate = new Date(monthLabels[toSlider.value]);
 
-    //send off event to let other functions know dates changed
-    document.dispatchEvent(new CustomEvent("dateRangeChanged", {
-        detail: {
-            newStartDate,
-            newEndDate
-        }
-    }));
+    // //send off event to let other functions know dates changed
+    // document.dispatchEvent(new CustomEvent("dateRangeChanged", {
+    //     detail: {
+    //         newStartDate,
+    //         newEndDate
+    //     }
+    // }));
 
     updateChartsFunction(newStartDate, newEndDate);
 
@@ -2125,13 +2148,13 @@ function sliderMakerMultipleChart({
     newStartDate = new Date(monthLabels[fromSlider.value]);
     newEndDate = new Date(monthLabels[toSlider.value]);
 
-    //send off event to let other functions know dates changed
-    document.dispatchEvent(new CustomEvent("dateRangeChanged", {
-        detail: {
-            newStartDate,
-            newEndDate
-        }
-    }));
+    // //send off event to let other functions know dates changed
+    // document.dispatchEvent(new CustomEvent("dateRangeChanged", {
+    //     detail: {
+    //         newStartDate,
+    //         newEndDate
+    //     }
+    // }));
 
     updateChartsFunction(newStartDate, newEndDate);
 
@@ -2189,6 +2212,8 @@ function whichChartsToUpdate(startDate, endDate) {
                         new Date(endDate)]
   });
   
+  //DEBUG FOR MEMORY MANAGEMENT
+  // console.count("clickSelectMultipleLineChart");
 }
 
 sliderMakerMultipleChart({
