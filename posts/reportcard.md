@@ -173,9 +173,7 @@ description: "The New York City region has been missing a centralized location w
   #### MTA Ridership Since Mar 2020, Selected Modes, Custon Date Range, Line:
   <div id="monthly_selectmodal_box_from_mar_2020_line_date_range"></div>
   <br>
-
-
-
+  <!-- next: more sliders (and duplicated sliders) and support for OTP + type select (just in case) -->
 
 </div> 
 <!-- end report card content -->
