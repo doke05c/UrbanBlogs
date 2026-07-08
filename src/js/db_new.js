@@ -261,10 +261,14 @@ function makeMultipleLineChart ({
           (d.getUTCFullYear() - min_date.getUTCFullYear()) * 12 +
           (d.getUTCMonth() - min_date.getUTCMonth());
 
-        x =
-          paddingLeft + 
-          (monthOffset / (pointCount - 1)) *
-          (viewBoxWidth - paddingLeft - paddingRight);
+        if (pointCount === 1) {
+          x = viewBoxWidth / 2;
+        } else {
+          x =
+            paddingLeft + 
+            (monthOffset / (pointCount - 1)) *
+            (viewBoxWidth - paddingLeft - paddingRight);
+        }
       
       //if day, make a system for x using day offset
       } else if (timeOfInterest == "date") {
@@ -276,10 +280,14 @@ function makeMultipleLineChart ({
         const dayOffset =
           Math.round((d - min_date) / (1000 * 60 * 60 * 24));
 
-        x =
-          paddingLeft +
-          (dayOffset / (pointCount - 1)) *
-          (viewBoxWidth - paddingLeft - paddingRight);
+        if (pointCount === 1) {
+          x = viewBoxWidth / 2;
+        } else {
+          x =
+            paddingLeft +
+            (dayOffset / (pointCount - 1)) *
+            (viewBoxWidth - paddingLeft - paddingRight);
+        }
       }      
       return {
       x: x,
@@ -385,7 +393,7 @@ function makeMultipleLineChart ({
     }
 
     //set points and corresponding dates
-    const x =
+    const x = pointCount === 1 ? viewBoxWidth / 2 :
       paddingLeft +
       (i / (pointCount - 1)) *
       (viewBoxWidth - paddingLeft - paddingRight);
@@ -2118,9 +2126,10 @@ function whichChartsToUpdate(startDate, endDate) {
   makeLineChart({
     rows: monthly_entries_subway_from_mar_2020_rows,
     name: "Subway Ridership",
-    yAxisStep: 10_000_000,
+    yAxisStep: 20_000_000,
     containerId: "monthly_entries_subway_from_mar_2020_line_date_range",
     timeOfInterest: "month",
+    aspectRatio: 2.5,
     importedDateRange: [new Date(startDate), 
                         new Date(endDate)]
   });
