@@ -159,4 +159,16 @@ description: "The New York City region has been missing a centralized location w
   #### MTA Subway Monthly Ridership, Custom Date Range, Bar:
   <div id="monthly_entries_subway_from_mar_2020_bar_date_range"></div>
 
-</div>
+  ##### July 8, 2026: 2:30PM, Roosevelt House Public Policy Institute:
+
+  Date sliders now working for line charts!
+
+  #### MTA Subway Monthly Ridership, Custom Date Range, Line:
+  <div id="monthly_entries_subway_from_mar_2020_line_date_range"></div>
+
+
+
+
+
+</div> 
+<!-- end report card content -->

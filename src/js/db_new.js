@@ -53,6 +53,11 @@ function makeMultipleLineChart ({
 
   datasetListStepSizeReference = undefined, //not needed unless passLineColorsAsStatic is true
 
+  importedDateRange = [
+    new Date(1900, 0, 1),
+    new Date(2099, 11, 31)
+  ],
+
   pointColor = "#eafafa",
   gridColor = "#555",
   thick_gridColor = "#888",
@@ -64,8 +69,38 @@ function makeMultipleLineChart ({
   viewBoxWidth = 1000,
   viewBoxHeight = viewBoxWidth / aspectRatio 
 }) {
+  
 
   //unpack datasetList:
+
+  //filter out elements not in the datasets in datasetList
+  //filter out rows that are not in given date range (date range is set to 1900-2099 by default)
+
+  const filteredDatasetList = {};
+
+  for (const [name, dataset] of Object.entries(datasetList)) {      
+
+    filteredDatasetList[name] = dataset.filter(r => {
+      let d;
+
+      //for month
+      if (timeOfInterest === "month") {
+        const [year, month] = r.month.split("-").map(Number);
+        d = new Date(year, month - 1, 1);
+
+      //for date
+      } else if (timeOfInterest === "date") {
+        const [year, month, day] = r.date.split("-").map(Number);
+        d = new Date(year, month - 1, day);
+      }
+
+      //if row date is within range, return the row as having passed filter
+
+      return d >= importedDateRange[0] && d <= importedDateRange[1];
+    });
+  }
+
+  datasetList = filteredDatasetList;
 
   //get highest date of all elements
   //get lowest date of all elements
@@ -407,7 +442,11 @@ function makeMultipleLineChart ({
     }
 
     //how many x-axis labels should we skip to make it look less cramped?
-    skip_amount = Math.round(pointCount / ( viewBoxWidth / (100 / tickCount) / x_axis_label.textContent.length));
+    skip_amount = Math.max(
+      1,
+      Math.round(pointCount / ( viewBoxWidth / (100 / tickCount) / x_axis_label.textContent.length))
+    );  //result cannot be less than 1
+    console.log(skip_amount);
 
     //put down x-label, skipping the amount of labels we calculated earlier
     if (i % skip_amount == 0) {
@@ -892,6 +931,11 @@ function makeLineChart({
 
   datasetListStepSizeReference = undefined, //not needed unless passLineColorsAsStatic is true
 
+  importedDateRange = [
+    new Date(1900, 0, 1),
+    new Date(2099, 11, 31)
+  ],
+
   pointColor = "#eafafa",
   gridColor = "#555",
   thick_gridColor = "#888",
@@ -925,6 +969,8 @@ function makeLineChart({
 
     lineColors,
     passLineColorsAsStatic,
+
+    importedDateRange,
 
     pointColor,
     gridColor,
@@ -1170,7 +1216,12 @@ function typeSelectMultipleLineChart({
     "#00C2A8",
     "#F72585",
   ],
-  passLineColorsAsStatic = true
+  passLineColorsAsStatic = true,
+
+  importedDateRange = [
+    new Date(1900, 0, 1),
+    new Date(2099, 11, 31)
+  ],
 
 }) 
 
@@ -1235,7 +1286,8 @@ function typeSelectMultipleLineChart({
           aspectRatio: aspectRatio,
           lineColors: lineColors,
           passLineColorsAsStatic: passLineColorsAsStatic,
-          datasetListStepSizeReference: datasetListStepSizeReference
+          datasetListStepSizeReference: datasetListStepSizeReference,
+          importedDateRange: importedDateRange
         });
       }
 
@@ -1265,7 +1317,12 @@ function clickSelectMultipleLineChart({
     "#00C2A8",
     "#F72585",
   ],
-  passLineColorsAsStatic = true
+  passLineColorsAsStatic = true,
+  
+  importedDateRange = [
+    new Date(1900, 0, 1),
+    new Date(2099, 11, 31)
+  ],
 
 }) 
 
@@ -1363,7 +1420,8 @@ function clickSelectMultipleLineChart({
             aspectRatio: aspectRatio,
             lineColors: lineColors,
             passLineColorsAsStatic: passLineColorsAsStatic,
-            datasetListStepSizeReference: datasetListStepSizeReference
+            datasetListStepSizeReference: datasetListStepSizeReference,
+            importedDateRange: importedDateRange
           });
 
         } else {
@@ -1841,54 +1899,6 @@ select.addEventListener("change", function () {
 //DATE SLIDERS
 
 
-function controlFromSlider(fromSlider, toSlider) {
-  const [from, to] = getParsed(fromSlider, toSlider);
-  fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
-
-  if (from > to) {
-    fromSlider.value = to;
-  }
-}
-
-function controlToSlider(fromSlider, toSlider) {
-  const [from, to] = getParsed(fromSlider, toSlider);
-  fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
-  setToggleAccessible(toSlider);
-
-  if (from > to) {
-    toSlider.value = from;
-  }
-}
-
-function getParsed(currentFrom, currentTo) {
-  const from = parseInt(currentFrom.value, 10);
-  const to = parseInt(currentTo.value, 10);
-  return [from, to];
-}
-
-function fillSlider(from, to, sliderColor, rangeColor, controlSlider) {
-    const rangeDistance = to.max-to.min;
-    const fromPosition = from.value - to.min;
-    const toPosition = to.value - to.min;
-    controlSlider.style.background = `linear-gradient(
-      to right,
-      ${sliderColor} 0%,
-      ${sliderColor} ${(fromPosition)/(rangeDistance)*100}%,
-      ${rangeColor} ${((fromPosition)/(rangeDistance))*100}%,
-      ${rangeColor} ${(toPosition)/(rangeDistance)*100}%, 
-      ${sliderColor} ${(toPosition)/(rangeDistance)*100}%, 
-      ${sliderColor} 100%)`;
-}
-
-function setToggleAccessible(currentTarget) {
-  const toSlider = document.querySelector('#toSlider');
-  if (Number(currentTarget.value) <= 0 ) {
-    toSlider.style.zIndex = 2;
-  } else {
-    toSlider.style.zIndex = 0;
-  }
-}
-
 //MAKE MULTIPLE CHARTS UNDER A SLIDER. 
 // WARNING: SLIDER DOES NOT MAKE CHARTS, CHART FUNCTION CALLS MUST BE PASSED VIA 
 //          whichChartsToUpdate
@@ -1900,6 +1910,12 @@ function sliderMakerMultipleChart({
   //get id for toSlider from input
   toSliderId,
 
+  //get id for from slider label from input
+  fromLabelId,
+
+  //get id for to slider label from input
+  toLabelId,
+
   //get starting date of slider from input
   startDate,
 
@@ -1910,9 +1926,61 @@ function sliderMakerMultipleChart({
   updateChartsFunction,
 }) {
 
-  //get sliders
+  //prelim functions
+  function controlFromSlider(fromSlider, toSlider) {
+    const [from, to] = getParsed(fromSlider, toSlider);
+    fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
+
+    if (from > to) {
+      fromSlider.value = to;
+    }
+  }
+
+  function controlToSlider(fromSlider, toSlider) {
+    const [from, to] = getParsed(fromSlider, toSlider);
+    fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
+    setToggleAccessible(toSlider);
+
+    if (from > to) {
+      toSlider.value = from;
+    }
+  }
+
+  function getParsed(currentFrom, currentTo) {
+    const from = parseInt(currentFrom.value, 10);
+    const to = parseInt(currentTo.value, 10);
+    return [from, to];
+  }
+
+  function fillSlider(from, to, sliderColor, rangeColor, controlSlider) {
+      const rangeDistance = to.max-to.min;
+      const fromPosition = from.value - to.min;
+      const toPosition = to.value - to.min;
+      controlSlider.style.background = `linear-gradient(
+        to right,
+        ${sliderColor} 0%,
+        ${sliderColor} ${(fromPosition)/(rangeDistance)*100}%,
+        ${rangeColor} ${((fromPosition)/(rangeDistance))*100}%,
+        ${rangeColor} ${(toPosition)/(rangeDistance)*100}%, 
+        ${sliderColor} ${(toPosition)/(rangeDistance)*100}%, 
+        ${sliderColor} 100%)`;
+  }
+
+  function setToggleAccessible(currentTarget) {
+    const toSlider = document.querySelector(toSliderId);
+    if (Number(currentTarget.value) <= 0 ) {
+      toSlider.style.zIndex = 2;
+    } else {
+      toSlider.style.zIndex = 0;
+    }
+  }
+
+  //get sliders and labels
   const fromSlider = document.querySelector(fromSliderId);
   const toSlider = document.querySelector(toSliderId);
+
+  const fromLabel = document.querySelector(fromLabelId);
+  const toLabel = document.querySelector(toLabelId);
 
   //set start month and end month to make labels list
   const start = startDate;
@@ -2028,9 +2096,14 @@ function sliderMakerMultipleChart({
 function whichChartsToUpdate(startDate, endDate) {
 
   //go through all charts which are to be updated, clear them before making new ones
-  for (const oldContainerId of ["monthly_entries_subway_from_mar_2020_bar_date_range"]) {
+  for (const oldContainerId of [
+    "monthly_entries_subway_from_mar_2020_bar_date_range", 
+    "monthly_entries_subway_from_mar_2020_line_date_range"
+  ]) {
+
     const container = document.getElementById(oldContainerId);
     container.innerHTML = "";  // remove old chart
+
   }
 
   //make new charts. here is one
@@ -2041,12 +2114,25 @@ function whichChartsToUpdate(startDate, endDate) {
     importedDateRange: [new Date(startDate), 
                         new Date(endDate)]
   });
+
+  makeLineChart({
+    rows: monthly_entries_subway_from_mar_2020_rows,
+    name: "Subway Ridership",
+    yAxisStep: 10_000_000,
+    containerId: "monthly_entries_subway_from_mar_2020_line_date_range",
+    timeOfInterest: "month",
+    importedDateRange: [new Date(startDate), 
+                        new Date(endDate)]
+  });
+  
 }
 
 sliderMakerMultipleChart({
   fromSliderId: '#fromSlider',
   toSliderId: '#toSlider',
-  startDate: new Date(2015, 0, 1), //Jan 2015
+  fromLabelId: '#fromLabel',
+  toLabelId: '#toLabel',
+  startDate: new Date(2020, 2, 1), //Mar 2020
   endDate: new Date(2026, 6, 1), //Jul 2026
   updateChartsFunction: (startDate, endDate) => {
     whichChartsToUpdate(startDate, endDate);
