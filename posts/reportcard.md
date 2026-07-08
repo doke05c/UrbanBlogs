@@ -3,13 +3,12 @@ title: 'SSTRP Transportation Report Card'
 description: "The New York City region has been missing a centralized location where all regional transit agency data can be accessed. Finally, a solution is here."
 ---
 
-<br>
-
 ## SSTRP Transportation Report Card
-<br>
 
 ### The New York City region has been missing a centralized location where all regional transit agency data can be accessed. Finally, a solution is here.
-<br>
+
+<div id ="loading-page">
+</div>
 
 <div id ="report-card-content">
 

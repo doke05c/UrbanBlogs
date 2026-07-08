@@ -1,3 +1,16 @@
+//PAGE LOADER
+let loading = document.getElementById("loading-page");
+if (getComputedStyle(document.getElementById("report-card-content")).visibility === "hidden") {
+    loading.textContent = "Loading page... please be patient...";
+    loading.style.display = "flex";
+    loading.style.alignItems = "center";
+    loading.style.justifyContent = "center";
+    loading.style.height = "100px";
+    loading.style.fontSize = "18px";
+    loading.style.color = "#888";
+}
+
+
 //plot multiple lines in one chart. helper for makeLineChart (input single dataset as parameter)
 function makeMultipleLineChart ({
 
@@ -984,7 +997,6 @@ function makeBarChart({
 
     //if row date is within range, return the row as having passed filter
 
-    console.log("Range: ", importedDateRange[0], "-", importedDateRange[1], ". Date of element: ", d);
     return d >= importedDateRange[0] && d <= importedDateRange[1];
   });
 
@@ -2005,3 +2017,4 @@ toSlider.oninput = function() {
 
 //RE-ENABLE SITE VISIBILITY
 document.getElementById("report-card-content").style.visibility = "visible";
+loading.remove();
