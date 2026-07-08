@@ -1090,7 +1090,10 @@ function makeBarChart({
     valueText.setAttribute("fill", textColor);
 
     //set font size relative to font width and text length
-    valueText.setAttribute("font-size", `${1.4 * barWidth / valueText.textContent.length}`);
+    valueText.setAttribute("font-size", `${Math.min(70, 1.4 * barWidth / valueText.textContent.length)}`);
+    //max size 70
+
+    console.log(valueText.getAttribute("font-size"));
 
     //added top of bar label to svg
     svg.appendChild(valueText);
