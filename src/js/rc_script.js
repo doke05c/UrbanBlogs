@@ -14,7 +14,7 @@ if (getComputedStyle(document.getElementById("report-card-content")).visibility 
 //GET MONTHLY WEEKDAY SUBWAY OTP RATES SINCE JAN 2015
 
 //list of subway lines:
-const subway_line_list =
+let subway_line_list =
 [
   "1", "2", "3", "4", "5", "6", "7",
   "S 42nd", "GS", "A", "B", "C", "D", "E", "F", "G", "J",
@@ -52,6 +52,61 @@ monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line] =
       })
       );
 }
+
+//function to combine lines together. keeps the keepline, removes removeline
+function combineLines(dataset, keepLine, removeLine) {
+
+    const combined = {};
+
+    for (const entry of dataset[keepLine]) {
+        combined[entry.month] = {
+            on_time_trips: entry.on_time_trips,
+            sched_trips: entry.sched_trips
+        };
+    }
+
+    for (const entry of dataset[removeLine]) {
+
+        if (!combined[entry.month]) {
+            combined[entry.month] = {
+                on_time_trips: 0,
+                sched_trips: 0
+            };
+        }
+
+        combined[entry.month].on_time_trips += entry.on_time_trips;
+        combined[entry.month].sched_trips += entry.sched_trips;
+    }
+
+  dataset[keepLine] = Object.entries(combined)
+    .map(([month, totals]) => ({
+        month,
+        on_time_trips: totals.on_time_trips,
+        sched_trips: totals.sched_trips,
+        count: totals.on_time_trips / totals.sched_trips * 100
+    }))
+    .sort((a, b) => a.month.localeCompare(b.month));
+
+  delete dataset[removeLine];
+}
+
+for (const dataset of [
+    monthly_weekday_subway_otp_rate_from_jan_2015_rows,
+    monthly_weekend_subway_otp_rate_from_jan_2015_rows
+]) {
+    combineLines(dataset, "S 42nd", "GS");
+    combineLines(dataset, "S Fkln", "FS");
+    combineLines(dataset, "S Rock", "H");
+    combineLines(dataset, "JZ", "J");
+}
+
+//update subway_line_list:
+subway_line_list =
+[
+  "1", "2", "3", "4", "5", "6", "7",
+  "S 42nd", "A", "B", "C", "D", "E", "F", "G",
+  "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock",
+]
 
 //GET MONTHLY OVERALL SUBWAY OTP RATES SINCE JAN 2015
 
@@ -139,8 +194,8 @@ monthly_overall_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
 const monthly_subway_otp_rate_step_size_reference = Object.fromEntries(
   [
     "1", "2", "3", "4", "5", "6", "7",
-    "S 42nd", "GS", "A", "B", "C", "D", "E", "F", "G", "J",
-    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "FS", "S Rock", "H", "Systemwide"
+    "S 42nd", "A", "B", "C", "D", "E", "F", "G",
+    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock", "Systemwide"
   ].map(line => [line, 20])
 );
 
@@ -152,8 +207,40 @@ const subwayOTPDatasets = {
     "Weekend": monthly_weekend_subway_otp_rate_from_jan_2015_rows
 };
 
+//COMBINE:
+// S42 + GS
+// SFKLYN + FS
+// SROCK + H
+// JZ + J 
 
 
+//SCORE: 
+//compare: (examples)
+// [jan 2020 - may 2020 to jan 2019 - may 2019]
+// [jan 2019 - jan 2020 to 2019 ovr]
+// [jan 2022 - may 2023 to 2019 ovr]
+// [nov 2020 - feb 2023 to nov 2018 - feb 2019]
+// [nov 2021 - nov 2022 to 2019 ovr]
+// [nov 2021 - feb 2024 to 2019 ovr] 
+
+function createScoreForMultipleLineChart ({
+  //what kind of data are we making the score for? otp will differ from ridership, etc
+  mode,
+
+  //data we want to plot, list of datasets, to be unpacked in the function (comparison occurs within datasetList)
+  datasetList,
+  
+  //what time period are we using to evaluate?
+  importedDateRange
+}) {
+
+  if (mode == "OTP") {
+      for (const [name, dataset] of Object.entries(datasetList)) {  
+
+      }
+  }
+
+}
 
 //plot multiple lines in one chart. helper for makeLineChart (input single dataset as parameter)
 function makeMultipleLineChart ({
@@ -217,7 +304,6 @@ function makeMultipleLineChart ({
 
   //unpack datasetList:
 
-  //filter out elements not in the datasets in datasetList
   //filter out rows that are not in given date range (date range is set to 1900-2099 by default)
 
   const filteredDatasetList = {};
@@ -905,6 +991,8 @@ function makeMultipleLineChart ({
       //if there are enough points, but only one dataset, put down only the first, last, min, and max labels
       if ((dataset.length >= pointLabelCutoffCount) && (Object.entries(datasetList).length == 1)) {
         // min/max needs to be checked locally, NOT against global rows_max_val
+        console.log(dataset.length);
+        console.log(dataset);
         if (j == 0 || j == dataset.length-1 || p.value == Math.max(...dataset.map(r => Number(r.count))) || p.value == Math.min(...dataset.map(r => Number(r.count)))) {
           svg.appendChild(line_text);
           addPointLabelLine();
@@ -1953,7 +2041,7 @@ function whichChartsToUpdate(startDate, endDate) {
     listCheckedDatasets: OTPCheckedDatasets,
 
     timeOfInterest: "month",
-    aspectRatio: 1.5,
+    aspectRatio: 2,
     lineColors: [
       //1, 2, 3
       "#EE352E",
@@ -1968,8 +2056,7 @@ function whichChartsToUpdate(startDate, endDate) {
       //7
       "#B933AD",
 
-      //S 42nd, and its buggy duplicate
-      "#808183",
+      //S 42nd
       "#808183",
 
       //A, B, C, D, E, F
@@ -1985,7 +2072,6 @@ function whichChartsToUpdate(startDate, endDate) {
 
       //J, Z
       "#996633",
-      "#996633",
 
       //L
       "#A7A9AC",
@@ -1998,9 +2084,7 @@ function whichChartsToUpdate(startDate, endDate) {
       "#FCCC0A",
       "#FCCC0A",
 
-      //S Franklin, S Rockaway, and their buggy duplicates
-      "#808183",
-      "#808183",
+      //S Franklin, S Rockaway,
       "#808183",
       "#808183",
 
