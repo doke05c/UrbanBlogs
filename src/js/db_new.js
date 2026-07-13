@@ -1809,14 +1809,33 @@ const subwayOTPDatasets = {
 
 function nestedTwoCategorySelectLineChart({
   datasetSuperList, //superlist is a list of lists (ie: superlist[value] = a list)
+
   datasetListStepSizeReference,
+
   containerId,
+
   checkboxSuperGroupId, //upper level, selector
+
   checkBoxSubGroupId, //lower level, checkboxes
+
   timeOfInterest,
+
   aspectRatio,
-  lineColors
+
+  lineColors,
+
+  importedDateRange = [
+    new Date(1900, 0, 1),
+    new Date(2099, 11, 31)
+  ],
+  
+  listCheckedDatasets = {}, 
+  //set empty by default, will be passed through in the event of persistence of checked datasets
+
+  persistenceOfCheckedDatasets = false 
+  //set to false by default, true enables passthrough of checked datasets for slider purposes
 }) {
+
   const select = document.getElementById(checkboxSuperGroupId); //get supergroup selector
 
   clickSelectMultipleLineChart({
@@ -1828,10 +1847,19 @@ function nestedTwoCategorySelectLineChart({
     checkBoxGroupId: checkBoxSubGroupId, //subgroup of checkboxes is taken from reference as well
     timeOfInterest: timeOfInterest,
     aspectRatio: aspectRatio,
-    lineColors: lineColors
+    lineColors: lineColors,
+    importedDateRange: [importedDateRange[0], importedDateRange[1]],
+
+    ...(persistenceOfCheckedDatasets && {
+      checkedDatasets: listCheckedDatasets
+    }) //if checkeddatasets is persisent, apply what we have to said parameter in clickselectmultiplelinechart
   });
 
   select.addEventListener("change", function () {
+
+      Object.keys(listCheckedDatasets).forEach(key => delete listCheckedDatasets[key]);
+      //forget previous checkbox state when switching day type
+
       const container = document.getElementById(containerId);
       container.innerHTML = ""; //remove old chart
 
@@ -1845,7 +1873,12 @@ function nestedTwoCategorySelectLineChart({
       checkBoxGroupId: checkBoxSubGroupId, //subgroup of checkboxes is taken from reference as well
       timeOfInterest: timeOfInterest,
       aspectRatio: aspectRatio,
-      lineColors: lineColors
+      lineColors: lineColors,
+      importedDateRange: [importedDateRange[0], importedDateRange[1]],
+
+      ...(persistenceOfCheckedDatasets && {
+        checkedDatasets: listCheckedDatasets
+      }) //if checkeddatasets is persisent, apply what we have to said parameter in clickselectmultiplelinechart
     });
   });
 }
@@ -2134,7 +2167,9 @@ function sliderMakerMultipleChart({
   }
 }
 
-const ridershipCheckedDatasets = {}; //KEEP CHECKBOXES PERSISTENT THROUGH DATE SLIDING
+//KEEP CHECKBOXES PERSISTENT THROUGH DATE SLIDING
+const ridershipCheckedDatasets = {}; 
+const OTPCheckedDatasets = {};
 
 function whichChartsToUpdate(startDate, endDate) {
 
@@ -2143,6 +2178,7 @@ function whichChartsToUpdate(startDate, endDate) {
     "monthly_entries_subway_from_mar_2020_bar_date_range", 
     "monthly_entries_subway_from_mar_2020_line_date_range",
     "monthly_selectmodal_box_from_mar_2020_line_date_range",
+    "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
   ]) {
 
     const container = document.getElementById(oldContainerId);
@@ -2184,6 +2220,77 @@ function whichChartsToUpdate(startDate, endDate) {
     importedDateRange: [new Date(startDate), 
                         new Date(endDate)]
   });
+
+  nestedTwoCategorySelectLineChart({
+    datasetSuperList: subwayOTPDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+    datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
+
+    containerId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
+    checkboxSuperGroupId: "subwayOTPDaySelect_date_range", //upper level, selector
+    checkBoxSubGroupId: "subway-otp-checkboxes_date_range", //lower level, checkboxes
+
+    persistenceOfCheckedDatasets: true,
+    listCheckedDatasets: OTPCheckedDatasets,
+
+    timeOfInterest: "month",
+    aspectRatio: 1.5,
+    lineColors: [
+      //1, 2, 3
+      "#EE352E",
+      "#EE352E",
+      "#EE352E",
+
+      //4, 5, 6
+      "#00933C",
+      "#00933C",
+      "#00933C",
+
+      //7
+      "#B933AD",
+
+      //S 42nd, and its buggy duplicate
+      "#808183",
+      "#808183",
+
+      //A, B, C, D, E, F
+      "#0039A6",
+      "#FF6319",
+      "#0039A6",
+      "#FF6319",
+      "#0039A6",
+      "#FF6319",
+
+      //G
+      "#75c84e",
+
+      //J, Z
+      "#996633",
+      "#996633",
+
+      //L
+      "#A7A9AC",
+
+      //M
+      "#FF6319",
+
+      //N, Q, R
+      "#FCCC0A",
+      "#FCCC0A",
+      "#FCCC0A",
+
+      //S Franklin, S Rockaway, and their buggy duplicates
+      "#808183",
+      "#808183",
+      "#808183",
+      "#808183",
+
+      //systemwide
+      "#00aaff"
+    ],
+
+    importedDateRange: [new Date(startDate),
+                        new Date(endDate)]
+  });
   
   //DEBUG FOR MEMORY MANAGEMENT
   // console.count("clickSelectMultipleLineChart");
@@ -2194,7 +2301,7 @@ sliderMakerMultipleChart({
   toSliderId: '#toSlider',
   fromLabelId: '#fromLabel',
   toLabelId: '#toLabel',
-  startDate: new Date(2020, 2, 1), //Mar 2020
+  startDate: new Date(2015, 0, 1), //Jan 2015
   endDate: new Date(2026, 6, 1), //Jul 2026
   updateChartsFunction: (startDate, endDate) => {
     whichChartsToUpdate(startDate, endDate);

@@ -173,6 +173,25 @@ description: "The New York City region has been missing a centralized location w
   #### MTA Ridership Since Mar 2020, Selected Modes, Custon Date Range, Line:
   <div id="monthly_selectmodal_box_from_mar_2020_line_date_range"></div>
   <br>
+
+
+  ##### July 13, 2026: 1:30 PM, Roosevelt House Public Policy Institute:
+
+  Date sliders now working for nested select multi line charts! (ex below: OTP by type of day)
+
+  <label for="subwayOTPDaySelect_date_range">Day Type:</label><br>
+  <select id="subwayOTPDaySelect_date_range">
+      <option value="Overall">Overall</option>
+      <option value="Weekday">Weekday</option>
+      <option value="Weekend">Weekend</option>
+  </select>
+
+  <div id="subway-otp-checkboxes_date_range"></div>
+
+  #### MTA Monthly Subway On-Time Performance Rate (%), Custom Date Range, Line:
+  <div id="monthly_subway_otp_from_jan_2015_select_box_line_date_range"></div>
+  <br>
+
   <!-- next: more sliders (and duplicated sliders) and support for OTP + type select (just in case) -->
 
 </div> 
