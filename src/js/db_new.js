@@ -1805,140 +1805,113 @@ const subwayOTPDatasets = {
     "Weekend": monthly_weekend_subway_otp_rate_from_jan_2015_rows
 };
 
-const select = document.getElementById("subwayOTPDaySelect");
+//NESTED SELECT (OTP USED AS EXAMPLE)
 
-clickSelectMultipleLineChart({
-    datasetList: subwayOTPDatasets[select.value],
-    datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
-    containerId: "monthly_subway_otp_from_jan_2015_select_box_line",
-    checkBoxGroupId: "subway-otp-checkboxes",
-    timeOfInterest: "month",
-    aspectRatio: 1.5,
-    lineColors: [
-      //1, 2, 3
-      "#EE352E",
-      "#EE352E",
-      "#EE352E",
-
-      //4, 5, 6
-      "#00933C",
-      "#00933C",
-      "#00933C",
-
-      //7
-      "#B933AD",
-
-      //S 42nd, and its buggy duplicate
-      "#808183",
-      "#808183",
-
-      //A, B, C, D, E, F
-      "#0039A6",
-      "#FF6319",
-      "#0039A6",
-      "#FF6319",
-      "#0039A6",
-      "#FF6319",
-
-      //G
-      "#75c84e",
-
-      //J, Z
-      "#996633",
-      "#996633",
-
-      //L
-      "#A7A9AC",
-
-      //M
-      "#FF6319",
-
-      //N, Q, R
-      "#FCCC0A",
-      "#FCCC0A",
-      "#FCCC0A",
-
-      //S Franklin, S Rockaway, and their buggy duplicates
-      "#808183",
-      "#808183",
-      "#808183",
-      "#808183",
-
-      //systemwide
-      "#00aaff"
-    ]
-});
-
-select.addEventListener("change", function () {
-    const container = document.getElementById("monthly_subway_otp_from_jan_2015_select_box_line");
-    container.innerHTML = ""; //remove old chart
-
-    const checkboxset = document.getElementById("subway-otp-checkboxes");
-    checkboxset.innerHTML = ""; //remove old checkbox set
+function nestedTwoCategorySelectLineChart({
+  datasetSuperList, //superlist is a list of lists (ie: superlist[value] = a list)
+  datasetListStepSizeReference,
+  containerId,
+  checkboxSuperGroupId, //upper level, selector
+  checkBoxSubGroupId, //lower level, checkboxes
+  timeOfInterest,
+  aspectRatio,
+  lineColors
+}) {
+  const select = document.getElementById(checkboxSuperGroupId); //get supergroup selector
 
   clickSelectMultipleLineChart({
-      datasetList: subwayOTPDatasets[select.value],
-      datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
-      containerId: "monthly_subway_otp_from_jan_2015_select_box_line",
-      checkBoxGroupId: "subway-otp-checkboxes",
-      timeOfInterest: "month",
-      aspectRatio: 1.5,
-      lineColors: [
-        //1, 2, 3
-        "#EE352E",
-        "#EE352E",
-        "#EE352E",
+    //initial display of checkbox options before user does anything 
 
-        //4, 5, 6
-        "#00933C",
-        "#00933C",
-        "#00933C",
-
-        //7
-        "#B933AD",
-
-        //S 42nd, and its buggy duplicate
-        "#808183",
-        "#808183",
-
-        //A, B, C, D, E, F
-        "#0039A6",
-        "#FF6319",
-        "#0039A6",
-        "#FF6319",
-        "#0039A6",
-        "#FF6319",
-
-        //G
-        "#75c84e",
-
-        //J, Z
-        "#996633",
-        "#996633",
-
-        //L
-        "#A7A9AC",
-
-        //M
-        "#FF6319",
-
-        //N, Q, R
-        "#FCCC0A",
-        "#FCCC0A",
-        "#FCCC0A",
-
-        //S Franklin, S Rockaway, and their buggy duplicates
-        "#808183",
-        "#808183",
-        "#808183",
-        "#808183",
-
-        //systemwide
-        "#00aaff"
-      ]
+    datasetList: datasetSuperList[select.value], //now the list is being taken from the superlist to plot
+    datasetListStepSizeReference: datasetListStepSizeReference,
+    containerId: containerId,
+    checkBoxGroupId: checkBoxSubGroupId, //subgroup of checkboxes is taken from reference as well
+    timeOfInterest: timeOfInterest,
+    aspectRatio: aspectRatio,
+    lineColors: lineColors
   });
-});
 
+  select.addEventListener("change", function () {
+      const container = document.getElementById(containerId);
+      container.innerHTML = ""; //remove old chart
+
+      const checkboxset = document.getElementById(checkBoxSubGroupId);
+      checkboxset.innerHTML = ""; //remove old checkbox set
+
+    clickSelectMultipleLineChart({
+      datasetList: datasetSuperList[select.value], //now the list is being taken from the superlist to plot
+      datasetListStepSizeReference: datasetListStepSizeReference,
+      containerId: containerId,
+      checkBoxGroupId: checkBoxSubGroupId, //subgroup of checkboxes is taken from reference as well
+      timeOfInterest: timeOfInterest,
+      aspectRatio: aspectRatio,
+      lineColors: lineColors
+    });
+  });
+}
+
+nestedTwoCategorySelectLineChart({
+  datasetSuperList: subwayOTPDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+  datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
+  containerId: "monthly_subway_otp_from_jan_2015_select_box_line",
+  checkboxSuperGroupId: "subwayOTPDaySelect", //upper level, selector
+  checkBoxSubGroupId: "subway-otp-checkboxes", //lower level, checkboxes
+  timeOfInterest: "month",
+  aspectRatio: 1.5,
+  lineColors: [
+    //1, 2, 3
+    "#EE352E",
+    "#EE352E",
+    "#EE352E",
+
+    //4, 5, 6
+    "#00933C",
+    "#00933C",
+    "#00933C",
+
+    //7
+    "#B933AD",
+
+    //S 42nd, and its buggy duplicate
+    "#808183",
+    "#808183",
+
+    //A, B, C, D, E, F
+    "#0039A6",
+    "#FF6319",
+    "#0039A6",
+    "#FF6319",
+    "#0039A6",
+    "#FF6319",
+
+    //G
+    "#75c84e",
+
+    //J, Z
+    "#996633",
+    "#996633",
+
+    //L
+    "#A7A9AC",
+
+    //M
+    "#FF6319",
+
+    //N, Q, R
+    "#FCCC0A",
+    "#FCCC0A",
+    "#FCCC0A",
+
+    //S Franklin, S Rockaway, and their buggy duplicates
+    "#808183",
+    "#808183",
+    "#808183",
+    "#808183",
+
+    //systemwide
+    "#00aaff"
+  ]
+});
 
 //DATE SLIDERS
 
