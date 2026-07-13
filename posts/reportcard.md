@@ -147,14 +147,6 @@ description: "The New York City region has been missing a centralized location w
 
   Some datasets can be challenging to look at across the entire time series. Let's try to look at this bar chart only with a certain time selection:
 
-  <div class="range_container">
-      <div class="sliders_control">
-          <input id="fromSlider" type="range" value="10" min="0"/>
-          <input id="toSlider" type="range" value="40" min="0"/> 
-          <span id="fromLabel"></span> <span id="toLabel"></span>
-      </div>
-  </div>
-
 
   #### MTA Subway Monthly Ridership, Custom Date Range, Bar:
   <div id="monthly_entries_subway_from_mar_2020_bar_date_range"></div>
@@ -166,6 +158,15 @@ description: "The New York City region has been missing a centralized location w
   #### MTA Subway Monthly Ridership, Custom Date Range, Line:
   <div id="monthly_entries_subway_from_mar_2020_line_date_range"></div>
   <br>
+
+  <!-- slider -->
+  <div class="range_container">
+      <div class="sliders_control">
+          <input id="fromSlider" type="range" value="10" min="0"/>
+          <input id="toSlider" type="range" value="40" min="0"/> 
+          <span id="fromLabel"></span> <span id="toLabel"></span>
+      </div>
+  </div>
 
 
   <div id="date_range_ridership-checkboxes"></div>
