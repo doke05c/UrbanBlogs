@@ -168,8 +168,9 @@ function makeMultipleLineChart ({
       container.innerHTML = "";
       container.textContent = "Dataset contains undefined or missing values, try something else";
 
-      console.error("Invalid count:", rows_max_val);
-      throw new Error("Dataset contains undefined or missing values, try something else");
+      // console.error("Invalid count:", rows_max_val);
+      // throw new Error("Dataset contains undefined or missing values, try something else");
+      //error throwing was too extreme of a response.. commented out
   }
 
   //point count is determined separately by timeofinterest, taken as difference of max date and min date
