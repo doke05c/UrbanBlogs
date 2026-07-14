@@ -1268,7 +1268,7 @@ function makeMultipleLineChart ({
 
   text.setAttribute("x", viewBoxWidth / 2);
   text.setAttribute("y", currentLegendY + 30);
-  text.setAttribute("font-size", 18);
+  text.setAttribute("font-size", 17);
   text.setAttribute("text-anchor", "middle");
   text.setAttribute("fill", pointColor);
   
