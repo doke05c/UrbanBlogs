@@ -207,19 +207,14 @@ const subwayOTPDatasets = {
     "Weekend": monthly_weekend_subway_otp_rate_from_jan_2015_rows
 };
 
-//COMBINE:
-// S42 + GS
-// SFKLYN + FS
-// SROCK + H
-// JZ + J 
-
 
 //SCORE: 
 //compare: (examples)
 // [jan 2020 - may 2020 to jan 2019 - may 2019]
+// [nov 2020 - feb 2021 to nov 2018 - feb 2019]
+
 // [jan 2019 - jan 2020 to 2019 ovr]
 // [jan 2022 - may 2023 to 2019 ovr]
-// [nov 2020 - feb 2023 to nov 2018 - feb 2019]
 // [nov 2021 - nov 2022 to 2019 ovr]
 // [nov 2021 - feb 2024 to 2019 ovr] 
 
@@ -235,10 +230,163 @@ function createScoreForMultipleLineChart ({
 }) {
 
   if (mode == "OTP") {
-      for (const [name, dataset] of Object.entries(datasetList)) {  
+  //GRADE SCALE:
+  //SCORE = (CURRENT OTP^2) / (2019 OTP)
+  let result_statement = "";
 
+    //create "empty" ver of datasetlist comprising of just name. (ie: F: [])
+    const datasetOTPScoreList = Object.fromEntries(
+        Object.keys(datasetList).map(name => [name, [[], [], []]])
+    );
+
+    for (const [name, dataset] of Object.entries(datasetList)) {  
+
+      const oneYearLater = new Date(importedDateRange[0]);
+      oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);                                         
+
+      //get the average OTP of the line for the time period
+      const averageCurrent =
+          dataset
+              .filter(entry =>
+                  entry.count !== 0 &&
+                  new Date(entry.month) >= (importedDateRange[0] - 18000001) &&
+                  new Date(entry.month) <= importedDateRange[1]
+              )
+              .reduce((sum, entry) => sum + entry.count, 0) //take the sum of all valid values in the range (non-zero)
+          /
+          dataset
+              .filter(entry =>
+                  entry.count !== 0 &&
+                  new Date(entry.month) >= (importedDateRange[0] - 18000001) &&
+                  new Date(entry.month) <= importedDateRange[1]
+              ).length;                                   //divide by the number of valid values in the range (non-zero)
+      
+      let average2019; //to be 2019 average OTP per line
+
+      if (importedDateRange[1] >= oneYearLater) { //if the date range is a year or longer... compare to 2019 in full
+        
+        //do the same for the line in 2019
+        average2019 =
+            monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<=== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+                .filter(entry =>
+                    entry.count !== 0 &&
+                    entry.month.startsWith("2019-")
+                )
+                .reduce((sum, entry) => sum + entry.count, 0) //take the sum of all valid values in 2019 (non-zero)
+            /
+            monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+                .filter(entry =>
+                    entry.count !== 0 &&
+                    entry.month.startsWith("2019-")
+                ).length;                                   //divide by the count of all valid values in 2019 (non-zero)
+
+      } else if (importedDateRange[1] < oneYearLater) {
+        //compare partial year, to be calculated
+        //method: 
+          // [jan 2020 - may 2020 to jan 2019 - may 2019]
+          // [nov 2020 - feb 2021 to nov 2018 - feb 2019]
+
+        const comparisonEnd = new Date(importedDateRange[1]);
+        comparisonEnd.setFullYear(2019);
+
+        const comparisonStart = new Date(importedDateRange[0]);
+
+        //preserve the same duration backwards from comparisonEnd
+        comparisonStart.setFullYear(
+            comparisonEnd.getFullYear() - 
+            (importedDateRange[1].getFullYear() - importedDateRange[0].getFullYear())
+        );
+
+        //do the same for the line in 2019
+        average2019 =
+          monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<----- TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+            .filter(entry => {
+                const month = new Date(entry.month);
+                return (
+                    entry.count !== 0 &&
+                    month >= (comparisonStart - 18000001) &&
+                    month <= comparisonEnd
+                );
+            })
+            .reduce((sum, entry) => sum + entry.count, 0)  //take the sum of all valid values in 2019 (non-zero)
+        /
+          monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<----- TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+            .filter(entry => {
+                const month = new Date(entry.month);
+                return (
+                    entry.count !== 0 &&
+                    month >= (comparisonStart - 18000001) &&
+                    month <= comparisonEnd
+                );
+            })
+            .length;                                     //divide by the count of all valid values in 2019 (non-zero)
       }
+
+      //ratio of average OTP during the selected date range to average OTP in 2019
+      const OTPGrade = averageCurrent * averageCurrent / average2019;
+      
+      //update the dataset's OTP score with the OTP, calculated rel over 2019, and final grade
+      datasetOTPScoreList[name] = [averageCurrent, ((averageCurrent-average2019)/averageCurrent*100), OTPGrade];
+      
+    }
+
+    for (const [name, scores] of Object.entries(datasetOTPScoreList)) {
+
+      //keyword for changes
+      const changeWord =
+      scores[1] >= 0.05 ? "a relative improvement" :
+      scores[1] <= -0.05 ? "a relative decline" :
+      "an unchanged difference";
+
+      //number to letter grade conversion
+      function getReferenceLetter(score) {
+        if (score >= 97) return "A+";
+        if (score >= 93) return "A";
+        if (score >= 90) return "A-";
+        if (score >= 87) return "B+";
+        if (score >= 83) return "B";
+        if (score >= 80) return "B-";
+        if (score >= 77) return "C+";
+        if (score >= 73) return "C";
+        if (score >= 70) return "C-";
+        if (score >= 67) return "D+";
+        if (score >= 63) return "D";
+        if (score >= 60) return "D-";
+        return "F";
+      }
+
+      //display name beautifier for weird lines
+      const displayName =
+        name === "S Rock" ? "Rockaway Park Shuttle" :
+        name === "S 42nd" ? "42nd St. Shuttle" :
+        name === "S Fkln" ? "Franklin Ave. Shuttle" :
+        name === "JZ" ? "J/Z" :
+        name;
+
+      
+      result_statement += 
+        `Between ${importedDateRange[0].toLocaleDateString("en-US", {
+            month: "short",
+            year: "numeric"
+        })} and ${importedDateRange[1].toLocaleDateString("en-US", {
+            month: "short",
+            year: "numeric"
+        })}, the ${displayName} train had an OTP of ${
+            Math.round(scores[0] * 10) / 10
+        }%, ${changeWord} of ${
+            Math.round(Math.abs(scores[1]) * 10) / 10
+        }% over 2019, giving it an ultimate score of ${
+            Math.round(scores[2] * 10) / 10
+        }%, or a ${getReferenceLetter(scores[2])}.
+`
+      ; 
+
+    }
+    return result_statement;
+
   }
+
+
 
 }
 
@@ -298,14 +446,13 @@ function makeMultipleLineChart ({
 
   //set width and height via a viewbox (sets maximums, the rest is scaled according to platform size)
   viewBoxWidth = 1000,
-  viewBoxHeight = viewBoxWidth / aspectRatio 
+  viewBoxHeight = (viewBoxWidth / aspectRatio),
 }) {
   
 
   //unpack datasetList:
 
-  //filter out rows that are not in given date range (date range is set to 1900-2099 by default)
-
+  //filter out rows that are not in given date range (date range is set to 1900-2099 by default)  
   const filteredDatasetList = {};
 
   for (const [name, dataset] of Object.entries(datasetList)) {      
@@ -991,8 +1138,6 @@ function makeMultipleLineChart ({
       //if there are enough points, but only one dataset, put down only the first, last, min, and max labels
       if ((dataset.length >= pointLabelCutoffCount) && (Object.entries(datasetList).length == 1)) {
         // min/max needs to be checked locally, NOT against global rows_max_val
-        console.log(dataset.length);
-        console.log(dataset);
         if (j == 0 || j == dataset.length-1 || p.value == Math.max(...dataset.map(r => Number(r.count))) || p.value == Math.min(...dataset.map(r => Number(r.count)))) {
           svg.appendChild(line_text);
           addPointLabelLine();
@@ -1015,6 +1160,8 @@ function makeMultipleLineChart ({
   }
 
   // LEGEND
+
+  let currentLegendY; //save legend position for when we are putting down OTP result text
 
   //set height of the legend to be below the bottom of graph, past the x-axis labels
   const legendY = viewBoxHeight + 70;
@@ -1044,7 +1191,7 @@ function makeMultipleLineChart ({
       legendRow++;
     }
 
-    const currentLegendY = legendY + (legendRow * legendRowHeight);
+    currentLegendY = legendY + (legendRow * legendRowHeight);
 
     //get line svg for legend sample line
     const legendLine = document.createElementNS(
@@ -1115,6 +1262,42 @@ function makeMultipleLineChart ({
     legendX += legendSpacing;
 
   }
+
+  //SCORES
+  const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+
+  text.setAttribute("x", viewBoxWidth / 2);
+  text.setAttribute("y", currentLegendY + 30);
+  text.setAttribute("font-size", 18);
+  text.setAttribute("text-anchor", "middle");
+  text.setAttribute("fill", pointColor);
+  
+
+  //CALL FUNCTION TO GET OTP RESULT TEXT !!!!! <====> [CHANGE IN FUNCTION PARAM LATER]
+  const result = createScoreForMultipleLineChart({
+    mode: "OTP",
+    datasetList: datasetList,
+    importedDateRange: importedDateRange
+  });
+
+  //split lines apart for SVG compatibility (use tspan)
+  const lines = result.split("\n");
+
+  lines.forEach((line, i) => {
+    const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+
+    tspan.setAttribute("x", viewBoxWidth / 2);
+    tspan.setAttribute("dy", i === 0 ? 0 : 20);
+    tspan.textContent = line;
+
+    text.appendChild(tspan);
+  });
+
+  svg.appendChild(text);
+
+  //add OTP scores to svg
+  svg.appendChild(text);
+
 
   //add svg elements to chart
   multi_line.appendChild(svg);
@@ -2106,7 +2289,7 @@ sliderMakerMultipleChart({
   fromLabelId: '#fromLabel',
   toLabelId: '#toLabel',
   startDate: new Date(2015, 0, 1), //Jan 2015
-  endDate: new Date(2026, 6, 1), //Jul 2026
+  endDate: new Date(2026, 4, 1), //May 2026
   updateChartsFunction: (startDate, endDate) => {
     whichChartsToUpdate(startDate, endDate);
   }
