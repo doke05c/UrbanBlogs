@@ -77,9 +77,18 @@ a {
 } */
 
 main { 
-    max-width: 50em;
-    margin: 0px auto;
+    width: 95%;
+    max-width: 110em;
+    margin: 0 auto;
 }
+
+/* svg {
+    display: block;
+    width: calc(100% - 12%);
+    margin-inline: 6%;
+    height: auto;
+    max-width: 100%;
+} */
 
 img {
     max-width: 40em;
@@ -94,6 +103,35 @@ iframe {
     height: 500px;
 }
 
+/* START SSTRP REP CARD ANALYSIS ELEMENTS */
+
+.analysis {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+    align-items: start;
+    margin-block: 1rem;
+}
+/* controls for entire analysis piece ^^ */
+
+.chart {
+    min-width: 0;
+}
+/* chart controls, left side */
+
+.interpretation {
+    line-height: 1.5;
+}
+/* interpetation controls, right side */
+
+@media (max-width: 900px) {
+    .analysis {
+        grid-template-columns: 1fr;
+    }
+}
+/* for small screens (max width 900px), stack columns */
+
+/* END SSTRP REP CARD ANALYSIS ELEMENTS */
 
 /* Fix list element default overflow */
 
@@ -118,8 +156,8 @@ li p{
 .range_container {
   display: flex;
   flex-direction: column;
-  width: 50%;
-  margin: 10% 0;
+  width: 85%;
+  margin: 1rem 0;
 }
 
 .sliders_control {

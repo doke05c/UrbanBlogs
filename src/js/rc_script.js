@@ -378,6 +378,7 @@ function createScoreForMultipleLineChart ({
         }% over 2019, giving it an ultimate score of ${
             Math.round(scores[2] * 10) / 10
         }%, or a ${getReferenceLetter(scores[2])}.
+
 `
       ; 
 
@@ -398,6 +399,10 @@ function makeMultipleLineChart ({
 
   //container name we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
   containerId,
+
+  //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
+  //UNDEFINED UNLESS SPECIFIED
+  interpretationBoxId = undefined,
 
   //what time scale are we graphing over? days, months?
   timeOfInterest,
@@ -1263,49 +1268,124 @@ function makeMultipleLineChart ({
 
   }
 
+
   //SCORES
-  const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 
-  text.setAttribute("x", viewBoxWidth / 2);
-  text.setAttribute("y", currentLegendY + 30);
-  text.setAttribute("font-size", 17);
-  text.setAttribute("text-anchor", "middle");
-  text.setAttribute("fill", pointColor);
-  
+  const score_box = document.getElementById(interpretationBoxId);
 
-  //CALL FUNCTION TO GET OTP RESULT TEXT !!!!! <====> [CHANGE IN FUNCTION PARAM LATER]
+  //wipe previous score
+  score_box.innerHTML = "";
+
+  //create SVG container
+  const svg_score = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+  );
+
+  //allow overflow
+  svg_score.style.overflow = "visible";
+
+  //get score box width
+  const scoreViewBoxWidth = score_box.clientWidth;
+
+  //temporary height (will update itself later)
+  let scoreViewBoxHeight = 200;
+
+  //set SVG viewbox
+  svg_score.setAttribute(
+    "viewBox",
+    `0 0 ${scoreViewBoxWidth} ${scoreViewBoxHeight}`
+  );
+
+  svg_score.style.width = "100%";
+  svg_score.style.height = "auto";
+
+  //CALL FUNCTION TO GET SCORE TEXT <<===>> UPDATE LATER TO CLEAR HARDCODING OF OTP
   const result = createScoreForMultipleLineChart({
     mode: "OTP",
     datasetList: datasetList,
     importedDateRange: importedDateRange
   });
 
-  //split lines apart for SVG compatibility (use tspan)
-  const lines = result.split("\n");
 
-  lines.forEach((line, i) => {
-    const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+  //HTML TEXT INSIDE SVG
 
-    tspan.setAttribute("x", viewBoxWidth / 2);
-    tspan.setAttribute("dy", i === 0 ? 0 : 20);
-    tspan.textContent = line;
+  const foreignObject = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "foreignObject"
+  );
 
-    text.appendChild(tspan);
+
+  foreignObject.setAttribute("x", 0);
+  foreignObject.setAttribute("y", 0);
+
+  foreignObject.setAttribute(
+    "width",
+    scoreViewBoxWidth
+  );
+
+  foreignObject.setAttribute(
+    "height",
+    scoreViewBoxHeight
+  );
+
+  //HTML div for wrapping
+  const div = document.createElement("div");
+
+  div.style.width = "100%";
+  div.style.fontSize = "17px";
+  div.style.lineHeight = "1.4";
+  div.style.color = pointColor;
+  div.style.textAlign = "left";
+
+
+  //preserve \n line breaks
+  div.style.whiteSpace = "pre-line";
+
+
+  //wrap long strings
+  div.style.overflowWrap = "break-word";
+  div.style.wordBreak = "break-word";
+
+
+  //put text in
+  div.textContent = result;
+
+  foreignObject.appendChild(div);
+  svg_score.appendChild(foreignObject);
+
+  //DYNAMIC HEIGHT
+
+  //wait for browser to calculate text height
+  requestAnimationFrame(() => {
+    const height = div.getBoundingClientRect().height + 20;
+
+    svg_score.setAttribute(
+      "viewBox",
+      `0 0 ${scoreViewBoxWidth} ${height}`
+    );
+
+    foreignObject.setAttribute(
+      "height",
+      height
+    );
+
+    svg_score.style.height = `${height}px`;
   });
 
-  svg.appendChild(text);
+  //add score SVG to score box, display score box
+  score_box.appendChild(svg_score);
 
-  //add OTP scores to svg
-  svg.appendChild(text);
-
-
-  //add svg elements to chart
+  //add chart SVG elements
   multi_line.appendChild(svg);
 
-  //GRAPH IS READY! kill loader
+  //remove loader
   multi_line_loader.remove();
 
-  document.getElementById(containerId).appendChild(multi_line) //<- Display
+  //display chart
+  document
+    .getElementById(containerId)
+    .appendChild(multi_line);
 
   //END MULTI LINE CHART
 }
@@ -1320,6 +1400,10 @@ function makeLineChart({
 
   //container name we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
   containerId,
+
+  //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
+  //UNDEFINED UNLESS SPECIFIED
+  interpretationBoxId = undefined,
 
   //what time scale are we graphing over? days, months?
   timeOfInterest,
@@ -1378,6 +1462,7 @@ function makeLineChart({
     },
 
     containerId,
+    interpretationBoxId,
     timeOfInterest,
 
     paddingLeft,
@@ -1412,6 +1497,10 @@ function makeBarChart({
 
   //name of chart container we want to use to put actual chart into (TAKEN FROM BLOG PAGE) 
   containerId, 
+
+  //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
+  //UNDEFINED UNLESS SPECIFIED
+  interpretationBoxId = undefined,
 
   //what time scale are we graphing over? days, months? 
   timeOfInterest, 
@@ -1616,6 +1705,10 @@ function typeSelectMultipleLineChart({
   datasetListStepSizeReference, //reference containing dataset names and advised yAxisStep size
 
   containerId, //chart container id
+  //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
+  //UNDEFINED UNLESS SPECIFIED
+  interpretationBoxId = undefined,
+
   buttonId, //button id
   inputTextId, //input text id
   // ^^ taken from html-side of blogpost
@@ -1656,6 +1749,7 @@ function typeSelectMultipleLineChart({
     makeMultipleLineChart({
       datasetList: datasetList,
       containerId: containerId,
+      interpretationBoxId: interpretationBoxId,
       yAxisStep: yAxisStepDefault,
       timeOfInterest: timeOfInterest,
       aspectRatio: aspectRatio
@@ -1704,6 +1798,7 @@ function typeSelectMultipleLineChart({
         makeMultipleLineChart({
           datasetList: inputNewDatasetList,
           containerId: containerId,
+          interpretationBoxId: interpretationBoxId,
           yAxisStep: stepSize,
           timeOfInterest: timeOfInterest,
           aspectRatio: aspectRatio,
@@ -1728,6 +1823,10 @@ function clickSelectMultipleLineChart({
   datasetListStepSizeReference, //reference containing dataset names and advised yAxisStep size
 
   containerId, //chart container id
+  //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
+  //UNDEFINED UNLESS SPECIFIED
+  interpretationBoxId = undefined,
+
   checkBoxGroupId, //checkbox group id
   // ^^ taken from html-side of blogpost
 
@@ -1780,6 +1879,7 @@ function clickSelectMultipleLineChart({
       makeMultipleLineChart({
         datasetList: checkedDatasets,
         containerId: containerId,
+        interpretationBoxId: interpretationBoxId,
         yAxisStep: stepSize,
         timeOfInterest: timeOfInterest,
         aspectRatio: aspectRatio,
@@ -1793,6 +1893,10 @@ function clickSelectMultipleLineChart({
       //remove chart, no data
       const container = document.getElementById(containerId);
       container.innerHTML = ""; //remove old chart
+
+      const interpretationbox = document.getElementById(interpretationBoxId);
+      interpretationbox.innerHTML = ""; //remove old scorebox
+
 
       container.textContent = "Select a dataset to start the chart.";
     }
@@ -1904,6 +2008,10 @@ function nestedTwoCategorySelectLineChart({
 
   containerId,
 
+  //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
+  //UNDEFINED UNLESS SPECIFIED
+  interpretationBoxId = undefined,
+
   checkboxSuperGroupId, //upper level, selector
 
   checkBoxSubGroupId, //lower level, checkboxes
@@ -1934,6 +2042,7 @@ function nestedTwoCategorySelectLineChart({
     datasetList: datasetSuperList[select.value], //now the list is being taken from the superlist to plot
     datasetListStepSizeReference: datasetListStepSizeReference,
     containerId: containerId,
+    interpretationBoxId: interpretationBoxId,
     checkBoxGroupId: checkBoxSubGroupId, //subgroup of checkboxes is taken from reference as well
     timeOfInterest: timeOfInterest,
     aspectRatio: aspectRatio,
@@ -1960,6 +2069,7 @@ function nestedTwoCategorySelectLineChart({
       datasetList: datasetSuperList[select.value], //now the list is being taken from the superlist to plot
       datasetListStepSizeReference: datasetListStepSizeReference,
       containerId: containerId,
+      interpretationBoxId: interpretationBoxId,
       checkBoxGroupId: checkBoxSubGroupId, //subgroup of checkboxes is taken from reference as well
       timeOfInterest: timeOfInterest,
       aspectRatio: aspectRatio,
@@ -2217,6 +2327,7 @@ function whichChartsToUpdate(startDate, endDate) {
     datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
 
     containerId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
+    interpretationBoxId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range_interpretation",
     checkboxSuperGroupId: "subwayOTPDaySelect_date_range", //upper level, selector
     checkBoxSubGroupId: "subway-otp-checkboxes_date_range", //lower level, checkboxes
 
