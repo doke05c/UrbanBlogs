@@ -207,6 +207,23 @@ const subwayOTPDatasets = {
     "Weekend": monthly_weekend_subway_otp_rate_from_jan_2015_rows
 };
 
+//number to letter grade conversion
+function getReferenceLetter(score) {
+  if (score >= 97.45) return "A+";
+  if (score >= 92.45) return "A";
+  if (score >= 89.95) return "A-";
+  if (score >= 87.45) return "B+";
+  if (score >= 82.45) return "B";
+  if (score >= 79.95) return "B-";
+  if (score >= 77.45) return "C+";
+  if (score >= 72.45) return "C";
+  if (score >= 69.95) return "C-";
+  if (score >= 67.45) return "D+";
+  if (score >= 62.45) return "D";
+  if (score >= 59.95) return "D-";
+  return "F";
+}
+
 
 //SCORE: 
 //compare: (examples)
@@ -236,7 +253,12 @@ function createScoreForMultipleLineChart ({
 
     //create "empty" ver of datasetlist comprising of just name. (ie: F: [])
     const datasetOTPScoreList = Object.fromEntries(
-        Object.keys(datasetList).map(name => [name, [[], [], []]])
+        Object.keys(datasetList).map(name => [name, [[], [], //otp latest month, otp of period
+                                                     [], [], //grade latest month, grade period
+                                                     [], //line display name
+                                                     [], //line technical name
+                                                     [], //latest month
+                                                    ]])
     );
 
     for (const [name, dataset] of Object.entries(datasetList)) {  
@@ -299,7 +321,7 @@ function createScoreForMultipleLineChart ({
 
         //do the same for the line in 2019
         average2019 =
-          monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<----- TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+          monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<=== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
             .filter(entry => {
                 const month = new Date(entry.month);
                 return (
@@ -310,7 +332,7 @@ function createScoreForMultipleLineChart ({
             })
             .reduce((sum, entry) => sum + entry.count, 0)  //take the sum of all valid values in 2019 (non-zero)
         /
-          monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<----- TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+          monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<==== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
             .filter(entry => {
                 const month = new Date(entry.month);
                 return (
@@ -323,37 +345,11 @@ function createScoreForMultipleLineChart ({
       }
 
       //ratio of average OTP during the selected date range to average OTP in 2019
-      const OTPGrade = averageCurrent * averageCurrent / average2019;
+      // const OTPGrade = averageCurrent * averageCurrent / average2019;
+      const OTPGrade = averageCurrent; //^^2019 COMPARISON REMOVED, <<====>> PUT IN FOR RIDERSHIP ANALYSIS THOUGH
       
       //update the dataset's OTP score with the OTP, calculated rel over 2019, and final grade
-      datasetOTPScoreList[name] = [averageCurrent, ((averageCurrent-average2019)/averageCurrent*100), OTPGrade];
-      
-    }
-
-    for (const [name, scores] of Object.entries(datasetOTPScoreList)) {
-
-      //keyword for changes
-      const changeWord =
-      scores[1] >= 0.05 ? "a relative improvement" :
-      scores[1] <= -0.05 ? "a relative decline" :
-      "an unchanged difference";
-
-      //number to letter grade conversion
-      function getReferenceLetter(score) {
-        if (score >= 97) return "A+";
-        if (score >= 93) return "A";
-        if (score >= 90) return "A-";
-        if (score >= 87) return "B+";
-        if (score >= 83) return "B";
-        if (score >= 80) return "B-";
-        if (score >= 77) return "C+";
-        if (score >= 73) return "C";
-        if (score >= 70) return "C-";
-        if (score >= 67) return "D+";
-        if (score >= 63) return "D";
-        if (score >= 60) return "D-";
-        return "F";
-      }
+      // datasetOTPScoreList[name] = [averageCurrent, ((averageCurrent-average2019)/averageCurrent*100), OTPGrade];
 
       //display name beautifier for weird lines
       const displayName =
@@ -363,27 +359,61 @@ function createScoreForMultipleLineChart ({
         name === "JZ" ? "J/Z" :
         name;
 
-      
-      result_statement += 
-        `Between ${importedDateRange[0].toLocaleDateString("en-US", {
-            month: "short",
-            year: "numeric"
-        })} and ${importedDateRange[1].toLocaleDateString("en-US", {
-            month: "short",
-            year: "numeric"
-        })}, the ${displayName} train had an OTP of ${
-            Math.round(scores[0] * 10) / 10
-        }%, ${changeWord} of ${
-            Math.round(Math.abs(scores[1]) * 10) / 10
-        }% over 2019, giving it an ultimate score of ${
-            Math.round(scores[2] * 10) / 10
-        }%, or a ${getReferenceLetter(scores[2])}.
-
-`
-      ; 
+      //NEW: update the dataset's OTP score with the OTP of latest month, OTP of time period, grade of latest month, grade of time period
+      datasetOTPScoreList[name] = [
+        monthly_overall_subway_otp_rate_from_jan_2015_rows[name][monthly_overall_subway_otp_rate_from_jan_2015_rows[name].length-1].count,
+        averageCurrent,
+        getReferenceLetter(monthly_overall_subway_otp_rate_from_jan_2015_rows[name][monthly_overall_subway_otp_rate_from_jan_2015_rows[name].length-1].count),
+        getReferenceLetter(averageCurrent),
+        displayName,
+        name,
+        new Date(
+          new Date(
+            monthly_overall_subway_otp_rate_from_jan_2015_rows[name].at(-1).month + "-01"
+          ).setMonth(
+            new Date(
+              monthly_overall_subway_otp_rate_from_jan_2015_rows[name].at(-1).month + "-01"
+            ).getMonth() + 1
+          )
+        ).toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric"
+        }),
+      ];
 
     }
-    return result_statement;
+
+//     for (const [name, scores] of Object.entries(datasetOTPScoreList)) {
+
+//       //keyword for changes
+//       // const changeWord =
+//       // scores[1] >= 0.05 ? "a relative improvement" :
+//       // scores[1] <= -0.05 ? "a relative decline" :
+//       // "an unchanged difference";
+
+
+
+      
+// //       result_statement += 
+// //         `Between ${importedDateRange[0].toLocaleDateString("en-US", {
+// //             month: "short",
+// //             year: "numeric"
+// //         })} and ${importedDateRange[1].toLocaleDateString("en-US", {
+// //             month: "short",
+// //             year: "numeric"
+// //         })}, the ${displayName} train had an OTP of ${
+// //             Math.round(scores[1] * 10) / 10
+// //         }%, ${changeWord} of ${
+// //             Math.round(Math.abs(scores[1]) * 10) / 10
+// //         }% over 2019, giving it an ultimate score of ${
+// //             Math.round(scores[2] * 10) / 10
+// //         }%, or a ${getReferenceLetter(scores[2])}.
+
+// // `
+// //       ; 
+
+//     }
+    return datasetOTPScoreList;
 
   }
 
@@ -1338,19 +1368,136 @@ function makeMultipleLineChart ({
   div.style.color = pointColor;
   div.style.textAlign = "left";
 
+  div.style.display = "flex";
+  div.style.flexWrap = "wrap";
+  div.style.gap = "10px";
+  div.style.justifyContent = "center";
+  div.style.width = "auto";
 
-  //preserve \n line breaks
-  div.style.whiteSpace = "pre-line";
+  div.style.margin = "0";
+  div.style.padding = "0";
 
+  div.style.overflow = "visible";
 
   //wrap long strings
   div.style.overflowWrap = "break-word";
   div.style.wordBreak = "break-word";
 
 
-  //put text in
-  div.textContent = result;
+  //put text in <<=====>> REPLACE WITH OTHER THINGS WHEN NOT OTP
 
+  for (const [line, values] of Object.entries(result)) {
+    const [
+      latestOTP,
+      rangeOTP,
+      latestGrade,
+      rangeGrade,
+      subwayLine,
+      name,
+      latestMonth
+    ] = values;
+
+    let box_color; //what to color the box of the report card scorecard
+
+    if (passLineColorsAsStatic) {
+      //find index of name ^ in datasetListStepSizeReference, and then set index lineColors[index] of this found index
+      const index = Object.keys(datasetListStepSizeReference).indexOf(name);
+
+      box_color = lineColors[index % lineColors.length]; //<- do the remainder to ensure loopability when needed
+
+    } else {
+      box_color = lineColors[i];
+    }
+    
+    const lines_count = Object.keys(result).length;
+    const scale = 2 / Math.pow(lines_count, .333);
+
+    const line_height = Math.max(1, 1.3/lines_count);
+
+    div.innerHTML += `
+      <div style="
+        display: inline-block;
+        width: fit-content;
+        border: 2px solid ${pointColor};
+        border-radius: 10px;
+        padding: ${Math.max(2, 5/lines_count)}px;
+        text-align: center;
+        background-color: ${box_color};
+      ">
+      
+        <div style="
+          font-size:${Math.max(14, 30 * scale)}px;
+          font-weight:bold;
+          line-height:${line_height};
+          text-align:center;
+        ">
+        ${subwayLine} Train
+        </div>
+
+
+        <div style="
+          font-size:${Math.max(9, 19 * scale)}px;
+          font-weight:bold;
+          line-height:${line_height};
+          text-align:center;
+        ">
+        ${importedDateRange[0].toLocaleDateString("en-US", {
+              month: "short",
+              year: "numeric"
+          })} to ${importedDateRange[1].toLocaleDateString("en-US", {
+              month: "short",
+              year: "numeric"
+        })}
+        </div> 
+
+        <div style="
+          font-size:${Math.max(16, 33 * scale)}px;
+          font-weight:bold;
+          line-height:${line_height};
+          text-align:center;
+        ">
+          ${rangeGrade}
+        </div>
+
+        <div style="
+          font-size:${Math.max(8, 16.66 * scale)}px;
+          font-weight:bold;
+          line-height:${line_height};
+          text-align:center;
+        ">
+        ${rangeOTP.toFixed(1)}%
+        </div>
+
+        <div style="
+          font-size:${Math.max(9, 19 * scale)}px;
+          font-weight:bold;
+          line-height:${line_height};
+          text-align:center;
+        ">
+        Latest Month (${latestMonth}):
+        </div>
+
+        <div style="
+          font-size:${Math.max(16, 33 * scale)}px;
+          font-weight:bold;
+          line-height:${line_height};
+          text-align:center;
+        ">
+          ${latestGrade}
+        </div>
+
+        <div style="
+          font-size:${Math.max(8, 16.66 * scale)}px;
+          font-weight:bold;
+          line-height:${line_height};
+          text-align:center;
+        ">
+        ${latestOTP.toFixed(1)}%
+        </div>
+      </div>
+    `;
+
+  }
   foreignObject.appendChild(div);
   svg_score.appendChild(foreignObject);
 
@@ -1358,7 +1505,7 @@ function makeMultipleLineChart ({
 
   //wait for browser to calculate text height
   requestAnimationFrame(() => {
-    const height = div.getBoundingClientRect().height + 20;
+    const height = div.getBoundingClientRect().height + 50;
 
     svg_score.setAttribute(
       "viewBox",
