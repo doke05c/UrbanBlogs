@@ -2379,6 +2379,10 @@ function sliderMakerMultipleChart({
   fromSlider.max = numOfMonths;
   toSlider.max = numOfMonths;
 
+  //default slider positions
+  fromSlider.value = toSlider.max - 12;   // 1 year before last month
+  toSlider.value = toSlider.max;          // last month
+
   //fill slider with content
   fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
   setToggleAccessible(toSlider);

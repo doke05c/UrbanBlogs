@@ -27,8 +27,8 @@ description: "The New York City region has been missing a centralized location w
       <!-- slider -->
       <div class="range_container">
           <div class="sliders_control">
-              <input id="fromSlider" type="range" value="10" min="0"/>
-              <input id="toSlider" type="range" value="40" min="0"/> 
+              <input id="fromSlider" type="range" min="0"/>
+              <input id="toSlider" type="range" min="0"/> 
               <span id="fromLabel"></span> <span id="toLabel"></span>
           </div>
       </div>
