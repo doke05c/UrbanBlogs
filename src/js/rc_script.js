@@ -226,6 +226,8 @@ function getReferenceLetter(score) {
 
 
 //SCORE: 
+
+//RIDERSHIP COMPARISON (CURRENT MECHANISM, <<====>> REPLACE W/ SMTH BETTER LATER)
 //compare: (examples)
 // [jan 2020 - may 2020 to jan 2019 - may 2019]
 // [nov 2020 - feb 2021 to nov 2018 - feb 2019]
@@ -293,14 +295,14 @@ function createScoreForMultipleLineChart ({
         
         //do the same for the line in 2019
         average2019 =
-            originalDatasetList[name] //<<<<=== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+            originalDatasetList[name]
                 .filter(entry =>
                     entry.count !== 0 &&
                     entry.month.startsWith("2019-")
                 )
                 .reduce((sum, entry) => sum + entry.count, 0) //take the sum of all valid values in 2019 (non-zero)
             /
-            originalDatasetList[name] //<<<<== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+            originalDatasetList[name]
                 .filter(entry =>
                     entry.count !== 0 &&
                     entry.month.startsWith("2019-")
@@ -325,7 +327,7 @@ function createScoreForMultipleLineChart ({
 
         //do the same for the line in 2019
         average2019 =
-          originalDatasetList[name] //<<<<=== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+          originalDatasetList[name]
             .filter(entry => {
                 const month = new Date(entry.month);
                 return (
@@ -336,7 +338,7 @@ function createScoreForMultipleLineChart ({
             })
             .reduce((sum, entry) => sum + entry.count, 0)  //take the sum of all valid values in 2019 (non-zero)
         /
-          originalDatasetList[name] //<<<<==== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+          originalDatasetList[name]
             .filter(entry => {
                 const month = new Date(entry.month);
                 return (
@@ -2590,7 +2592,7 @@ sliderMakerMultipleChart({
   fromLabelId: '#fromLabel',
   toLabelId: '#toLabel',
   startDate: new Date(2015, 0, 1), //Jan 2015
-  endDate: new Date(2026, 4, 1), //May 2026
+  endDate: new Date(2026, 4, 1), //May 2026 <<===>> REPLACE LATER WITH SOMETHING TO GET LATEST MONTH IN DATASET
   updateChartsFunction: (startDate, endDate) => {
     whichChartsToUpdate(startDate, endDate);
   }
