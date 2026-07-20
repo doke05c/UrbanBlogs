@@ -241,6 +241,10 @@ function createScoreForMultipleLineChart ({
 
   //data we want to plot, list of datasets, to be unpacked in the function (comparison occurs within datasetList)
   datasetList,
+
+  //original dataset 
+  //(originated from earliest possible origin point of call stack (ie: nested -> click select -> multi -> here))
+  originalDatasetList,
   
   //what time period are we using to evaluate?
   importedDateRange
@@ -248,7 +252,7 @@ function createScoreForMultipleLineChart ({
 
   if (mode == "OTP") {
   //GRADE SCALE:
-  //SCORE = (CURRENT OTP^2) / (2019 OTP)
+  //SCORE = OTP 
   let result_statement = "";
 
     //create "empty" ver of datasetlist comprising of just name. (ie: F: [])
@@ -289,14 +293,14 @@ function createScoreForMultipleLineChart ({
         
         //do the same for the line in 2019
         average2019 =
-            monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<=== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+            originalDatasetList[name] //<<<<=== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
                 .filter(entry =>
                     entry.count !== 0 &&
                     entry.month.startsWith("2019-")
                 )
                 .reduce((sum, entry) => sum + entry.count, 0) //take the sum of all valid values in 2019 (non-zero)
             /
-            monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+            originalDatasetList[name] //<<<<== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
                 .filter(entry =>
                     entry.count !== 0 &&
                     entry.month.startsWith("2019-")
@@ -321,7 +325,7 @@ function createScoreForMultipleLineChart ({
 
         //do the same for the line in 2019
         average2019 =
-          monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<=== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+          originalDatasetList[name] //<<<<=== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
             .filter(entry => {
                 const month = new Date(entry.month);
                 return (
@@ -332,7 +336,7 @@ function createScoreForMultipleLineChart ({
             })
             .reduce((sum, entry) => sum + entry.count, 0)  //take the sum of all valid values in 2019 (non-zero)
         /
-          monthly_overall_subway_otp_rate_from_jan_2015_rows[name] //<<<<==== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
+          originalDatasetList[name] //<<<<==== TO BE CHANGED TO ADAPT TO DAY-OF-WEEK CHOICE
             .filter(entry => {
                 const month = new Date(entry.month);
                 return (
@@ -361,18 +365,18 @@ function createScoreForMultipleLineChart ({
 
       //NEW: update the dataset's OTP score with the OTP of latest month, OTP of time period, grade of latest month, grade of time period
       datasetOTPScoreList[name] = [
-        monthly_overall_subway_otp_rate_from_jan_2015_rows[name][monthly_overall_subway_otp_rate_from_jan_2015_rows[name].length-1].count,
+        originalDatasetList[name][originalDatasetList[name].length-1].count,
         averageCurrent,
-        getReferenceLetter(monthly_overall_subway_otp_rate_from_jan_2015_rows[name][monthly_overall_subway_otp_rate_from_jan_2015_rows[name].length-1].count),
+        getReferenceLetter(originalDatasetList[name][originalDatasetList[name].length-1].count),
         getReferenceLetter(averageCurrent),
         displayName,
         name,
         new Date(
           new Date(
-            monthly_overall_subway_otp_rate_from_jan_2015_rows[name].at(-1).month + "-01"
+            originalDatasetList[name].at(-1).month + "-01"
           ).setMonth(
             new Date(
-              monthly_overall_subway_otp_rate_from_jan_2015_rows[name].at(-1).month + "-01"
+              originalDatasetList[name].at(-1).month + "-01"
             ).getMonth() + 1
           )
         ).toLocaleDateString("en-US", {
@@ -426,6 +430,10 @@ function makeMultipleLineChart ({
 
   //data we want to plot, list of datasets, to be unpacked in the function
   datasetList,
+
+  //original dataset 
+  //(originated from earliest possible origin point of call stack (ie: nested -> click select -> multi -> here))
+  originalDatasetList,
 
   //container name we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
   containerId,
@@ -1334,6 +1342,7 @@ function makeMultipleLineChart ({
   const result = createScoreForMultipleLineChart({
     mode: "OTP",
     datasetList: datasetList,
+    originalDatasetList: originalDatasetList,
     importedDateRange: importedDateRange
   });
 
@@ -1545,6 +1554,10 @@ function makeLineChart({
   //name of dataset
   name,
 
+  //original dataset 
+  //(originated from earliest possible origin point of call stack (ie: nested -> click select -> multi -> here))
+  originalDatasetList,
+
   //container name we want to use to put actual chart into (TAKEN FROM BLOG PAGE)
   containerId,
 
@@ -1608,6 +1621,8 @@ function makeLineChart({
       [name]: rows
     },
 
+    originalDatasetList,
+
     containerId,
     interpretationBoxId,
     timeOfInterest,
@@ -1641,6 +1656,10 @@ function makeLineChart({
 function makeBarChart({
   //data we want to plot 
   rows, 
+
+  //original dataset (no functionality yet, make multi-bar chart later or smth)
+  //(originated from earliest possible origin point of call stack (ie: nested -> click select -> multi -> here))
+  originalDatasetList,
 
   //name of chart container we want to use to put actual chart into (TAKEN FROM BLOG PAGE) 
   containerId, 
@@ -1851,6 +1870,10 @@ function typeSelectMultipleLineChart({
   datasetList, //list of actual datasets
   datasetListStepSizeReference, //reference containing dataset names and advised yAxisStep size
 
+  //original dataset 
+  //(originated from earliest possible origin point of call stack (ie: nested -> click select -> multi -> here))
+  originalDatasetList,
+
   containerId, //chart container id
   //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
   //UNDEFINED UNLESS SPECIFIED
@@ -1895,6 +1918,7 @@ function typeSelectMultipleLineChart({
   if (datasetText == undefined) {
     makeMultipleLineChart({
       datasetList: datasetList,
+      originalDatasetList: originalDatasetList,
       containerId: containerId,
       interpretationBoxId: interpretationBoxId,
       yAxisStep: yAxisStepDefault,
@@ -1944,6 +1968,7 @@ function typeSelectMultipleLineChart({
         //make chart with new dataset list and new stepsize, put back into the containerid we used
         makeMultipleLineChart({
           datasetList: inputNewDatasetList,
+          originalDatasetList: originalDatasetList,
           containerId: containerId,
           interpretationBoxId: interpretationBoxId,
           yAxisStep: stepSize,
@@ -1968,6 +1993,10 @@ const checkboxCallbacks = {};
 function clickSelectMultipleLineChart({
   datasetList, //list of actual datasets
   datasetListStepSizeReference, //reference containing dataset names and advised yAxisStep size
+
+  //original dataset 
+  //(originated from earliest possible origin point of call stack (ie: nested -> click select -> multi -> here))
+  originalDatasetList,
 
   containerId, //chart container id
   //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
@@ -2025,6 +2054,7 @@ function clickSelectMultipleLineChart({
       //make chart with new dataset list and new stepsize, put back into the containerid we used
       makeMultipleLineChart({
         datasetList: checkedDatasets,
+        originalDatasetList: originalDatasetList,
         containerId: containerId,
         interpretationBoxId: interpretationBoxId,
         yAxisStep: stepSize,
@@ -2153,6 +2183,10 @@ function nestedTwoCategorySelectLineChart({
 
   datasetListStepSizeReference,
 
+  //original super dataset list
+  //(originated from earliest possible origin point of call stack (ie: nested -> click select -> multi -> here))
+  originalSuperList,
+
   containerId,
 
   //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
@@ -2187,6 +2221,7 @@ function nestedTwoCategorySelectLineChart({
     //initial display of checkbox options before user does anything 
 
     datasetList: datasetSuperList[select.value], //now the list is being taken from the superlist to plot
+    originalDatasetList: originalSuperList[select.value], //same goes for original dataset, taken from originalsuperlist
     datasetListStepSizeReference: datasetListStepSizeReference,
     containerId: containerId,
     interpretationBoxId: interpretationBoxId,
@@ -2214,6 +2249,7 @@ function nestedTwoCategorySelectLineChart({
 
     clickSelectMultipleLineChart({
       datasetList: datasetSuperList[select.value], //now the list is being taken from the superlist to plot
+      originalDatasetList: originalSuperList[select.value], //same goes for original dataset, taken from originalsuperlist
       datasetListStepSizeReference: datasetListStepSizeReference,
       containerId: containerId,
       interpretationBoxId: interpretationBoxId,
@@ -2472,6 +2508,9 @@ function whichChartsToUpdate(startDate, endDate) {
   nestedTwoCategorySelectLineChart({
     datasetSuperList: subwayOTPDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
     datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
+
+    originalSuperList: subwayOTPDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                          //will be needed for scorecard making
 
     containerId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
     interpretationBoxId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range_interpretation",
