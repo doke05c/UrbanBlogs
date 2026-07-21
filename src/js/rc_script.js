@@ -336,8 +336,9 @@ function createScoreForMultipleLineChart ({
         name === "S Rock" ? "Rockaway Park Shuttle" :
         name === "S 42nd" ? "42nd St. Shuttle" :
         name === "S Fkln" ? "Franklin Ave. Shuttle" :
-        name === "JZ" ? "J/Z" :
-        name;
+        name === "JZ" ? "J/Z Trains" :
+        name === "Systemwide" ? "Systemwide" :
+        name + " Train";
 
       //NEW: update the dataset's OTP score with the OTP of latest month, OTP of time period, grade of latest month, grade of time period
       datasetOTPScoreList[name] = [
@@ -1527,7 +1528,7 @@ function makeMultipleLineChart ({
           line-height:${line_height};
           text-align:center;
         ">
-        ${subwayLine} Train
+        ${subwayLine}
         </div>
 
 
