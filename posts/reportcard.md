@@ -68,6 +68,48 @@ description: "The New York City region has been missing a centralized location w
     <!-- end OTP interpretation -->
     </aside>
   </section>
+  <!-- -->
+  <!-- -->
+    <!-- RIDERSHIP CHART + INTERPRETATION -->
+  <section class="analysis">
+    <!-- start Ridership chart -->
+    <div class="chart">
+      <!-- slider -->
+      <div class="range_container">
+          <div class="sliders_control">
+              <input id="fromSlider_ridership" type="range" min="0"/>
+              <input id="toSlider_ridership" type="range" min="0"/> 
+              <span id="fromLabel_ridership"></span> <span id="toLabel_ridership"></span>
+          </div>
+      </div>
+      <!-- -->
+      <!-- -->
+      <!-- ridership checkboxes -->
+      <!--  -->
+      <div id="subway-ridership-checkboxes_date_range"></div>
+      <br>
+      <!--  -->
+      <!-- ridership chart visual -->
+      <!--  -->
+      <h4> MTA Monthly Ridership, Custom Divisions, Custom Date Range, Line: </h4> <!-- #### -->
+      <br>
+      <div id="monthly_ridership_select_box_line_date_range"></div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+    <!-- end ridership chart -->
+    <!--  -->
+    </div>
+    <!--  -->
+    <!-- start ridership interpretation -->
+    <aside class="interpretation">
+      <div id="monthly_ridership_select_box_line_date_range_interpretation"></div>
+    <!-- end ridership interpretation -->
+    </aside>
+  </section>
 
 
 

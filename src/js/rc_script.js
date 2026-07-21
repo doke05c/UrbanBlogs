@@ -10,6 +10,49 @@ if (getComputedStyle(document.getElementById("report-card-content")).visibility 
     loading.style.color = "#888";
 }
 
+//GET MONTHLY SUBWAY ENTRIES SINCE MAR 2020
+const monthly_entries_subway_from_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_from_mar_2020.json")
+    .then(res => res.json());
+
+//GET MONTHLY LIRR ENTRIES SINCE MAR 2020
+const monthly_lirr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_lirr_entries_from_mar_2020.json")
+    .then(res => res.json());
+
+//GET MONTHLY MNR ENTRIES SINCE MAR 2020
+const monthly_mnr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_from_mar_2020.json")
+    .then(res => res.json());
+
+//GET MONTHLY AAR ENTRIES SINCE MAR 2020
+const monthly_aar_entries_from_mar_2020_rows = await fetch("/src/json/monthly_aar_entries_from_mar_2020.json")
+    .then(res => res.json());
+
+//GET MONTHLY BUS ENTRIES SINCE MAR 2020
+const monthly_bus_entries_from_mar_2020_rows = await fetch("/src/json/monthly_bus_entries_from_mar_2020.json")
+    .then(res => res.json());
+
+//GET MONTHLY SIR ENTRIES SINCE MAR 2020
+const monthly_sir_entries_from_mar_2020_rows = await fetch("/src/json/monthly_sir_entries_from_mar_2020.json")
+    .then(res => res.json());
+
+//CREATE LIST OF MTA 6-MODE PUBLIC TRANSIT ENTRIES SINCE MAR 2020
+const monthly_multimodal_from_mar_2020_rows = {
+  "MNR Ridership": monthly_mnr_entries_from_mar_2020_rows,
+  "LIRR Ridership": monthly_lirr_entries_from_mar_2020_rows,
+  "Subway Ridership": monthly_entries_subway_from_mar_2020_rows,
+  "SIR Ridership": monthly_sir_entries_from_mar_2020_rows,
+  "Bus Ridership": monthly_bus_entries_from_mar_2020_rows,
+  "Access-a-Ride Ridership": monthly_aar_entries_from_mar_2020_rows,
+};
+
+const monthly_multimodal_from_mar_2020_step_size_reference = {
+  "MNR Ridership": 1_000_000,
+  "LIRR Ridership": 1_000_000,
+  "Subway Ridership": 20_000_000,
+  "SIR Ridership": 50_000,
+  "Bus Ridership": 5_000_000,
+  "Access-a-Ride Ridership": 200_000,
+};
+
 
 //GET MONTHLY WEEKDAY SUBWAY OTP RATES SINCE JAN 2015
 
@@ -2558,7 +2601,7 @@ function sliderMakerMultipleChart({
 const ridershipCheckedDatasets = {}; 
 const OTPCheckedDatasets = {};
 
-function whichChartsToUpdate(startDate, endDate) {
+function whichChartsToUpdateOTP(startDate, endDate) {
 
   //go through all charts which are to be updated, clear them before making new ones
   for (const oldContainerId of [
@@ -2581,7 +2624,7 @@ function whichChartsToUpdate(startDate, endDate) {
     containerId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
     
     interpretationBoxId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range_interpretation",
-    scorecardMode: "Ridership",
+    scorecardMode: "OTP",
 
     checkboxSuperGroupId: "subwayOTPDaySelect_date_range", //upper level, selector
     checkBoxSubGroupId: "subway-otp-checkboxes_date_range", //lower level, checkboxes
@@ -2645,8 +2688,6 @@ function whichChartsToUpdate(startDate, endDate) {
                         new Date(endDate)]
   });
   
-  //DEBUG FOR MEMORY MANAGEMENT
-  // console.count("clickSelectMultipleLineChart");
 }
 
 sliderMakerMultipleChart({
@@ -2657,10 +2698,63 @@ sliderMakerMultipleChart({
   startDate: new Date(2015, 0, 1), //Jan 2015
   endDate: new Date(2026, 4, 1), //May 2026 <<===>> REPLACE LATER WITH SOMETHING TO GET LATEST MONTH IN DATASET
   updateChartsFunction: (startDate, endDate) => {
-    whichChartsToUpdate(startDate, endDate);
+    whichChartsToUpdateOTP(startDate, endDate);
   }
 })
 
+
+//////////////////////
+
+function whichChartsToUpdateRidership(startDate, endDate) {
+
+  //go through all charts which are to be updated, clear them before making new ones
+  for (const oldContainerId of [
+    "monthly_ridership_select_box_line_date_range",
+  ]) {
+
+    const container = document.getElementById(oldContainerId);
+    container.innerHTML = "";  // remove old chart
+
+  }
+
+  //make new charts.
+  clickSelectMultipleLineChart({
+    datasetList: monthly_multimodal_from_mar_2020_rows,
+    datasetListStepSizeReference: monthly_multimodal_from_mar_2020_step_size_reference,
+
+    originalDatasetList: monthly_multimodal_from_mar_2020_rows, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                          //will be needed for scorecard making
+
+    containerId: "monthly_ridership_select_box_line_date_range",
+    
+    interpretationBoxId: "monthly_ridership_select_box_line_date_range_interpretation",
+    scorecardMode: "Ridership",
+
+    checkBoxGroupId: "subway-ridership-checkboxes_date_range", //lower level, checkboxes
+
+    persistenceOfCheckedDatasets: true,
+    listCheckedDatasets: ridershipCheckedDatasets,
+
+    timeOfInterest: "month",
+    aspectRatio: 2,
+
+    importedDateRange: [new Date(startDate),
+                        new Date(endDate)]
+  });
+  
+}
+
+sliderMakerMultipleChart({
+  fromSliderId: '#fromSlider_ridership',
+  toSliderId: '#toSlider_ridership',
+  fromLabelId: '#fromLabel_ridership',
+  toLabelId: '#toLabel_ridership',
+  startDate: new Date(2020, 2, 1), //Mar 2020
+  endDate: new Date(2026, 4, 1), //May 2026 <<===>> REPLACE LATER WITH SOMETHING TO GET LATEST MONTH IN DATASET
+  updateChartsFunction: (startDate, endDate) => {
+    whichChartsToUpdateRidership(startDate, endDate);
+  }
+})
 
 
 //RE-ENABLE SITE VISIBILITY
