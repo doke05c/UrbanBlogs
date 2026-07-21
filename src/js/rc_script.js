@@ -390,7 +390,7 @@ function createScoreForMultipleLineChart ({
       
       let average2019; //to be 2019 average metric per line
 
-      if (importedDateRange[1] >= oneYearLater) { //if the date range is a year or longer... compare to 2019 in full
+      // if (importedDateRange[1] >= oneYearLater) { //if the date range is a year or longer... compare to 2019 in full
         
         //do the same for the line in 2019
         average2019 =
@@ -407,47 +407,47 @@ function createScoreForMultipleLineChart ({
                     entry.month.startsWith("2021-")
                 ).length;                                   //divide by the count of all valid values in 2019 (non-zero)
 
-      } else if (importedDateRange[1] < oneYearLater) {
-        //compare partial year, to be calculated
-        //method: 
-          // [jan 2020 - may 2020 to jan 2019 - may 2019]
-          // [nov 2020 - feb 2021 to nov 2018 - feb 2019]
+      // } else if (importedDateRange[1] < oneYearLater) {
+      //   //compare partial year, to be calculated
+      //   //method: 
+      //     // [jan 2020 - may 2020 to jan 2019 - may 2019]
+      //     // [nov 2020 - feb 2021 to nov 2018 - feb 2019]
 
-        const comparisonEnd = new Date(importedDateRange[1]);
-        comparisonEnd.setFullYear(2019);
+      //   const comparisonEnd = new Date(importedDateRange[1]);
+      //   comparisonEnd.setFullYear(2019);
 
-        const comparisonStart = new Date(importedDateRange[0]);
+      //   const comparisonStart = new Date(importedDateRange[0]);
 
-        //preserve the same duration backwards from comparisonEnd
-        comparisonStart.setFullYear(
-            comparisonEnd.getFullYear() - 
-            (importedDateRange[1].getFullYear() - importedDateRange[0].getFullYear())
-        );
+      //   //preserve the same duration backwards from comparisonEnd
+      //   comparisonStart.setFullYear(
+      //       comparisonEnd.getFullYear() - 
+      //       (importedDateRange[1].getFullYear() - importedDateRange[0].getFullYear())
+      //   );
 
-        //do the same for the line in 2019
-        average2019 =
-          originalDatasetList[name]
-            .filter(entry => {
-                const month = new Date(entry.month);
-                return (
-                    entry.count !== 0 &&
-                    month >= (comparisonStart - 18000001) &&
-                    month <= comparisonEnd
-                );
-            })
-            .reduce((sum, entry) => sum + entry.count, 0)  //take the sum of all valid values in 2019 (non-zero)
-        /
-          originalDatasetList[name]
-            .filter(entry => {
-                const month = new Date(entry.month);
-                return (
-                    entry.count !== 0 &&
-                    month >= (comparisonStart - 18000001) &&
-                    month <= comparisonEnd
-                );
-            })
-            .length;                                     //divide by the count of all valid values in 2019 (non-zero)
-      }
+      //   //do the same for the line in 2019
+      //   average2019 =
+      //     originalDatasetList[name]
+      //       .filter(entry => {
+      //           const month = new Date(entry.month);
+      //           return (
+      //               entry.count !== 0 &&
+      //               month >= (comparisonStart - 18000001) &&
+      //               month <= comparisonEnd
+      //           );
+      //       })
+      //       .reduce((sum, entry) => sum + entry.count, 0)  //take the sum of all valid values in 2019 (non-zero)
+      //   /
+      //     originalDatasetList[name]
+      //       .filter(entry => {
+      //           const month = new Date(entry.month);
+      //           return (
+      //               entry.count !== 0 &&
+      //               month >= (comparisonStart - 18000001) &&
+      //               month <= comparisonEnd
+      //           );
+      //       })
+      //       .length;                                     //divide by the count of all valid values in 2019 (non-zero)
+      // }
 
       //ratio of average metric during the selected date range to average metric in 2019
       // const OTPGrade = averageCurrent * averageCurrent / average2019;
