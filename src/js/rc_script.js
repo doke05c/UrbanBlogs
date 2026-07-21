@@ -252,20 +252,19 @@ function createScoreForMultipleLineChart ({
   importedDateRange
 }) {
 
+  //create "empty" ver of datasetlist comprising of just name. (ie: F: [])
+  const datasetOTPScoreList = Object.fromEntries(
+      Object.keys(datasetList).map(name => [name, [[], [], //metric latest month, metric of period
+                                                    [], [], //grade latest month, grade period
+                                                    [], //line display name
+                                                    [], //line technical name
+                                                    [], //latest month
+                                                  ]])
+  );
+
   if (mode == "OTP") {
   //GRADE SCALE:
   //SCORE = OTP 
-  let result_statement = "";
-
-    //create "empty" ver of datasetlist comprising of just name. (ie: F: [])
-    const datasetOTPScoreList = Object.fromEntries(
-        Object.keys(datasetList).map(name => [name, [[], [], //otp latest month, otp of period
-                                                     [], [], //grade latest month, grade period
-                                                     [], //line display name
-                                                     [], //line technical name
-                                                     [], //latest month
-                                                    ]])
-    );
 
     for (const [name, dataset] of Object.entries(datasetList)) {  
 
@@ -289,7 +288,64 @@ function createScoreForMultipleLineChart ({
                   new Date(entry.month) <= importedDateRange[1]
               ).length;                                   //divide by the number of valid values in the range (non-zero)
       
-      let average2019; //to be 2019 average OTP per line
+      //display name beautifier for weird lines
+      const displayName =
+        name === "S Rock" ? "Rockaway Park Shuttle" :
+        name === "S 42nd" ? "42nd St. Shuttle" :
+        name === "S Fkln" ? "Franklin Ave. Shuttle" :
+        name === "JZ" ? "J/Z" :
+        name;
+
+      //NEW: update the dataset's OTP score with the OTP of latest month, OTP of time period, grade of latest month, grade of time period
+      datasetOTPScoreList[name] = [
+        Math.round(originalDatasetList[name][originalDatasetList[name].length-1].count * 10) / 10 + "%",
+        Math.round(averageCurrent * 10) / 10 + "%",
+
+        getReferenceLetter(originalDatasetList[name][originalDatasetList[name].length-1].count),
+        getReferenceLetter(averageCurrent),
+        displayName,
+        name,
+        new Date(
+          new Date(
+            originalDatasetList[name].at(-1).month + "-01"
+          ).setMonth(
+            new Date(
+              originalDatasetList[name].at(-1).month + "-01"
+            ).getMonth() + 1
+          )
+        ).toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric"
+        }),
+      ];
+
+    }
+
+  } else if (mode == "Ridership") {
+
+    for (const [name, dataset] of Object.entries(datasetList)) {  
+
+      const oneYearLater = new Date(importedDateRange[0]);
+      oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);                                         
+
+      //get the average metric of the line for the time period
+      const averageCurrent =
+          dataset
+              .filter(entry =>
+                  entry.count !== 0 &&
+                  new Date(entry.month) >= (importedDateRange[0] - 18000001) &&
+                  new Date(entry.month) <= importedDateRange[1]
+              )
+              .reduce((sum, entry) => sum + entry.count, 0) //take the sum of all valid values in the range (non-zero)
+          /
+          dataset
+              .filter(entry =>
+                  entry.count !== 0 &&
+                  new Date(entry.month) >= (importedDateRange[0] - 18000001) &&
+                  new Date(entry.month) <= importedDateRange[1]
+              ).length;                                   //divide by the number of valid values in the range (non-zero)
+      
+      let average2019; //to be 2019 average metric per line
 
       if (importedDateRange[1] >= oneYearLater) { //if the date range is a year or longer... compare to 2019 in full
         
@@ -298,14 +354,14 @@ function createScoreForMultipleLineChart ({
             originalDatasetList[name]
                 .filter(entry =>
                     entry.count !== 0 &&
-                    entry.month.startsWith("2019-")
+                    entry.month.startsWith("2021-")
                 )
                 .reduce((sum, entry) => sum + entry.count, 0) //take the sum of all valid values in 2019 (non-zero)
             /
             originalDatasetList[name]
                 .filter(entry =>
                     entry.count !== 0 &&
-                    entry.month.startsWith("2019-")
+                    entry.month.startsWith("2021-")
                 ).length;                                   //divide by the count of all valid values in 2019 (non-zero)
 
       } else if (importedDateRange[1] < oneYearLater) {
@@ -350,11 +406,15 @@ function createScoreForMultipleLineChart ({
             .length;                                     //divide by the count of all valid values in 2019 (non-zero)
       }
 
-      //ratio of average OTP during the selected date range to average OTP in 2019
+      //ratio of average metric during the selected date range to average metric in 2019
       // const OTPGrade = averageCurrent * averageCurrent / average2019;
-      const OTPGrade = averageCurrent; //^^2019 COMPARISON REMOVED, <<====>> PUT IN FOR RIDERSHIP ANALYSIS THOUGH
+      const latest_comp_2019_pct = Math.round((originalDatasetList[name][originalDatasetList[name].length-1].count - average2019)
+                              / average2019 * 100 * 10) / 10 + "%"; //rounded to 0.X
       
-      //update the dataset's OTP score with the OTP, calculated rel over 2019, and final grade
+      const average_current_comp_2019_pct = Math.round((averageCurrent - average2019)
+                              / average2019 * 100 * 10) / 10 + "%"; //rounded to 0.X
+      
+      //update the dataset's metric score with the metric, calculated rel over 2019, and final grade
       // datasetOTPScoreList[name] = [averageCurrent, ((averageCurrent-average2019)/averageCurrent*100), OTPGrade];
 
       //display name beautifier for weird lines
@@ -365,12 +425,17 @@ function createScoreForMultipleLineChart ({
         name === "JZ" ? "J/Z" :
         name;
 
-      //NEW: update the dataset's OTP score with the OTP of latest month, OTP of time period, grade of latest month, grade of time period
+      //NEW: update the dataset's metric score with the metric of latest month, metric of time period, grade of latest month, grade of time period
+      
+      //ridership: "grade" is comparison over 2019
+
       datasetOTPScoreList[name] = [
-        originalDatasetList[name][originalDatasetList[name].length-1].count,
-        averageCurrent,
-        getReferenceLetter(originalDatasetList[name][originalDatasetList[name].length-1].count),
-        getReferenceLetter(averageCurrent),
+        Math.round(originalDatasetList[name][originalDatasetList[name].length-1].count),
+        Math.round(averageCurrent),
+        
+        latest_comp_2019_pct,
+        average_current_comp_2019_pct,
+        
         displayName,
         name,
         new Date(
@@ -389,41 +454,9 @@ function createScoreForMultipleLineChart ({
 
     }
 
-//     for (const [name, scores] of Object.entries(datasetOTPScoreList)) {
-
-//       //keyword for changes
-//       // const changeWord =
-//       // scores[1] >= 0.05 ? "a relative improvement" :
-//       // scores[1] <= -0.05 ? "a relative decline" :
-//       // "an unchanged difference";
-
-
-
-      
-// //       result_statement += 
-// //         `Between ${importedDateRange[0].toLocaleDateString("en-US", {
-// //             month: "short",
-// //             year: "numeric"
-// //         })} and ${importedDateRange[1].toLocaleDateString("en-US", {
-// //             month: "short",
-// //             year: "numeric"
-// //         })}, the ${displayName} train had an OTP of ${
-// //             Math.round(scores[1] * 10) / 10
-// //         }%, ${changeWord} of ${
-// //             Math.round(Math.abs(scores[1]) * 10) / 10
-// //         }% over 2019, giving it an ultimate score of ${
-// //             Math.round(scores[2] * 10) / 10
-// //         }%, or a ${getReferenceLetter(scores[2])}.
-
-// // `
-// //       ; 
-
-//     }
-    return datasetOTPScoreList;
-
   }
 
-
+  return datasetOTPScoreList;
 
 }
 
@@ -1342,7 +1375,7 @@ function makeMultipleLineChart ({
 
   //CALL FUNCTION TO GET SCORE TEXT <<===>> UPDATE LATER TO CLEAR HARDCODING OF OTP
   const result = createScoreForMultipleLineChart({
-    mode: "OTP",
+    mode: "Ridership",
     datasetList: datasetList,
     originalDatasetList: originalDatasetList,
     importedDateRange: importedDateRange
@@ -1476,7 +1509,7 @@ function makeMultipleLineChart ({
           line-height:${line_height};
           text-align:center;
         ">
-        ${rangeOTP.toFixed(1)}%
+        ${rangeOTP}
         </div>
 
         <div style="
@@ -1503,7 +1536,7 @@ function makeMultipleLineChart ({
           line-height:${line_height};
           text-align:center;
         ">
-        ${latestOTP.toFixed(1)}%
+        ${latestOTP}
         </div>
       </div>
     `;
