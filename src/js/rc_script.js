@@ -477,6 +477,9 @@ function makeMultipleLineChart ({
   //UNDEFINED UNLESS SPECIFIED
   interpretationBoxId = undefined,
 
+  //type of metric scorecard being made, undefined unless specified in call stack
+  scorecardMode = undefined,
+
   //what time scale are we graphing over? days, months?
   timeOfInterest,
 
@@ -1375,7 +1378,7 @@ function makeMultipleLineChart ({
 
   //CALL FUNCTION TO GET SCORE TEXT <<===>> UPDATE LATER TO CLEAR HARDCODING OF OTP
   const result = createScoreForMultipleLineChart({
-    mode: "Ridership",
+    mode: scorecardMode,
     datasetList: datasetList,
     originalDatasetList: originalDatasetList,
     importedDateRange: importedDateRange
@@ -1600,6 +1603,9 @@ function makeLineChart({
   //UNDEFINED UNLESS SPECIFIED
   interpretationBoxId = undefined,
 
+  //type of metric scorecard being made, undefined unless specified in call stack
+  scorecardMode = undefined,
+
   //what time scale are we graphing over? days, months?
   timeOfInterest,
 
@@ -1660,6 +1666,8 @@ function makeLineChart({
 
     containerId,
     interpretationBoxId,
+    scorecardMode,
+
     timeOfInterest,
 
     paddingLeft,
@@ -1702,6 +1710,10 @@ function makeBarChart({
   //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
   //UNDEFINED UNLESS SPECIFIED
   interpretationBoxId = undefined,
+
+  //type of metric scorecard being made, undefined unless specified in call stack 
+  //(no functionality yet, incorporate scorecard in bar chart)
+  scorecardMode = undefined,
 
   //what time scale are we graphing over? days, months? 
   timeOfInterest, 
@@ -1910,9 +1922,13 @@ function typeSelectMultipleLineChart({
   originalDatasetList,
 
   containerId, //chart container id
+
   //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
   //UNDEFINED UNLESS SPECIFIED
   interpretationBoxId = undefined,
+
+  //type of metric scorecard being made, undefined unless specified in call stack
+  scorecardMode = undefined,
 
   buttonId, //button id
   inputTextId, //input text id
@@ -1956,6 +1972,7 @@ function typeSelectMultipleLineChart({
       originalDatasetList: originalDatasetList,
       containerId: containerId,
       interpretationBoxId: interpretationBoxId,
+      scorecardMode: scorecardMode,
       yAxisStep: yAxisStepDefault,
       timeOfInterest: timeOfInterest,
       aspectRatio: aspectRatio
@@ -2006,6 +2023,7 @@ function typeSelectMultipleLineChart({
           originalDatasetList: originalDatasetList,
           containerId: containerId,
           interpretationBoxId: interpretationBoxId,
+          scorecardMode: scorecardMode,
           yAxisStep: stepSize,
           timeOfInterest: timeOfInterest,
           aspectRatio: aspectRatio,
@@ -2037,6 +2055,9 @@ function clickSelectMultipleLineChart({
   //container name we want to use to put interpretive score into (TAKEN FROM BLOG PAGE) 
   //UNDEFINED UNLESS SPECIFIED
   interpretationBoxId = undefined,
+
+  //type of metric scorecard being made, undefined unless specified in call stack
+  scorecardMode = undefined,
 
   checkBoxGroupId, //checkbox group id
   // ^^ taken from html-side of blogpost
@@ -2092,6 +2113,7 @@ function clickSelectMultipleLineChart({
         originalDatasetList: originalDatasetList,
         containerId: containerId,
         interpretationBoxId: interpretationBoxId,
+        scorecardMode: scorecardMode,
         yAxisStep: stepSize,
         timeOfInterest: timeOfInterest,
         aspectRatio: aspectRatio,
@@ -2228,6 +2250,9 @@ function nestedTwoCategorySelectLineChart({
   //UNDEFINED UNLESS SPECIFIED
   interpretationBoxId = undefined,
 
+  //type of metric scorecard being made, undefined unless specified in call stack
+  scorecardMode = undefined,
+
   checkboxSuperGroupId, //upper level, selector
 
   checkBoxSubGroupId, //lower level, checkboxes
@@ -2260,6 +2285,7 @@ function nestedTwoCategorySelectLineChart({
     datasetListStepSizeReference: datasetListStepSizeReference,
     containerId: containerId,
     interpretationBoxId: interpretationBoxId,
+    scorecardMode: scorecardMode,
     checkBoxGroupId: checkBoxSubGroupId, //subgroup of checkboxes is taken from reference as well
     timeOfInterest: timeOfInterest,
     aspectRatio: aspectRatio,
@@ -2288,6 +2314,7 @@ function nestedTwoCategorySelectLineChart({
       datasetListStepSizeReference: datasetListStepSizeReference,
       containerId: containerId,
       interpretationBoxId: interpretationBoxId,
+      scorecardMode: scorecardMode,
       checkBoxGroupId: checkBoxSubGroupId, //subgroup of checkboxes is taken from reference as well
       timeOfInterest: timeOfInterest,
       aspectRatio: aspectRatio,
@@ -2552,7 +2579,10 @@ function whichChartsToUpdate(startDate, endDate) {
                                           //will be needed for scorecard making
 
     containerId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
+    
     interpretationBoxId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range_interpretation",
+    scorecardMode: "Ridership",
+
     checkboxSuperGroupId: "subwayOTPDaySelect_date_range", //upper level, selector
     checkBoxSubGroupId: "subway-otp-checkboxes_date_range", //lower level, checkboxes
 
