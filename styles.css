@@ -165,7 +165,7 @@ li p{
   min-height: 25px;
 }
 
-#fromLabel, #toLabel {
+.slider_label {
     position: absolute;
     top: 10px;
     transform: translateX(-50%);
@@ -235,9 +235,14 @@ input[type="range"] {
   pointer-events: none;
 }
 
-#fromSlider {
+.from_slider {
   height: 0;
-  z-index: 1;
+  z-index: 0;
+}
+
+.to_slider {
+    height: 0;
+    z-index: 1;
 }
 
 /*END DATE SLIDER CONTROLS*/

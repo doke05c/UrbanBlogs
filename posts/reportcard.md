@@ -27,9 +27,10 @@ description: "The New York City region has been missing a centralized location w
       <!-- slider -->
       <div class="range_container">
           <div class="sliders_control">
-              <input id="fromSlider" type="range" min="0"/>
-              <input id="toSlider" type="range" min="0"/> 
-              <span id="fromLabel"></span> <span id="toLabel"></span>
+              <input id="fromSlider" class="from_slider" type="range" min="0"/>
+              <input id="toSlider" class="to_slider" type="range" min="0"/>
+              <span id="fromLabel" class="slider_label"></span> 
+              <span id="toLabel" class="slider_label"></span>
           </div>
       </div>
       <!-- -->
@@ -77,9 +78,10 @@ description: "The New York City region has been missing a centralized location w
       <!-- slider -->
       <div class="range_container">
           <div class="sliders_control">
-              <input id="fromSlider_ridership" type="range" min="0"/>
-              <input id="toSlider_ridership" type="range" min="0"/> 
-              <span id="fromLabel_ridership"></span> <span id="toLabel_ridership"></span>
+              <input id="fromSlider_ridership" class="from_slider" type="range" min="0"/>
+              <input id="toSlider_ridership" class="to_slider" type="range" min="0"/>
+              <span id="fromLabel_ridership" class="slider_label"></span> 
+              <span id="toLabel_ridership" class="slider_label"></span>
           </div>
       </div>
       <!-- -->

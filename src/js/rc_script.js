@@ -2555,7 +2555,6 @@ function sliderMakerMultipleChart({
     // }));
 
     updateChartsFunction(newStartDate, newEndDate);
-
   }
 
   //on click of right slider, update labels and position of slider button as needed. [TO-DO: CHART]
@@ -2733,7 +2732,7 @@ function whichChartsToUpdateRidership(startDate, endDate) {
     checkBoxGroupId: "subway-ridership-checkboxes_date_range", //lower level, checkboxes
 
     persistenceOfCheckedDatasets: true,
-    
+
     checkedDatasets: ridershipCheckedDatasets,
 
     timeOfInterest: "month",
