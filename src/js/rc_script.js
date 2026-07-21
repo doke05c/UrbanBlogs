@@ -411,8 +411,10 @@ function createScoreForMultipleLineChart ({
 
         getReferenceLetter(originalDatasetList[name][originalDatasetList[name].length-1].count),
         getReferenceLetter(averageCurrent),
+
         displayName,
         name,
+
         new Date(
           new Date(
             originalDatasetList[name].at(-1).month + "-01"
@@ -425,6 +427,7 @@ function createScoreForMultipleLineChart ({
           month: "short",
           year: "numeric"
         }),
+
       ];
 
     }
