@@ -452,10 +452,10 @@ function createScoreForMultipleLineChart ({
       //ratio of average metric during the selected date range to average metric in 2019
       // const OTPGrade = averageCurrent * averageCurrent / average2019;
       const latest_comp_2019_pct = Math.round((originalDatasetList[name][originalDatasetList[name].length-1].count - average2019)
-                              / average2019 * 100 * 10) / 10 + "%"; //rounded to 0.X
+                              / average2019 * 100 * 10) / 10; //rounded to 0.X
       
       const average_current_comp_2019_pct = Math.round((averageCurrent - average2019)
-                              / average2019 * 100 * 10) / 10 + "%"; //rounded to 0.X
+                              / average2019 * 100 * 10) / 10; //rounded to 0.X
       
       //update the dataset's metric score with the metric, calculated rel over 2019, and final grade
       // datasetOTPScoreList[name] = [averageCurrent, ((averageCurrent-average2019)/averageCurrent*100), OTPGrade];
@@ -479,11 +479,11 @@ function createScoreForMultipleLineChart ({
       });
 
       datasetOTPScoreList[name] = [
-        formatter.format(originalDatasetList[name][originalDatasetList[name].length-1].count) + " average monthly",
-        formatter.format(averageCurrent) + " average monthly",
+        `since 2021 average, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} average monthly`,
+        `since 2021 average, ${formatter.format(averageCurrent)} average monthly`,        
         
-        latest_comp_2019_pct,
-        average_current_comp_2019_pct,
+        (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "%",
+        (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "%",
         
         displayName,
         name,
