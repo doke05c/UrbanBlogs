@@ -34,17 +34,81 @@ const monthly_bus_entries_from_mar_2020_rows = await fetch("/src/json/monthly_bu
 const monthly_sir_entries_from_mar_2020_rows = await fetch("/src/json/monthly_sir_entries_from_mar_2020.json")
     .then(res => res.json());
 
+//////////////////////////////////////////////// NEW ^^ OLD VV
+
+//GET MONTHLY SUBWAY ENTRIES SINCE MAR 2020
+const monthly_entries_subway_to_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_to_mar_2020_old.json")
+    .then(res => res.json());
+
+//GET MONTHLY LIRR ENTRIES SINCE MAR 2020
+const monthly_lirr_entries_to_mar_2020_rows = await fetch("/src/json/monthly_lirr_entries_to_mar_2020_old.json")
+    .then(res => res.json());
+
+//GET MONTHLY MNR ENTRIES SINCE MAR 2020
+const monthly_mnr_entries_to_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_to_mar_2020_old.json")
+    .then(res => res.json());
+
+//GET MONTHLY AAR ENTRIES SINCE MAR 2020
+const monthly_aar_entries_to_mar_2020_rows = await fetch("/src/json/monthly_aar_entries_to_mar_2020_old.json")
+    .then(res => res.json());
+
+//GET MONTHLY BUS ENTRIES SINCE MAR 2020
+const monthly_bus_entries_to_mar_2020_rows = await fetch("/src/json/monthly_bus_entries_to_mar_2020_old.json")
+    .then(res => res.json());
+
+//GET MONTHLY SIR ENTRIES SINCE MAR 2020
+const monthly_sir_entries_to_mar_2020_rows = await fetch("/src/json/monthly_sir_entries_to_mar_2020_old.json")
+    .then(res => res.json());
+
+//COMBINED MONTHLY MTA ENTRIES (OLD + NEW)
+
+//SUBWAY
+const monthly_entries_subway_total_rows = [
+    ...monthly_entries_subway_to_mar_2020_rows,
+    ...monthly_entries_subway_from_mar_2020_rows
+];
+
+//LIRR
+const monthly_lirr_entries_total_rows = [
+    ...monthly_lirr_entries_to_mar_2020_rows,
+    ...monthly_lirr_entries_from_mar_2020_rows
+];
+
+//MNR
+const monthly_mnr_entries_total_rows = [
+    ...monthly_mnr_entries_to_mar_2020_rows,
+    ...monthly_mnr_entries_from_mar_2020_rows
+];
+
+//AAR
+const monthly_aar_entries_total_rows = [
+    ...monthly_aar_entries_to_mar_2020_rows,
+    ...monthly_aar_entries_from_mar_2020_rows
+];
+
+//BUS
+const monthly_bus_entries_total_rows = [
+    ...monthly_bus_entries_to_mar_2020_rows,
+    ...monthly_bus_entries_from_mar_2020_rows
+];
+
+//SIR
+const monthly_sir_entries_total_rows = [
+    ...monthly_sir_entries_to_mar_2020_rows,
+    ...monthly_sir_entries_from_mar_2020_rows
+];
+
 //CREATE LIST OF MTA 6-MODE PUBLIC TRANSIT ENTRIES SINCE MAR 2020
-const monthly_multimodal_from_mar_2020_rows = {
-  "MNR Ridership": monthly_mnr_entries_from_mar_2020_rows,
-  "LIRR Ridership": monthly_lirr_entries_from_mar_2020_rows,
-  "Subway Ridership": monthly_entries_subway_from_mar_2020_rows,
-  "SIR Ridership": monthly_sir_entries_from_mar_2020_rows,
-  "Bus Ridership": monthly_bus_entries_from_mar_2020_rows,
-  "Access-a-Ride Ridership": monthly_aar_entries_from_mar_2020_rows,
+const monthly_multimodal_total_rows = {
+  "MNR Ridership": monthly_mnr_entries_total_rows,
+  "LIRR Ridership": monthly_lirr_entries_total_rows,
+  "Subway Ridership": monthly_entries_subway_total_rows,
+  "SIR Ridership": monthly_sir_entries_total_rows,
+  "Bus Ridership": monthly_bus_entries_total_rows,
+  "Access-a-Ride Ridership": monthly_aar_entries_total_rows,
 };
 
-const monthly_multimodal_from_mar_2020_step_size_reference = {
+const monthly_multimodal_step_size_reference = {
   "MNR Ridership": 1_000_000,
   "LIRR Ridership": 1_000_000,
   "Subway Ridership": 20_000_000,
@@ -398,14 +462,14 @@ function createScoreForMultipleLineChart ({
             originalDatasetList[name]
                 .filter(entry =>
                     entry.count !== 0 &&
-                    entry.month.startsWith("2021-")
+                    entry.month.startsWith("2019-")
                 )
                 .reduce((sum, entry) => sum + entry.count, 0) //take the sum of all valid values in 2019 (non-zero)
             /
             originalDatasetList[name]
                 .filter(entry =>
                     entry.count !== 0 &&
-                    entry.month.startsWith("2021-")
+                    entry.month.startsWith("2019-")
                 ).length;                                   //divide by the count of all valid values in 2019 (non-zero)
 
       // } else if (importedDateRange[1] < oneYearLater) {
@@ -480,8 +544,8 @@ function createScoreForMultipleLineChart ({
       });
 
       datasetOTPScoreList[name] = [
-        `since 2021 average, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} average monthly`,
-        `since 2021 average, ${formatter.format(averageCurrent)} average monthly`,        
+        `since 2019 average, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} average monthly`,
+        `since 2019 average, ${formatter.format(averageCurrent)} average monthly`,        
         
         (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "%",
         (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "%",
@@ -2725,10 +2789,10 @@ function whichChartsToUpdateRidership(startDate, endDate) {
 
   //make new charts.
   clickSelectMultipleLineChart({
-    datasetList: monthly_multimodal_from_mar_2020_rows,
-    datasetListStepSizeReference: monthly_multimodal_from_mar_2020_step_size_reference,
+    datasetList: monthly_multimodal_total_rows,
+    datasetListStepSizeReference: monthly_multimodal_step_size_reference,
 
-    originalDatasetList: monthly_multimodal_from_mar_2020_rows, //originalsuperlist keeps full unfiltered dataset handy down all levels
+    originalDatasetList: monthly_multimodal_total_rows, //originalsuperlist keeps full unfiltered dataset handy down all levels
                                           //will be needed for scorecard making
 
     containerId: "monthly_ridership_select_box_line_date_range",
@@ -2756,8 +2820,8 @@ sliderMakerMultipleChart({
   toSliderId: '#toSlider_ridership',
   fromLabelId: '#fromLabel_ridership',
   toLabelId: '#toLabel_ridership',
-  startDate: new Date(2020, 2, 1), //Mar 2020
-  endDate: new Date(2026, 4, 1), //May 2026 <<===>> REPLACE LATER WITH SOMETHING TO GET LATEST MONTH IN DATASET
+  startDate: new Date(2019, 0, 1), //Jan 2019
+  endDate: new Date(2026, 5, 1), //May 2026 <<===>> REPLACE LATER WITH SOMETHING TO GET LATEST MONTH IN DATASET
   updateChartsFunction: (startDate, endDate) => {
     whichChartsToUpdateRidership(startDate, endDate);
   }

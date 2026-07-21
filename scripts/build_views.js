@@ -357,5 +357,59 @@ async function build() {
 
 build();
 
+//old MTA entries
+async function export_mta_old_ridership(mode, filename) {
+    const monthly_entries = await query(`
+        SELECT
+            strftime(month, '%Y-%m') AS month,
+            SUM(ridership) AS count
+
+        FROM mta_overall_ridership_traffic_old
+
+        WHERE agency LIKE '%${mode}%'
+            AND CAST(month AS DATE) < DATE '2020-03-01'
+
+        GROUP BY month
+        ORDER BY month;
+        `);
+
+    fs.writeFileSync(
+        `src/json/${filename}.json`,
+        JSON.stringify(monthly_entries)
+    );
+
+}
+
+
+await export_mta_old_ridership(
+    "Subway",
+    "monthly_subway_entries_to_mar_2020_old"
+);
+
+await export_mta_old_ridership(
+    "LIRR",
+    "monthly_lirr_entries_to_mar_2020_old"
+);
+
+await export_mta_old_ridership(
+    "MNR",
+    "monthly_mnr_entries_to_mar_2020_old"
+);
+
+await export_mta_old_ridership(
+    "SIR",
+    "monthly_sir_entries_to_mar_2020_old"
+);
+
+await export_mta_old_ridership(
+    "Bus",
+    "monthly_bus_entries_to_mar_2020_old"
+);
+
+await export_mta_old_ridership(
+    "AAR",
+    "monthly_aar_entries_to_mar_2020_old"
+);
+
 
 //NEXT STEPS, HAVE WEB FRONT END WORK OUT THE JSON FILES TO MAKE GRAPHS IN BROWSER :)
