@@ -472,9 +472,15 @@ function createScoreForMultipleLineChart ({
       
       //ridership: "grade" is comparison over 2019
 
+      const formatter = new Intl.NumberFormat('en-US', {
+        notation: 'compact',
+        compactDisplay: 'long',
+        maximumFractionDigits: 2 //controls decimal places
+      });
+
       datasetOTPScoreList[name] = [
-        Math.round(originalDatasetList[name][originalDatasetList[name].length-1].count),
-        Math.round(averageCurrent),
+        formatter.format(originalDatasetList[name][originalDatasetList[name].length-1].count) + " average monthly",
+        formatter.format(averageCurrent) + " average monthly",
         
         latest_comp_2019_pct,
         average_current_comp_2019_pct,
