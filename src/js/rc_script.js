@@ -2733,7 +2733,8 @@ function whichChartsToUpdateRidership(startDate, endDate) {
     checkBoxGroupId: "subway-ridership-checkboxes_date_range", //lower level, checkboxes
 
     persistenceOfCheckedDatasets: true,
-    listCheckedDatasets: ridershipCheckedDatasets,
+    
+    checkedDatasets: ridershipCheckedDatasets,
 
     timeOfInterest: "month",
     aspectRatio: 2,
