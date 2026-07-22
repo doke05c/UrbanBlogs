@@ -456,71 +456,79 @@ function createScoreForMultipleLineChart ({
                   new Date(entry.month) <= importedDateRange[1]
               ).length;                                   //divide by the number of valid values in the range (non-zero)
       
+      const monthcount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] //dict that contains month counts for each month of the year
+                        //J, F, M, A, M, J, J, A, S, O, N ,D
+      
+      for (let i = 0; i < monthcount.length; i++) {
+        monthcount[i] = dataset
+                          .filter(entry => {
+                            return (
+                              entry.count !== 0 &&
+                              new Date(entry.month).getTime() + 18000001 >= new Date(importedDateRange[0].getTime()) &&
+                              new Date(entry.month).getTime() <= importedDateRange[1] &&
+                              new Date(new Date(entry.month).getTime() + 18000001).getMonth() === i
+                            );
+
+                          }).length;
+      }
+      console.log(monthcount);
+      
       let average2019; //to be 2019 average metric per line
 
       // if (importedDateRange[1] >= oneYearLater) { //if the date range is a year or longer... compare to 2019 in full
-        
-        //do the same for the line in 2019
+      
+      const to_divide_2019_count = originalDatasetList[name]
+        .filter(entry =>
+            entry.count !== 0 &&
+            entry.month.startsWith("2019-")
+        )
+        .reduce((sum, entry) => {
+            const monthIndex = new Date(
+                new Date(entry.month).getTime() + 18000001
+            ).getMonth();
+
+            return sum + monthcount[monthIndex];
+        }, 0
+      ); //get count of valid months to divide in 2019 relevant to the monthcount found in date range
+
+        //do the sum for the line in 2019
         average2019 =
             originalDatasetList[name]
-                .filter(entry =>
-                    entry.count !== 0 &&
-                    entry.month.startsWith("2019-")
-                )
-                .reduce((sum, entry) => sum + entry.count, 0) //take the sum of all valid values in 2019 (non-zero)
+              .filter(entry =>
+                  entry.count !== 0 &&
+                  entry.month.startsWith("2019-")
+              )
+              .reduce((sum, entry) => {
+                  const monthIndex = new Date(
+                      new Date(entry.month).getTime() + 18000001
+                  ).getMonth();
+
+                  return sum + (entry.count * monthcount[monthIndex]);
+              }, 0) //take the sum of all valid values in 2019 (non-zero)
+
             /
-            originalDatasetList[name]
-                .filter(entry =>
-                    entry.count !== 0 &&
-                    entry.month.startsWith("2019-")
-                ).length;                                   //divide by the count of all valid values in 2019 (non-zero)
-
-      // } else if (importedDateRange[1] < oneYearLater) {
-      //   //compare partial year, to be calculated
-      //   //method: 
-      //     // [jan 2020 - may 2020 to jan 2019 - may 2019]
-      //     // [nov 2020 - feb 2021 to nov 2018 - feb 2019]
-
-      //   const comparisonEnd = new Date(importedDateRange[1]);
-      //   comparisonEnd.setFullYear(2019);
-
-      //   const comparisonStart = new Date(importedDateRange[0]);
-
-      //   //preserve the same duration backwards from comparisonEnd
-      //   comparisonStart.setFullYear(
-      //       comparisonEnd.getFullYear() - 
-      //       (importedDateRange[1].getFullYear() - importedDateRange[0].getFullYear())
-      //   );
-
-      //   //do the same for the line in 2019
-      //   average2019 =
-      //     originalDatasetList[name]
-      //       .filter(entry => {
-      //           const month = new Date(entry.month);
-      //           return (
-      //               entry.count !== 0 &&
-      //               month >= (comparisonStart - 18000001) &&
-      //               month <= comparisonEnd
-      //           );
-      //       })
-      //       .reduce((sum, entry) => sum + entry.count, 0)  //take the sum of all valid values in 2019 (non-zero)
-      //   /
-      //     originalDatasetList[name]
-      //       .filter(entry => {
-      //           const month = new Date(entry.month);
-      //           return (
-      //               entry.count !== 0 &&
-      //               month >= (comparisonStart - 18000001) &&
-      //               month <= comparisonEnd
-      //           );
-      //       })
-      //       .length;                                     //divide by the count of all valid values in 2019 (non-zero)
-      // }
+            
+          to_divide_2019_count; //divide by the count of all valid values in 2019 (non-zero)
 
       //ratio of average metric during the selected date range to average metric in 2019
-      // const OTPGrade = averageCurrent * averageCurrent / average2019;
-      const latest_comp_2019_pct = Math.round((originalDatasetList[name][originalDatasetList[name].length-1].count - average2019)
-                              / average2019 * 100 * 10) / 10; //rounded to 0.X
+
+      const latestEntry = originalDatasetList[name].at(-1);
+
+      const latestDate = new Date(latestEntry.month);
+      const latestMonth = latestDate.getMonth();
+
+      const sameMonth2019 = originalDatasetList[name].find(entry => { //get entry of 2019 corresponding to latest month of dataset
+          const date = new Date(entry.month);
+
+          return (
+              entry.count !== 0 &&
+              date.getFullYear() === 2019 &&
+              date.getMonth() === latestMonth
+          );
+      });
+
+      const latest_comp_2019_pct = Math.round((latestEntry.count - sameMonth2019.count)
+                              / sameMonth2019.count * 100 * 10) / 10; //rounded to 0.X
       
       const average_current_comp_2019_pct = Math.round((averageCurrent - average2019)
                               / average2019 * 100 * 10) / 10; //rounded to 0.X
@@ -547,7 +555,7 @@ function createScoreForMultipleLineChart ({
       });
 
       datasetOTPScoreList[name] = [
-        `since 2019 average, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} average monthly`,
+        `since 2019 average, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} rides this month`,
         `since 2019 average, ${formatter.format(averageCurrent)} average monthly`,        
         
         (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "%",
@@ -556,13 +564,8 @@ function createScoreForMultipleLineChart ({
         displayName,
         name,
         new Date(
-          new Date(
-            originalDatasetList[name].at(-1).month + "-01"
-          ).setMonth(
-            new Date(
-              originalDatasetList[name].at(-1).month + "-01"
-            ).getMonth() + 1
-          )
+          ...((([y, m]) => [y, m - 1])(originalDatasetList[name].at(-1).month.split("-").map(Number))),
+          1
         ).toLocaleDateString("en-US", {
           month: "short",
           year: "numeric"
