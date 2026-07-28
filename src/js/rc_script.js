@@ -1180,6 +1180,8 @@ function createScoreForMultipleLineChart ({
 
       const latestEntry = originalDatasetList[name].at(-1);
 
+      if (latestEntry.undefined) {return null;}
+
       const latestDate = new Date(latestEntry.month);
       const latestMonth = latestDate.getMonth();
 
