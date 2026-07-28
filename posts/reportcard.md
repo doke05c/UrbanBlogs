@@ -112,6 +112,59 @@ description: "The New York City region has been missing a centralized location w
     <!-- end ridership interpretation -->
     </aside>
   </section>
+  <!--  -->
+  <!--  -->
+  <!-- BUS SPEED CHART + INTERPRETATION -->
+  <section class="analysis">
+    <!-- start OTP chart -->
+    <div class="chart">
+      <!-- slider -->
+      <div class="range_container">
+          <div class="sliders_control">
+              <input id="fromSlider_bus_speed" class="from_slider" type="range" min="0"/>
+              <input id="toSlider_bus_speed" class="to_slider" type="range" min="0"/>
+              <span id="fromLabel_bus_speed" class="slider_label"></span> 
+              <span id="toLabel_bus_speed" class="slider_label"></span>
+          </div>
+      </div>
+      <!-- -->
+      <!-- date type select for otp -->
+      <!--  -->
+      <label for="busSpeedDaySelect_date_range">Day Type:</label><br>
+      <select id="busSpeedDaySelect_date_range">
+          <option value="Overall">Overall</option>
+          <option value="Weekday">Weekday</option>
+          <option value="Weekend">Weekend</option>
+      </select>
+      <!-- -->
+      <!-- otp subway lines checkboxes -->
+      <!--  -->
+      <div id="bus_speed_checkboxes_date_range"></div>
+      <br>
+      <!--  -->
+      <!-- otp chart visual -->
+      <!--  -->
+      <h4> MTA Monthly Bus Speeds (MPH), Selected Routes, Custom Date Range, Line: </h4> <!-- #### -->
+      <br>
+      <div id="monthly_bus_speeds_from_jan_2015_select_box_line_date_range"></div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+    <!-- end OTP chart -->
+    <!--  -->
+    </div>
+    <!--  -->
+    <!-- start OTP interpretation -->
+    <aside class="interpretation">
+      <div id="monthly_bus_speeds_from_jan_2015_select_box_line_date_range_interpretation"></div>
+    <!-- end OTP interpretation -->
+    </aside>
+  </section>
+  <!-- -->
+  <!-- -->
 
 
 

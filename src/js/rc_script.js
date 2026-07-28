@@ -314,6 +314,532 @@ const subwayOTPDatasets = {
     "Weekend": monthly_weekend_subway_otp_rate_from_jan_2015_rows
 };
 
+const bus_lines = [
+    "B1",
+    "B100",
+    "B102",
+    "B103",
+    "B11",
+    "B12",
+    "B13",
+    "B14",
+    "B15",
+    "B16",
+    "B17",
+    "B2",
+    "B20",
+    "B24",
+    "B25",
+    "B26",
+    "B3",
+    "B31",
+    "B32",
+    "B35",
+    "B36",
+    "B37",
+    "B38",
+    "B39",
+    "B4",
+    "B41",
+    "B42",
+    "B43",
+    "B44",
+    "B44+",
+    "B45",
+    "B46",
+    "B46+",
+    "B47",
+    "B48",
+    "B49",
+    "B52",
+    "B54",
+    "B57",
+    "B6",
+    "B60",
+    "B61",
+    "B62",
+    "B63",
+    "B64",
+    "B65",
+    "B67",
+    "B68",
+    "B69",
+    "B7",
+    "B70",
+    "B74",
+    "B8",
+    "B82",
+    "B82+",
+    "B83",
+    "B84",
+    "B9",
+    "BM1",
+    "BM2",
+    "BM3",
+    "BM4",
+    "BM5",
+    "BX1",
+    "BX10",
+    "BX11",
+    "BX12",
+    "BX12+",
+    "BX13",
+    "BX15",
+    "BX16",
+    "BX17",
+    "BX18",
+    "BX18A",
+    "BX18B",
+    "BX19",
+    "BX2",
+    "BX20",
+    "BX21",
+    "BX22",
+    "BX23",
+    "BX24",
+    "BX25",
+    "BX26",
+    "BX27",
+    "BX28",
+    "BX29",
+    "BX3",
+    "BX30",
+    "BX31",
+    "BX32",
+    "BX33",
+    "BX34",
+    "BX35",
+    "BX36",
+    "BX38",
+    "BX39",
+    "BX4",
+    "BX40",
+    "BX41",
+    "BX41+",
+    "BX42",
+    "BX46",
+    "BX4A",
+    "BX5",
+    "BX6",
+    "BX6+",
+    "BX7",
+    "BX8",
+    "BX9",
+    "BXM1",
+    "BXM10",
+    "BXM11",
+    "BXM18",
+    "BXM2",
+    "BXM3",
+    "BXM4",
+    "BXM6",
+    "BXM7",
+    "BXM8",
+    "BXM9",
+    "M1",
+    "M10",
+    "M100",
+    "M101",
+    "M102",
+    "M103",
+    "M104",
+    "M106",
+    "M11",
+    "M116",
+    "M12",
+    "M125",
+    "M14A",
+    "M14A+",
+    "M14D",
+    "M14D+",
+    "M15",
+    "M15+",
+    "M2",
+    "M20",
+    "M21",
+    "M22",
+    "M23",
+    "M23+",
+    "M3",
+    "M31",
+    "M34+",
+    "M34A+",
+    "M35",
+    "M4",
+    "M42",
+    "M5",
+    "M50",
+    "M55",
+    "M57",
+    "M60+",
+    "M66",
+    "M7",
+    "M72",
+    "M79",
+    "M79+",
+    "M8",
+    "M86",
+    "M86+",
+    "M9",
+    "M96",
+    "M98",
+    "Q1",
+    "Q10",
+    "Q100",
+    "Q101",
+    "Q102",
+    "Q103",
+    "Q104",
+    "Q11",
+    "Q110",
+    "Q111",
+    "Q112",
+    "Q113",
+    "Q114",
+    "Q115",
+    "Q12",
+    "Q13",
+    "Q14",
+    "Q15",
+    "Q15A",
+    "Q16",
+    "Q17",
+    "Q18",
+    "Q19",
+    "Q2",
+    "Q20",
+    "Q20A",
+    "Q20B",
+    "Q21",
+    "Q22",
+    "Q23",
+    "Q24",
+    "Q25",
+    "Q26",
+    "Q27",
+    "Q28",
+    "Q29",
+    "Q3",
+    "Q30",
+    "Q31",
+    "Q32",
+    "Q33",
+    "Q34",
+    "Q35",
+    "Q36",
+    "Q37",
+    "Q38",
+    "Q39",
+    "Q4",
+    "Q40",
+    "Q41",
+    "Q42",
+    "Q43",
+    "Q44",
+    "Q44+",
+    "Q45",
+    "Q46",
+    "Q47",
+    "Q48",
+    "Q49",
+    "Q5",
+    "Q50",
+    "Q51",
+    "Q52",
+    "Q52+",
+    "Q53",
+    "Q53+",
+    "Q54",
+    "Q55",
+    "Q56",
+    "Q58",
+    "Q59",
+    "Q6",
+    "Q60",
+    "Q61",
+    "Q63",
+    "Q64",
+    "Q65",
+    "Q66",
+    "Q67",
+    "Q69",
+    "Q7",
+    "Q70",
+    "Q70+",
+    "Q72",
+    "Q74",
+    "Q75",
+    "Q76",
+    "Q77",
+    "Q8",
+    "Q80",
+    "Q82",
+    "Q83",
+    "Q84",
+    "Q85",
+    "Q86",
+    "Q87",
+    "Q88",
+    "Q89",
+    "Q9",
+    "Q90",
+    "Q98",
+    "QM1",
+    "QM10",
+    "QM11",
+    "QM12",
+    "QM15",
+    "QM16",
+    "QM17",
+    "QM18",
+    "QM2",
+    "QM20",
+    "QM21",
+    "QM24",
+    "QM25",
+    "QM3",
+    "QM31",
+    "QM32",
+    "QM34",
+    "QM35",
+    "QM36",
+    "QM4",
+    "QM40",
+    "QM42",
+    "QM44",
+    "QM5",
+    "QM6",
+    "QM63",
+    "QM64",
+    "QM65",
+    "QM68",
+    "QM7",
+    "QM8",
+    "S40",
+    "S42",
+    "S44",
+    "S46",
+    "S48",
+    "S51",
+    "S52",
+    "S53",
+    "S54",
+    "S55",
+    "S56",
+    "S57",
+    "S59",
+    "S61",
+    "S62",
+    "S66",
+    "S74",
+    "S76",
+    "S78",
+    "S79+",
+    "S81",
+    "S84",
+    "S86",
+    "S89",
+    "S90",
+    "S91",
+    "S92",
+    "S93",
+    "S94",
+    "S96",
+    "S98",
+    "SIM1",
+    "SIM10",
+    "SIM11",
+    "SIM15",
+    "SIM1C",
+    "SIM2",
+    "SIM22",
+    "SIM23",
+    "SIM24",
+    "SIM25",
+    "SIM26",
+    "SIM3",
+    "SIM30",
+    "SIM31",
+    "SIM32",
+    "SIM33",
+    "SIM33C",
+    "SIM34",
+    "SIM35",
+    "SIM3C",
+    "SIM4",
+    "SIM4C",
+    "SIM4X",
+    "SIM5",
+    "SIM5X",
+    "SIM6",
+    "SIM6X",
+    "SIM7",
+    "SIM8",
+    "SIM8X",
+    "SIM9",
+    "X1",
+    "X10",
+    "X10B",
+    "X11",
+    "X12",
+    "X14",
+    "X15",
+    "X17",
+    "X17A",
+    "X17J",
+    "X19",
+    "X2",
+    "X21",
+    "X22",
+    "X22A",
+    "X27",
+    "X28",
+    "X3",
+    "X30",
+    "X31",
+    "X37",
+    "X38",
+    "X4",
+    "X42",
+    "X5",
+    "X63",
+    "X64",
+    "X68",
+    "X7",
+    "X8",
+    "X9"
+]
+
+//GET MONTHLY WEEKDAY BUS SPEEDS SINCE JAN 2015
+
+const monthly_weekday_bus_speeds_from_jan_2015_rows = {};
+
+for (const bus_line of bus_lines) {
+monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line] =
+  (await fetch(`/src/json/monthly_weekday_bus_speeds_from_jan_2015_${bus_line}.json`)
+    .then(res => res.json()))
+      .map(entry => ({
+        month: entry.month,
+        total_operating_time: entry.total_operating_time,
+        total_mileage: entry.total_mileage,
+        count: entry.average_speed
+      })
+      );
+}
+
+//GET MONTHLY WEEKEND BUS SPEEDS SINCE JAN 2015
+
+const monthly_weekend_bus_speeds_from_jan_2015_rows = {};
+
+for (const bus_line of bus_lines) {
+monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line] =
+  (await fetch(`/src/json/monthly_weekend_bus_speeds_from_jan_2015_${bus_line}.json`)
+    .then(res => res.json()))
+      .map(entry => ({
+        month: entry.month,
+        total_operating_time: entry.total_operating_time,
+        total_mileage: entry.total_mileage,
+        count: entry.average_speed
+      })
+      );
+}
+
+//GET MONTHLY OVERALL BUS SPEEDS SINCE JAN 2015
+
+const monthly_overall_bus_speeds_from_jan_2015_rows = {};
+
+//for each bus line...
+for (const bus_line of bus_lines) {
+
+  //create a weekday and weekend series for each subway line
+  const weekday = monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line];
+  const weekend = monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line];
+
+  //build a lookup: month -> weekend entry for each series
+  const weekendByMonth = Object.fromEntries(
+    (weekend ?? []).map(entry => [entry.month, entry])
+  );
+
+  //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
+  monthly_overall_bus_speeds_from_jan_2015_rows[bus_line] =
+    weekday
+      .map(weekdayEntry => {
+
+        const weekendEntry = weekendByMonth[weekdayEntry.month];
+
+        const total_mileage =
+          weekdayEntry.total_mileage + (weekendEntry?.total_mileage ?? 0);
+
+        const total_operating_time =
+          weekdayEntry.total_operating_time + (weekendEntry?.total_operating_time ?? 0);
+
+        //combine into overall database
+        return {
+          month: weekdayEntry.month,
+          total_mileage,
+          total_operating_time,
+          count: total_mileage / total_operating_time
+        };
+      });
+}
+
+//function to create systemwide otp entry "line" (for each weekday, weekend, overall)
+function createSystemwideBusSpeeds(dataset) {
+
+    const monthlyTotals = {};
+
+    //for each bus line...
+    for (const bus_line of Object.keys(dataset)) {
+        
+        //for each month in each subway line
+        for (const entry of dataset[bus_line]) {
+
+            //if there is yet to be a monthly value for the number of scheduled and on time trips, create a month element and fill it with 0 for now. 
+            if (!monthlyTotals[entry.month]) {
+                monthlyTotals[entry.month] = {
+                    total_mileage: 0,
+                    total_operating_time: 0
+                };
+            }
+
+            //add values to total
+            monthlyTotals[entry.month].total_mileage += entry.total_mileage;
+            monthlyTotals[entry.month].total_operating_time += entry.total_operating_time;
+        }
+    }
+
+    //create a new entry "line" for systemwide, add our values to it
+    return Object.entries(monthlyTotals).map(([month, totals]) => ({
+        month,
+        total_mileage: totals.total_mileage,
+        total_operating_time: totals.total_operating_time,
+        count: totals.total_mileage / totals.total_operating_time
+    }));
+}
+
+//add systemwide to dataset for each of weekday, weekend, overall
+monthly_weekday_bus_speeds_from_jan_2015_rows["Systemwide"] =
+    createSystemwideOTP(monthly_weekday_bus_speeds_from_jan_2015_rows);
+  
+monthly_weekend_bus_speeds_from_jan_2015_rows["Systemwide"] =
+    createSystemwideOTP(monthly_weekend_bus_speeds_from_jan_2015_rows);
+
+monthly_overall_bus_speeds_from_jan_2015_rows["Systemwide"] =
+    createSystemwideOTP(monthly_overall_bus_speeds_from_jan_2015_rows);
+
+const monthly_bus_speeds_step_size_reference = Object.fromEntries(
+  bus_lines.map(line => [line, 2])
+);
+
+//go through the selected choices btwn weekday, weekend, and overall
+//depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
+const busSpeedsDatasets = {
+    "Overall": monthly_overall_bus_speeds_from_jan_2015_rows,
+    "Weekday": monthly_weekday_bus_speeds_from_jan_2015_rows,
+    "Weekend": monthly_weekend_bus_speeds_from_jan_2015_rows
+};
+
+
 //number to letter grade conversion
 function getReferenceLetter(score) {
   if (score >= 97.45) return "A+";
@@ -471,7 +997,6 @@ function createScoreForMultipleLineChart ({
 
                           }).length;
       }
-      console.log(monthcount);
       
       let average2019; //to be 2019 average metric per line
 
@@ -2676,6 +3201,7 @@ function sliderMakerMultipleChart({
 //KEEP CHECKBOXES PERSISTENT THROUGH DATE SLIDING
 const ridershipCheckedDatasets = {}; 
 const OTPCheckedDatasets = {};
+const busSpeedsCheckedDatasets = {};
 
 function whichChartsToUpdateOTP(startDate, endDate) {
 
@@ -2833,6 +3359,57 @@ sliderMakerMultipleChart({
   }
 })
 
+function whichChartsToUpdateBusSpeeds(startDate, endDate) {
+
+  //go through all charts which are to be updated, clear them before making new ones
+  for (const oldContainerId of [
+    "monthly_bus_speeds_from_jan_2015_select_box_line_date_range",
+  ]) {
+
+    const container = document.getElementById(oldContainerId);
+    container.innerHTML = "";  // remove old chart
+
+  }
+
+  //make new charts.
+  nestedTwoCategorySelectLineChart({
+    datasetSuperList: busSpeedsDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+    datasetListStepSizeReference: monthly_bus_speeds_step_size_reference,
+
+    originalSuperList: busSpeedsDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                          //will be needed for scorecard making
+
+    containerId: "monthly_bus_speeds_from_jan_2015_select_box_line_date_range",
+    
+    interpretationBoxId: "monthly_bus_speeds_from_jan_2015_select_box_line_date_range_interpretation",
+    scorecardMode: "Ridership",
+
+    checkboxSuperGroupId: "busSpeedDaySelect_date_range", //upper level, selector
+    checkBoxSubGroupId: "bus_speed_checkboxes_date_range", //lower level, checkboxes
+
+    persistenceOfCheckedDatasets: true,
+    listCheckedDatasets: busSpeedsCheckedDatasets,
+
+    timeOfInterest: "month",
+    aspectRatio: 2,
+
+    importedDateRange: [new Date(startDate),
+                        new Date(endDate)]
+  });
+  
+}
+
+sliderMakerMultipleChart({
+  fromSliderId: '#fromSlider_bus_speed',
+  toSliderId: '#toSlider_bus_speed',
+  fromLabelId: '#fromLabel_bus_speed',
+  toLabelId: '#toLabel_bus_speed',
+  startDate: new Date(2015, 0, 1), //Jan 2015
+  endDate: new Date(2026, 5, 1), //Jun 2026 <<===>> REPLACE LATER WITH SOMETHING TO GET LATEST MONTH IN DATASET
+  updateChartsFunction: (startDate, endDate) => {
+    whichChartsToUpdateBusSpeeds(startDate, endDate);
+  }
+})
 
 //RE-ENABLE SITE VISIBILITY
 document.getElementById("report-card-content").style.visibility = "visible";
