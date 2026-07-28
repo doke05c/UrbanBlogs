@@ -654,8 +654,11 @@ async function build() {
     ]
 
     //entire history of weekend monthly bus speeds since 01/2015
+
+    const monthly_weekday_bus_speeds_from_jan_2015 = {};
+
     for (const bus_line of bus_lines) {
-        const monthly_weekday_bus_speeds_from_jan_2015 = await query (`
+        monthly_weekday_bus_speeds_from_jan_2015[bus_line] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
                 SUM(total_operating_time) AS total_operating_time,
@@ -672,14 +675,16 @@ async function build() {
         `);
 
         fs.writeFileSync(
-            `src/json/monthly_weekday_bus_speeds_from_jan_2015_${bus_line}.json`,
+            `src/json/monthly_weekday_bus_speeds_from_jan_2015.json`,
             JSON.stringify(monthly_weekday_bus_speeds_from_jan_2015)
         )
     }
 
     //entire history of weekend monthly bus speeds since 01/2015
+    const monthly_weekend_bus_speeds_from_jan_2015 = {};
+
     for (const bus_line of bus_lines) {
-        const monthly_weekend_bus_speeds_from_jan_2015 = await query (`
+        monthly_weekend_bus_speeds_from_jan_2015[bus_line] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
                 SUM(total_operating_time) AS total_operating_time,
@@ -696,10 +701,11 @@ async function build() {
         `);
 
         fs.writeFileSync(
-            `src/json/monthly_weekend_bus_speeds_from_jan_2015_${bus_line}.json`,
+            `src/json/monthly_weekend_bus_speeds_from_jan_2015.json`,
             JSON.stringify(monthly_weekend_bus_speeds_from_jan_2015)
         )
     }
+    
 
     //past 7 days of cbd entries
     const last7d_entries = await query(`

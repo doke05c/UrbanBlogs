@@ -712,36 +712,34 @@ const bus_lines = [
 
 //GET MONTHLY WEEKDAY BUS SPEEDS SINCE JAN 2015
 
-const monthly_weekday_bus_speeds_from_jan_2015_rows = {};
+const monthly_weekday_bus_speeds_from_jan_2015_rows =
+    await fetch("/src/json/monthly_weekday_bus_speeds_from_jan_2015.json")
+        .then(res => res.json());
 
 for (const bus_line of bus_lines) {
-monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line] =
-  (await fetch(`/src/json/monthly_weekday_bus_speeds_from_jan_2015_${bus_line}.json`)
-    .then(res => res.json()))
-      .map(entry => ({
-        month: entry.month,
-        total_operating_time: entry.total_operating_time,
-        total_mileage: entry.total_mileage,
-        count: entry.average_speed
-      })
-      );
+    monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line] =
+        monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line].map(entry => ({
+            month: entry.month,
+            total_operating_time: entry.total_operating_time,
+            total_mileage: entry.total_mileage,
+            count: entry.average_speed
+        }));
 }
 
 //GET MONTHLY WEEKEND BUS SPEEDS SINCE JAN 2015
 
-const monthly_weekend_bus_speeds_from_jan_2015_rows = {};
+const monthly_weekend_bus_speeds_from_jan_2015_rows =
+    await fetch("/src/json/monthly_weekend_bus_speeds_from_jan_2015.json")
+        .then(res => res.json());
 
 for (const bus_line of bus_lines) {
-monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line] =
-  (await fetch(`/src/json/monthly_weekend_bus_speeds_from_jan_2015_${bus_line}.json`)
-    .then(res => res.json()))
-      .map(entry => ({
-        month: entry.month,
-        total_operating_time: entry.total_operating_time,
-        total_mileage: entry.total_mileage,
-        count: entry.average_speed
-      })
-      );
+    monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line] =
+        monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line].map(entry => ({
+            month: entry.month,
+            total_operating_time: entry.total_operating_time,
+            total_mileage: entry.total_mileage,
+            count: entry.average_speed
+        }));
 }
 
 //GET MONTHLY OVERALL BUS SPEEDS SINCE JAN 2015
@@ -3568,6 +3566,31 @@ function whichChartsToUpdateBusSpeeds(startDate, endDate) {
 
     timeOfInterest: "month",
     aspectRatio: 2,
+
+    lineColors: [
+      "#990000",
+      "#E81416",
+      "#FF2D00",
+      "#FF4500",
+      "#FF6600",
+      "#FF7F00",
+      "#FFA500",
+      "#FFC000",
+      "#BFFF00",
+      "#79C314",
+      "#008000",
+      "#00A86B",
+      "#008080",
+      "#487DE7",
+      "#0000FF",
+      "#002FA7",
+      "#000080",
+      "#4B369D",
+      "#70369D",
+      "#8B00FF",
+      "#BA55D3",
+      "#DA70D6",
+    ],
 
     importedDateRange: [new Date(startDate),
                         new Date(endDate)]
