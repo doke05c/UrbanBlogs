@@ -815,16 +815,17 @@ function createSystemwideBusSpeeds(dataset) {
 
 //add systemwide to dataset for each of weekday, weekend, overall
 monthly_weekday_bus_speeds_from_jan_2015_rows["Systemwide"] =
-    createSystemwideOTP(monthly_weekday_bus_speeds_from_jan_2015_rows);
+    createSystemwideBusSpeeds(monthly_weekday_bus_speeds_from_jan_2015_rows);
   
 monthly_weekend_bus_speeds_from_jan_2015_rows["Systemwide"] =
-    createSystemwideOTP(monthly_weekend_bus_speeds_from_jan_2015_rows);
+    createSystemwideBusSpeeds(monthly_weekend_bus_speeds_from_jan_2015_rows);
 
 monthly_overall_bus_speeds_from_jan_2015_rows["Systemwide"] =
-    createSystemwideOTP(monthly_overall_bus_speeds_from_jan_2015_rows);
+    createSystemwideBusSpeeds(monthly_overall_bus_speeds_from_jan_2015_rows);
 
 const monthly_bus_speeds_step_size_reference = Object.fromEntries(
-  bus_lines.map(line => [line, 2])
+    Object.keys(monthly_overall_bus_speeds_from_jan_2015_rows)
+          .map(line => [line, 2])
 );
 
 //go through the selected choices btwn weekday, weekend, and overall
@@ -1174,12 +1175,26 @@ function createScoreForMultipleLineChart ({
 
       //ratio of average metric during the selected date range to average metric in 2019
 
-      const latestEntry = originalDatasetList[name].at(-1);
+      const latestEntry = originalDatasetList[name].reduce((latest, entry) => {
+          if (!entry.month) return latest;
 
-      if (latestEntry.undefined) {return null;}
+          if (!latest) return entry;
+
+          return new Date(entry.month) > new Date(latest.month)
+              ? entry
+              : latest;
+      }, null);
+
+      if (!latestEntry) {
+          return null;
+      }
 
       const latestDate = new Date(latestEntry.month);
       const latestMonth = latestDate.getMonth();
+
+      console.log(latestDate);
+
+      //get latest entry and corresponding time ^^
 
       const sameMonth2019 = originalDatasetList[name].find(entry => { //get entry of 2019 corresponding to latest month of dataset
           const date = new Date(entry.month);
@@ -1229,43 +1244,20 @@ function createScoreForMultipleLineChart ({
         compactDisplay: 'long',
         maximumFractionDigits: 2 //controls decimal places
       });
-
-      // datasetOTPScoreList[name] = [
-      //   `since 2019 average, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} rides this month`,
-      //   `since 2019 average, ${formatter.format(averageCurrent)} average monthly`,        
-        
-      //   (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "%",
-      //   (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "%",
-        
-      //   displayName,
-      //   name,
-      //   new Date(
-      //     ...((([y, m]) => [y, m - 1])(originalDatasetList[name].at(-1).month.split("-").map(Number))),
-      //     1
-      //   ).toLocaleDateString("en-US", {
-      //     month: "short",
-      //     year: "numeric"
-      //   }),
-      // ];
       
       datasetOTPScoreList[name] = [
 
         (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "% since the same month of 2019",
         (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "% since 2019 average,",
 
-        `${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} mph this month`,
+        `${formatter.format(latestEntry.count)} mph this month`,
         `${formatter.format(averageCurrent)} mph`,
-
-
         
         displayName,
         name,
-        new Date(
-          ...((([y, m]) => [y, m - 1])(originalDatasetList[name].at(-1).month.split("-").map(Number))),
-          1
-        ).toLocaleDateString("en-US", {
-          month: "short",
-          year: "numeric"
+        new Date(latestDate.getTime() + 18000001).toLocaleDateString("en-US", {
+            month: "short",
+            year: "numeric"
         }),
       ];
 
@@ -3574,7 +3566,6 @@ function whichChartsToUpdateBusSpeeds(startDate, endDate) {
       "#FF7F00",
       "#FFA500",
       "#FFC000",
-      "#BFFF00",
       "#79C314",
       "#008000",
       "#00A86B",
