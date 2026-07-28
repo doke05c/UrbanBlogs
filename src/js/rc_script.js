@@ -128,36 +128,34 @@ let subway_line_list =
   "JZ", "L", "M", "N", "Q", "R", "S Fkln", "FS", "S Rock", "H"
 ]
 
-const monthly_weekday_subway_otp_rate_from_jan_2015_rows = {};
+const monthly_weekday_subway_otp_rate_from_jan_2015_rows =
+    await fetch("/src/json/monthly_weekday_subway_otp_rate_from_jan_2015.json")
+        .then(res => res.json());
 
 for (const subway_line of subway_line_list) {
-monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line] =
-  (await fetch(`/src/json/monthly_weekday_subway_otp_rate_from_jan_2015_${subway_line}.json`)
-    .then(res => res.json()))
-      .map(entry => ({
-        month: entry.month,
-        on_time_trips: entry.num_on_time_trips,
-        sched_trips: entry.num_sched_trips,
-        count: entry.otp_rate * 100
-      })
-      );
+    monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line] =
+        monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line].map(entry => ({
+            month: entry.month,
+            on_time_trips: entry.num_on_time_trips,
+            sched_trips: entry.num_sched_trips,
+            count: entry.otp_rate * 100
+        }));
 }
 
 //GET MONTHLY WEEKEND SUBWAY OTP RATES SINCE JAN 2015
 
-const monthly_weekend_subway_otp_rate_from_jan_2015_rows = {};
+const monthly_weekend_subway_otp_rate_from_jan_2015_rows =
+    await fetch("/src/json/monthly_weekend_subway_otp_rate_from_jan_2015.json")
+        .then(res => res.json());
 
 for (const subway_line of subway_line_list) {
-monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line] =
-  (await fetch(`/src/json/monthly_weekend_subway_otp_rate_from_jan_2015_${subway_line}.json`)
-    .then(res => res.json()))
-      .map(entry => ({
-        month: entry.month,
-        on_time_trips: entry.num_on_time_trips,
-        sched_trips: entry.num_sched_trips,
-        count: entry.otp_rate * 100
-      })
-      );
+    monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line] =
+        monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line].map(entry => ({
+            month: entry.month,
+            on_time_trips: entry.num_on_time_trips,
+            sched_trips: entry.num_sched_trips,
+            count: entry.otp_rate * 100
+        }));
 }
 
 //function to combine lines together. keeps the keepline, removes removeline

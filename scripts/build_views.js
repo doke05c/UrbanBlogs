@@ -211,8 +211,11 @@ async function build() {
     );
 
     //entire history of weekday monthly otp subway since 01/2015
+
+    const monthly_weekday_subway_otp_rate_from_jan_2015 = {};
+
     for (const subway_line of ["1", "2", "3", "4", "5", "6", "7", "S 42nd", "GS", "A", "B", "C", "D", "E", "F", "G", "J", "JZ", "L", "M", "N", "Q", "R", "S Fkln", "FS", "S Rock", "H"]) {
-        const monthly_weekday_subway_otp_rate_from_jan_2015 = await query (`
+        monthly_weekday_subway_otp_rate_from_jan_2015[subway_line] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
                 num_on_time_trips AS num_on_time_trips,
@@ -228,14 +231,17 @@ async function build() {
         `);
 
         fs.writeFileSync(
-            `src/json/monthly_weekday_subway_otp_rate_from_jan_2015_${subway_line}.json`,
+            `src/json/monthly_weekday_subway_otp_rate_from_jan_2015.json`,
             JSON.stringify(monthly_weekday_subway_otp_rate_from_jan_2015)
         )
     }
 
     //entire history of weekend monthly otp subway since 01/2015
+
+    const monthly_weekend_subway_otp_rate_from_jan_2015 = {};
+
     for (const subway_line of ["1", "2", "3", "4", "5", "6", "7", "S 42nd", "GS", "A", "B", "C", "D", "E", "F", "G", "J", "JZ", "L", "M", "N", "Q", "R", "S Fkln", "FS", "S Rock", "H"]) {
-        const monthly_weekend_subway_otp_rate_from_jan_2015 = await query (`
+        monthly_weekend_subway_otp_rate_from_jan_2015[subway_line] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
                 num_on_time_trips AS num_on_time_trips,
@@ -251,7 +257,7 @@ async function build() {
         `);
 
         fs.writeFileSync(
-            `src/json/monthly_weekend_subway_otp_rate_from_jan_2015_${subway_line}.json`,
+            `src/json/monthly_weekend_subway_otp_rate_from_jan_2015.json`,
             JSON.stringify(monthly_weekend_subway_otp_rate_from_jan_2015)
         )
     }
