@@ -1099,6 +1099,180 @@ function createScoreForMultipleLineChart ({
 
     }
 
+  } else if (mode == "Speed") {
+
+    for (const [name, dataset] of Object.entries(datasetList)) {  
+
+      const oneYearLater = new Date(importedDateRange[0]);
+      oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);                                         
+
+      //get the average metric of the line for the time period
+      const averageCurrent =
+          dataset
+              .filter(entry =>
+                  entry.count !== 0 &&
+                  new Date(entry.month) >= (importedDateRange[0] - 18000001) &&
+                  new Date(entry.month) <= importedDateRange[1]
+              )
+              .reduce((sum, entry) => sum + entry.count, 0) //take the sum of all valid values in the range (non-zero)
+          /
+          dataset
+              .filter(entry =>
+                  entry.count !== 0 &&
+                  new Date(entry.month) >= (importedDateRange[0] - 18000001) &&
+                  new Date(entry.month) <= importedDateRange[1]
+              ).length;                                   //divide by the number of valid values in the range (non-zero)
+      
+      const monthcount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] //dict that contains month counts for each month of the year
+                        //J, F, M, A, M, J, J, A, S, O, N ,D
+      
+      for (let i = 0; i < monthcount.length; i++) {
+        monthcount[i] = dataset
+                          .filter(entry => {
+                            return (
+                              entry.count !== 0 &&
+                              new Date(entry.month).getTime() + 18000001 >= new Date(importedDateRange[0].getTime()) &&
+                              new Date(entry.month).getTime() <= importedDateRange[1] &&
+                              new Date(new Date(entry.month).getTime() + 18000001).getMonth() === i
+                            );
+
+                          }).length;
+      }
+      
+      let average2019; //to be 2019 average metric per line
+
+      // if (importedDateRange[1] >= oneYearLater) { //if the date range is a year or longer... compare to 2019 in full
+      
+      const to_divide_2019_count = originalDatasetList[name]
+        .filter(entry =>
+            entry.count !== 0 &&
+            entry.month.startsWith("2019-")
+        )
+        .reduce((sum, entry) => {
+            const monthIndex = new Date(
+                new Date(entry.month).getTime() + 18000001
+            ).getMonth();
+
+            return sum + monthcount[monthIndex];
+        }, 0
+      ); //get count of valid months to divide in 2019 relevant to the monthcount found in date range
+
+        //do the sum for the line in 2019
+        average2019 =
+            originalDatasetList[name]
+              .filter(entry =>
+                  entry.count !== 0 &&
+                  entry.month.startsWith("2019-")
+              )
+              .reduce((sum, entry) => {
+                  const monthIndex = new Date(
+                      new Date(entry.month).getTime() + 18000001
+                  ).getMonth();
+
+                  return sum + (entry.count * monthcount[monthIndex]);
+              }, 0) //take the sum of all valid values in 2019 (non-zero)
+
+            /
+            
+          to_divide_2019_count; //divide by the count of all valid values in 2019 (non-zero)
+
+      //ratio of average metric during the selected date range to average metric in 2019
+
+      const latestEntry = originalDatasetList[name].at(-1);
+
+      const latestDate = new Date(latestEntry.month);
+      const latestMonth = latestDate.getMonth();
+
+      const sameMonth2019 = originalDatasetList[name].find(entry => { //get entry of 2019 corresponding to latest month of dataset
+          const date = new Date(entry.month);
+
+          return (
+              entry.count !== 0 &&
+              date.getFullYear() === 2019 &&
+              date.getMonth() === latestMonth
+          );
+      });
+
+      let latest_comp_2019_pct;
+      let countSameMonth2019;
+
+      if (sameMonth2019) {
+        countSameMonth2019 = sameMonth2019.count;
+
+        latest_comp_2019_pct = Math.round((latestEntry.count - sameMonth2019.count)
+          / sameMonth2019.count * 100 * 10) / 10; //rounded to 0.X
+        
+      } else {
+        latest_comp_2019_pct = "N/A";
+      } 
+
+
+      
+      const average_current_comp_2019_pct = Math.round((averageCurrent - average2019)
+                              / average2019 * 100 * 10) / 10; //rounded to 0.X
+      
+      //update the dataset's metric score with the metric, calculated rel over 2019, and final grade
+      // datasetOTPScoreList[name] = [averageCurrent, ((averageCurrent-average2019)/averageCurrent*100), OTPGrade];
+
+      //display name beautifier for weird lines
+      const displayName =
+        name === "S Rock" ? "Rockaway Park Shuttle" :
+        name === "S 42nd" ? "42nd St. Shuttle" :
+        name === "S Fkln" ? "Franklin Ave. Shuttle" :
+        name === "JZ" ? "J/Z" :
+        name;
+
+      //NEW: update the dataset's metric score with the metric of latest month, metric of time period, grade of latest month, grade of time period
+      
+      //ridership: "grade" is comparison over 2019
+
+      const formatter = new Intl.NumberFormat('en-US', {
+        notation: 'compact',
+        compactDisplay: 'long',
+        maximumFractionDigits: 2 //controls decimal places
+      });
+
+      // datasetOTPScoreList[name] = [
+      //   `since 2019 average, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} rides this month`,
+      //   `since 2019 average, ${formatter.format(averageCurrent)} average monthly`,        
+        
+      //   (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "%",
+      //   (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "%",
+        
+      //   displayName,
+      //   name,
+      //   new Date(
+      //     ...((([y, m]) => [y, m - 1])(originalDatasetList[name].at(-1).month.split("-").map(Number))),
+      //     1
+      //   ).toLocaleDateString("en-US", {
+      //     month: "short",
+      //     year: "numeric"
+      //   }),
+      // ];
+      
+      datasetOTPScoreList[name] = [
+
+        (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "% since the same month of 2019",
+        (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "% since 2019 average,",
+
+        `${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} mph this month`,
+        `${formatter.format(averageCurrent)} mph`,
+
+
+        
+        displayName,
+        name,
+        new Date(
+          ...((([y, m]) => [y, m - 1])(originalDatasetList[name].at(-1).month.split("-").map(Number))),
+          1
+        ).toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric"
+        }),
+      ];
+
+    }
+
   }
 
   return datasetOTPScoreList;
@@ -3382,7 +3556,7 @@ function whichChartsToUpdateBusSpeeds(startDate, endDate) {
     containerId: "monthly_bus_speeds_from_jan_2015_select_box_line_date_range",
     
     interpretationBoxId: "monthly_bus_speeds_from_jan_2015_select_box_line_date_range_interpretation",
-    scorecardMode: "Ridership",
+    scorecardMode: "Speed",
 
     checkboxSuperGroupId: "busSpeedDaySelect_date_range", //upper level, selector
     checkBoxSubGroupId: "bus_speed_checkboxes_date_range", //lower level, checkboxes
