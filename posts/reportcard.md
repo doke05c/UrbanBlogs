@@ -139,7 +139,11 @@ description: "The New York City region has been missing a centralized location w
       <!-- -->
       <!-- otp subway lines checkboxes -->
       <!--  -->
-      <div id="bus_speed_checkboxes_date_range"></div>
+      <div class="dropdown-select">
+        <button type="button" id="bus_speed_dropdown_toggle_date_range">Select routes ▾</button>
+        <input type="text" id="bus_speed_route_filter_date_range" placeholder="Filter routes…" />
+        <div id="bus_speed_checkboxes_date_range"></div>
+      </div>
       <br>
       <!--  -->
       <!-- otp chart visual -->

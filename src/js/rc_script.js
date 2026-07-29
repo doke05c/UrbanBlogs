@@ -2868,6 +2868,15 @@ function clickSelectMultipleLineChart({
   //type of metric scorecard being made, undefined unless specified in call stack
   scorecardMode = undefined,
 
+  //render as searchable dropdown instead of flat grid, false unless specified otherwise
+  useDropdown = false,    
+
+  //button showing "N selected", opens/closes the panel, undefined unless specified otherwise
+  dropdownToggleId = undefined, 
+
+  //text input that filters rows by name, unded, undefined unless specified otherwise
+  dropdownFilterId = undefined, 
+
   checkBoxGroupId, //checkbox group id
   // ^^ taken from html-side of blogpost
 
@@ -2898,6 +2907,13 @@ function clickSelectMultipleLineChart({
 {
   //refresh render to run the graphing process again in the function as needed, either after date range or checkbox change
   function refreshRender() {
+
+    if (useDropdown) {
+      const toggleButton = document.getElementById(dropdownToggleId);
+      const count = Object.keys(checkedDatasets).length;
+      toggleButton.textContent = count > 0 ? `${count} selected ▾` : `Select routes ▾`;
+    }
+
     if (Object.entries(checkedDatasets).length > 0) { //if we have received anything to plot, then remove the old plot and put in the new one
 
       //remove old chart, prep for replacement with new one
@@ -2948,10 +2964,14 @@ function clickSelectMultipleLineChart({
   //get checkbox container from html side
   const checkboxContainer = document.getElementById(checkBoxGroupId);
 
-  //set grid style for checkboxes, with set spacing
-  checkboxContainer.style.display = "grid";
-  checkboxContainer.style.gridTemplateColumns = "repeat(8, auto)";
-  checkboxContainer.style.columnGap = "5px";
+  //set grid style for checkboxes, with set spacing, unless dropdown is used
+  if (useDropdown) {
+    checkboxContainer.classList.add("dropdown-panel"); //styling/collapse is in styles.css
+  } else {
+    checkboxContainer.style.display = "grid";
+    checkboxContainer.style.gridTemplateColumns = "repeat(8, auto)";
+    checkboxContainer.style.columnGap = "5px";
+  }
 
   //for each item in the stepsize reference... (datasetlist is advisable as well, both are fine, just as long as indexing is consistent on both)
   
@@ -2980,6 +3000,40 @@ function clickSelectMultipleLineChart({
     //     checkboxContainer.appendChild(document.createTextNode("\u00A0".repeat(10))); //u00A0 is space. repeat space char.
     //   }
     });
+
+    if (useDropdown) {
+      const toggleButton = document.getElementById(dropdownToggleId);
+      const filterInput = document.getElementById(dropdownFilterId);
+
+      //property-assignment, not addEventListener, reassigning just overwrites
+      //the previous handler instead of stacking a new one on every rebuild
+      toggleButton.onclick = () => checkboxContainer.classList.toggle("open");
+
+      filterInput.oninput = () => {
+        const query = filterInput.value.toLowerCase();
+        checkboxContainer.querySelectorAll("label").forEach(label => {
+          const match = label.textContent.toLowerCase().includes(query);
+          label.style.display = match ? "" : "none";
+          document.getElementById(label.htmlFor).style.display = match ? "" : "none";
+        });
+      };
+
+      //guard this one specifically: it's a document-level listener, and this whole
+      //block re-runs every time the day-type <select> wipes and rebuilds the panel
+      //(see nestedTwoCategorySelectLineChart below), without the flag a new click listener is stacked
+      //on document every single day-type switch.
+
+      //checkboxContainer itself survives that wipe (only its children get cleared),
+      //so a flag on the container persists across rebuilds correctly.
+      if (!checkboxContainer.dataset.dropdownWired) {
+        checkboxContainer.dataset.dropdownWired = "true";
+        document.addEventListener("click", (event) => {
+          if (!checkboxContainer.contains(event.target) && event.target !== toggleButton) {
+            checkboxContainer.classList.remove("open");
+          }
+        });
+      }
+    }
   }
 
   //create list of checked datasets to keep track of with each click
@@ -3062,6 +3116,15 @@ function nestedTwoCategorySelectLineChart({
   //type of metric scorecard being made, undefined unless specified in call stack
   scorecardMode = undefined,
 
+  //render as searchable dropdown instead of flat grid, false unless specified otherwise
+  useDropdown = false,    
+
+  //button showing "N selected", opens/closes the panel, undefined unless specified otherwise
+  dropdownToggleId = undefined, 
+
+  //text input that filters rows by name, unded, undefined unless specified otherwise
+  dropdownFilterId = undefined, 
+
   checkboxSuperGroupId, //upper level, selector
 
   checkBoxSubGroupId, //lower level, checkboxes
@@ -3103,7 +3166,12 @@ function nestedTwoCategorySelectLineChart({
 
     ...(persistenceOfCheckedDatasets && {
       checkedDatasets: listCheckedDatasets
-    }) //if checkeddatasets is persisent, apply what we have to said parameter in clickselectmultiplelinechart
+    }), //if checkeddatasets is persisent, apply what we have to said parameter in clickselectmultiplelinechart
+
+    useDropdown: useDropdown,
+    dropdownToggleId: dropdownToggleId,
+    dropdownFilterId: dropdownFilterId,
+
   });
 
   select.addEventListener("change", function () {
@@ -3553,6 +3621,10 @@ function whichChartsToUpdateBusSpeeds(startDate, endDate) {
 
     persistenceOfCheckedDatasets: true,
     listCheckedDatasets: busSpeedsCheckedDatasets,
+
+    useDropdown: true,
+    dropdownToggleId: "bus_speed_dropdown_toggle_date_range",
+    dropdownFilterId: "bus_speed_route_filter_date_range",
 
     timeOfInterest: "month",
     aspectRatio: 2,
