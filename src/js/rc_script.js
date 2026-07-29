@@ -3061,6 +3061,19 @@ function clickSelectMultipleLineChart({
 
       systemwideContainer.appendChild(systemwideCheckbox);
       systemwideContainer.appendChild(systemwideLabel);
+      
+    } else {
+
+      //for datasets with no "Systemwide" entry (eg. ridership), default to checking
+      //the first checkbox in the grid instead, so something renders without requiring
+      //a click -- same idea as the systemwide default above, just falling back to
+      //whichever dataset happens to be first.
+      const firstCheckbox = checkboxContainer.querySelector("input[type='checkbox']");
+
+      if (firstCheckbox) {
+        firstCheckbox.checked = true;
+        checkedDatasets[firstCheckbox.name] = datasetList[firstCheckbox.name];
+      }    
     }
 
     if (useDropdown) {
