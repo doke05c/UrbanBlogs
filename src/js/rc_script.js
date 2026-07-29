@@ -1077,7 +1077,7 @@ function createScoreForMultipleLineChart ({
       });
 
       datasetOTPScoreList[name] = [
-        `since 2019 average, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} rides this month`,
+        `since the same month of 2019, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} rides this month`,
         `since 2019 average, ${formatter.format(averageCurrent)} average monthly`,        
         
         (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "%",
