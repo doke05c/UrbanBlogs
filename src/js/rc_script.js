@@ -3200,7 +3200,11 @@ function nestedTwoCategorySelectLineChart({
 
       ...(persistenceOfCheckedDatasets && {
         checkedDatasets: listCheckedDatasets
-      }) //if checkeddatasets is persisent, apply what we have to said parameter in clickselectmultiplelinechart
+      }), //if checkeddatasets is persisent, apply what we have to said parameter in clickselectmultiplelinechart
+
+      useDropdown: useDropdown,
+      dropdownToggleId: dropdownToggleId,
+      dropdownFilterId: dropdownFilterId,
     });
   });
 }
