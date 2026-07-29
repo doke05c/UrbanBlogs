@@ -3008,6 +3008,11 @@ function clickSelectMultipleLineChart({
 
     Object.keys(datasetListStepSizeReference).forEach((name, index) => {
 
+      //Systemwide gets its own dedicated checkbox in the side container (built below)
+      //skip it here so it doesn't also show up as a second, duplicate checkbox in the
+      //main per-line grid.
+      if (name === "Systemwide") return;
+
       //clear out any leftover systemwide checkbox from a previous build (eg. day-type switch)
       if (systemwideContainer) {
         systemwideContainer.innerHTML = "";
@@ -3042,6 +3047,13 @@ function clickSelectMultipleLineChart({
       systemwideCheckbox.type = "checkbox";
       systemwideCheckbox.id = `${systemwideContainerId}-dataset`;
       systemwideCheckbox.name = "Systemwide";
+
+      //default systemwide to ON for any fresh build of this chart (first load, or after
+      //a day-type switch, which already wipes and rebuilds every checkbox from scratch) --
+      //check the box AND seed it into checkedDatasets directly so refreshRender() (called
+      //right after this block) picks it up on the very first render, no click required.
+      systemwideCheckbox.checked = true;
+      checkedDatasets["Systemwide"] = datasetList["Systemwide"];
 
       const systemwideLabel = document.createElement("label");
       systemwideLabel.htmlFor = systemwideCheckbox.id;
