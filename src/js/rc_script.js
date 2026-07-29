@@ -2965,6 +2965,9 @@ function clickSelectMultipleLineChart({
   const checkboxContainer = document.getElementById(checkBoxGroupId);
 
   //set grid style for checkboxes, with set spacing, unless dropdown is used
+  checkboxContainer.classList.remove("dropdown-panel", "open");
+  checkboxContainer.removeAttribute("style"); // clear any leftover inline grid styling
+
   if (useDropdown) {
     checkboxContainer.classList.add("dropdown-panel"); //styling/collapse is in styles.css
   } else {
