@@ -45,8 +45,14 @@ description: "The New York City region has been missing a centralized location w
       <!-- -->
       <!-- otp subway lines checkboxes -->
       <!--  -->
-      <div id="subway-otp-checkboxes_date_range"></div>
-      <br>
+      <div class="checkbox-row">
+        <div id="subway-otp-checkboxes_date_range" class="checkbox-grid"></div>
+        <div class="side-controls">
+          <div id="subway-otp-systemwide_date_range" class="systemwide-box"></div>
+          <button type="button" id="subway-otp-clear-all_date_range" class="clear-all-btn">Clear All</button>
+        </div>
+      </div>
+      <br>      
       <!--  -->
       <!-- otp chart visual -->
       <!--  -->
@@ -88,8 +94,13 @@ description: "The New York City region has been missing a centralized location w
       <!-- -->
       <!-- ridership checkboxes -->
       <!--  -->
-      <div id="subway-ridership-checkboxes_date_range"></div>
-      <br>
+      <div class="checkbox-row">
+        <div id="subway-ridership-checkboxes_date_range" class="checkbox-grid"></div>
+        <div class="side-controls">
+          <button type="button" id="ridership-clear-all_date_range" class="clear-all-btn">Clear All</button>
+        </div>
+      </div>
+      <br>      
       <!--  -->
       <!-- ridership chart visual -->
       <!--  -->
@@ -139,10 +150,16 @@ description: "The New York City region has been missing a centralized location w
       <!-- -->
       <!-- otp subway lines checkboxes -->
       <!--  -->
-      <div class="dropdown-select">
-        <button type="button" id="bus_speed_dropdown_toggle_date_range">Select routes ▾</button>
-        <input type="text" id="bus_speed_route_filter_date_range" placeholder="Filter routes…" />
-        <div id="bus_speed_checkboxes_date_range"></div>
+      <div class="checkbox-row">
+        <div class="dropdown-select">
+          <button type="button" id="bus_speed_dropdown_toggle_date_range">Select routes ▾</button>
+          <input type="text" id="bus_speed_route_filter_date_range" placeholder="Filter routes…" />
+          <div id="bus_speed_checkboxes_date_range"></div>
+        </div>
+        <div class="side-controls">
+          <div id="bus-speed-systemwide_date_range" class="systemwide-box"></div>
+          <button type="button" id="bus-speed-clear-all_date_range" class="clear-all-btn">Clear All</button>
+        </div>
       </div>
       <br>
       <!--  -->

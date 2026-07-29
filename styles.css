@@ -279,3 +279,76 @@ input[type="range"] {
 }
 
 /*END DROPDOWN SELECT STYLE*/
+
+/*START SYSTEMWIDE + CLEAR ALL SIDE CONTROLS*/
+
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.checkbox-row > .checkbox-grid {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* the dropdown-select's own width: 100% would otherwise crowd out side-controls
+   in this flex row, so it's overridden here to only apply to this context */
+.checkbox-row > .dropdown-select {
+  width: auto;
+  flex: 1 1 auto;
+}
+
+.side-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(205, 205, 205, 0.25);
+}
+
+/* hides the systemwide slot cleanly when nothing's been rendered into it */
+.systemwide-box:empty {
+  display: none;
+}
+
+.systemwide-box label {
+  font-weight: bold;
+}
+
+.clear-all-btn {
+  background: transparent;
+  color: #7DA9DE;
+  border: 1px solid #7DA9DE;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.clear-all-btn:hover {
+  background-color: #7DA9DE;
+  color: #080b17;
+}
+
+@media (max-width: 900px) {
+  .checkbox-row {
+    flex-direction: column;
+  }
+
+  .side-controls {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding-left: 0;
+    padding-top: 0.5rem;
+    border-left: none;
+    border-top: 1px solid rgba(205, 205, 205, 0.25);
+  }
+}
+
+/*END SYSTEMWIDE + CLEAR ALL SIDE CONTROLS*/

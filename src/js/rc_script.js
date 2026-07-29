@@ -1186,7 +1186,8 @@ function createScoreForMultipleLineChart ({
       }, null);
 
       if (!latestEntry) {
-          return null;
+        delete datasetOTPScoreList[name];
+        continue;      
       }
 
       const latestDate = new Date(latestEntry.month);
@@ -2849,7 +2850,12 @@ function typeSelectMultipleLineChart({
 }
 
 //establish listener callback operation set
-const checkboxCallbacks = {};
+//WeakMap keyed by the checkbox element itself (not its name) -- a plain object keyed by
+//name breaks down once two different checkbox groups share a name, eg. "Systemwide" now
+//exists in both the subway OTP grid and the bus speed grid. Keying by element sidesteps
+//that collision entirely, and lets entries for removed checkboxes get garbage collected
+//automatically instead of sitting around in a growing plain object forever.
+const checkboxCallbacks = new WeakMap();
 
 //select datasets out of a list to graph on a line chart, user selects as checked boxes
 function clickSelectMultipleLineChart({
@@ -2871,11 +2877,20 @@ function clickSelectMultipleLineChart({
   //render as searchable dropdown instead of flat grid, false unless specified otherwise
   useDropdown = false,    
 
-  //button showing "N selected", opens/closes the panel, undefined unless specified otherwise
+  //button (HTML-side id) showing "N selected", opens/closes the panel, undefined unless specified otherwise
   dropdownToggleId = undefined, 
 
-  //text input that filters rows by name, unded, undefined unless specified otherwise
+  //text input (HTML-side id) that filters rows by name, unded, undefined unless specified otherwise
   dropdownFilterId = undefined, 
+
+  //container (HTML-side id) for the systemwide checkbox, rendered separately/to the side from the
+  //per-line grid. undefined unless specified.
+  //if undefined, or if this dataset has no "Systemwide" entry, nothing happens (systemwide button only appears IF EXISTS)
+  systemwideContainerId = undefined,
+
+  //button (HTML-side id) that clears every current checkbox selection for this chart.
+  //undefined unless specified otherwise
+  clearAllButtonId = undefined,
 
   checkBoxGroupId, //checkbox group id
   // ^^ taken from html-side of blogpost
@@ -2976,11 +2991,27 @@ function clickSelectMultipleLineChart({
     checkboxContainer.style.columnGap = "5px";
   }
 
+  //get the systemwide container from html side, if one was supplied for this chart
+  const systemwideContainer = systemwideContainerId
+    ? document.getElementById(systemwideContainerId)
+    : null;
+
   //for each item in the stepsize reference... (datasetlist is advisable as well, both are fine, just as long as indexing is consistent on both)
   
   //ONLY DO IF THE LIST OF CHECKED ITEMS IS EMPTY:
   if (checkboxContainer.children.length === 0) {
+
+    //clear out any leftover systemwide checkbox from a previous build (eg. day-type switch)
+    if (systemwideContainer) {
+      systemwideContainer.innerHTML = "";
+    }
+
     Object.keys(datasetListStepSizeReference).forEach((name, index) => {
+
+      //clear out any leftover systemwide checkbox from a previous build (eg. day-type switch)
+      if (systemwideContainer) {
+        systemwideContainer.innerHTML = "";
+      }
 
       //create a checkbox, name is the same as that of element from datasetlist
       const checkbox = document.createElement("input");
@@ -3003,6 +3034,22 @@ function clickSelectMultipleLineChart({
     //     checkboxContainer.appendChild(document.createTextNode("\u00A0".repeat(10))); //u00A0 is space. repeat space char.
     //   }
     });
+
+    //SYSTEMWIDE BUTTON (IF EXISTS): only built when both a container was supplied
+    //AND this dataset actually has a "Systemwide" entry, ridership has neither, so it's skipped entirely
+    if (systemwideContainer && originalDatasetList["Systemwide"] !== undefined) {
+      const systemwideCheckbox = document.createElement("input");
+      systemwideCheckbox.type = "checkbox";
+      systemwideCheckbox.id = `${systemwideContainerId}-dataset`;
+      systemwideCheckbox.name = "Systemwide";
+
+      const systemwideLabel = document.createElement("label");
+      systemwideLabel.htmlFor = systemwideCheckbox.id;
+      systemwideLabel.textContent = " Systemwide";
+
+      systemwideContainer.appendChild(systemwideCheckbox);
+      systemwideContainer.appendChild(systemwideLabel);
+    }
 
     if (useDropdown) {
       const toggleButton = document.getElementById(dropdownToggleId);
@@ -3056,16 +3103,33 @@ function clickSelectMultipleLineChart({
 
   refreshRender();
 
-  document
-    //give each checkbox in the checkbox set a listener for clicks
-    .querySelectorAll(`#${checkBoxGroupId} input[type='checkbox']`)
-    .forEach(checkbox => {
+  //selector covers the main grid, plus the separate systemwide container when one exists,
+  //so the same checked/unchecked handling below applies to the systemwide box too
+  const checkboxSelector = systemwideContainerId
+    ? `#${checkBoxGroupId} input[type='checkbox'], #${systemwideContainerId} input[type='checkbox']`
+    : `#${checkBoxGroupId} input[type='checkbox']`;
 
-      //remove old listener if it exists
-      if (checkboxCallbacks[checkbox.name]) {
+  document
+  
+    //give each checkbox in the checkbox set a listener for clicks
+    //(checkboxSelector, not a hardcoded `#${checkBoxGroupId} ...`, so this also picks up
+    //the systemwide checkbox sitting in its own side container, that's why it visually
+    //toggled but never actually added/removed itself from the chart before.)
+
+    .querySelectorAll(checkboxSelector)
+     .forEach(checkbox => {
+
+      //remove old listener if it exists -- keyed by the checkbox ELEMENT itself (real
+      //WeakMap usage), not by checkbox.name. Bracket notation (checkboxCallbacks[name])
+      //doesn't call the WeakMap's own get/set/has at all, it just sets a plain
+      //string-keyed property directly on the WeakMap object, which silently defeats the
+      //whole point: it can't tell the OTP grid's "Systemwide" checkbox apart from the bus
+      //speed grid's "Systemwide" checkbox (same name, different elements), and it keeps
+      //every past render's closures reachable forever since that object never gets cleared.
+      if (checkboxCallbacks.has(checkbox)) {
         checkbox.removeEventListener(
           "change",
-          checkboxCallbacks[checkbox.name]
+          checkboxCallbacks.get(checkbox)
         );
       }
 
@@ -3096,16 +3160,52 @@ function clickSelectMultipleLineChart({
 
       };
 
-      //save reference
-      checkboxCallbacks[checkbox.name] = checkboxCallback;
+      //save reference, keyed by the element, once this checkbox is removed from the
+      //DOM (eg. a day-type switch wipes and rebuilds the grid) and nothing else points to
+      //it, this entry is eligible for garbage collection automatically. No name collisions,
+      //no manual cleanup needed.
+      checkboxCallbacks.set(checkbox, checkboxCallback);
 
       //add new listener
       checkbox.addEventListener("change", checkboxCallback);
 
     });
+
+  //CLEAR ALL BUTTON (IF EXISTS): unchecks every box in this chart's checkboxes
+  //(main grid + systemwide, if present) and empties the tracked selection
+  if (clearAllButtonId) {
+    const clearAllButton = document.getElementById(clearAllButtonId);
+
+    //property assignment, not addEventListener, same reasoning as toggleButton.onclick
+    //above: this whole function re-runs on every slider tick, so reassigning here just
+    //overwrites the previous handler instead of stacking a new one each time
+    clearAllButton.onclick = () => {
+
+      document.querySelectorAll(checkboxSelector).forEach(checkbox => {
+        checkbox.checked = false;
+      });
+
+      //empty out the tracked selection in place (keeps the same object reference,
+      //which matters for persistence across slider moves, see checkedDatasets param)
+      Object.keys(checkedDatasets).forEach(name => delete checkedDatasets[name]);
+
+      refreshRender();
+    };
+  }
 }
 
 //NESTED SELECT
+
+//tracks the currently-attached "change" listener for each day-type <select>, keyed by
+//the element itself. nestedTwoCategorySelectLineChart runs again on every slider tick
+//(whichChartsToUpdateOTP/BusSpeeds call it unconditionally), so without this guard a
+//fresh "change" listener would stack on top of the last one every single tick:
+//dragging the slider for a few seconds could leave dozens of duplicate listeners on
+//the select, each one rebuilding the chart and rebinding every checkbox again the next
+//time the day type is switched.
+const daySelectCallbacks = new WeakMap();
+
+
 function nestedTwoCategorySelectLineChart({
   datasetSuperList, //superlist is a list of lists (ie: superlist[value] = a list)
 
@@ -3132,6 +3232,11 @@ function nestedTwoCategorySelectLineChart({
 
   //text input that filters rows by name, unded, undefined unless specified otherwise
   dropdownFilterId = undefined, 
+
+  //passed straight through to clickSelectMultipleLineChart
+  systemwideContainerId = undefined,
+  
+  clearAllButtonId = undefined,
 
   checkboxSuperGroupId, //upper level, selector
 
@@ -3180,9 +3285,18 @@ function nestedTwoCategorySelectLineChart({
     dropdownToggleId: dropdownToggleId,
     dropdownFilterId: dropdownFilterId,
 
+    systemwideContainerId: systemwideContainerId,
+    clearAllButtonId: clearAllButtonId,
+
   });
 
-  select.addEventListener("change", function () {
+  //remove this select's previous "change" listener (if any) before attaching a new one.
+  //see the daySelectCallbacks comment above for why this guard is needed
+  if (daySelectCallbacks.has(select)) {
+    select.removeEventListener("change", daySelectCallbacks.get(select));
+  }
+
+  const handleDayTypeChange = function () {
 
       Object.keys(listCheckedDatasets).forEach(key => delete listCheckedDatasets[key]);
       //forget previous checkbox state when switching day type
@@ -3192,6 +3306,13 @@ function nestedTwoCategorySelectLineChart({
 
       const checkboxset = document.getElementById(checkBoxSubGroupId);
       checkboxset.innerHTML = ""; //remove old checkbox set
+
+      //also clear the systemwide container, if this chart has one, so it gets rebuilt
+      //fresh instead of leaving the previous day-type's systemwide checkbox in place
+      if (systemwideContainerId) {
+        const systemwideContainer = document.getElementById(systemwideContainerId);
+        systemwideContainer.innerHTML = "";
+      }
 
     clickSelectMultipleLineChart({
       datasetList: datasetSuperList[select.value], //now the list is being taken from the superlist to plot
@@ -3213,8 +3334,14 @@ function nestedTwoCategorySelectLineChart({
       useDropdown: useDropdown,
       dropdownToggleId: dropdownToggleId,
       dropdownFilterId: dropdownFilterId,
+
+      systemwideContainerId: systemwideContainerId,
+      clearAllButtonId: clearAllButtonId,
     });
-  });
+  };
+
+    daySelectCallbacks.set(select, handleDayTypeChange);
+    select.addEventListener("change", handleDayTypeChange);
 }
 
 
@@ -3475,6 +3602,10 @@ function whichChartsToUpdateOTP(startDate, endDate) {
     checkboxSuperGroupId: "subwayOTPDaySelect_date_range", //upper level, selector
     checkBoxSubGroupId: "subway-otp-checkboxes_date_range", //lower level, checkboxes
 
+    //systemwide entry exists for OTP -- gets its own container to the side of the grid
+    systemwideContainerId: "subway-otp-systemwide_date_range",
+    clearAllButtonId: "subway-otp-clear-all_date_range",
+
     persistenceOfCheckedDatasets: true,
     listCheckedDatasets: OTPCheckedDatasets,
 
@@ -3578,6 +3709,9 @@ function whichChartsToUpdateRidership(startDate, endDate) {
 
     checkBoxGroupId: "subway-ridership-checkboxes_date_range", //lower level, checkboxes
 
+    //no systemwideContainerId here ridership's dataset has no "Systemwide" entry,
+    clearAllButtonId: "ridership-clear-all_date_range",
+
     persistenceOfCheckedDatasets: true,
 
     checkedDatasets: ridershipCheckedDatasets,
@@ -3637,6 +3771,11 @@ function whichChartsToUpdateBusSpeeds(startDate, endDate) {
     useDropdown: true,
     dropdownToggleId: "bus_speed_dropdown_toggle_date_range",
     dropdownFilterId: "bus_speed_route_filter_date_range",
+
+    //systemwide entry exists for bus speeds -- gets its own container to the side of the grid
+    systemwideContainerId: "bus-speed-systemwide_date_range",
+    clearAllButtonId: "bus-speed-clear-all_date_range",
+
 
     timeOfInterest: "month",
     aspectRatio: 2,
