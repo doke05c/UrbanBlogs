@@ -3017,7 +3017,12 @@ function clickSelectMultipleLineChart({
         checkboxContainer.querySelectorAll("label").forEach(label => {
           const match = label.textContent.toLowerCase().includes(query);
           label.style.display = match ? "" : "none";
-          document.getElementById(label.htmlFor).style.display = match ? "" : "none";
+
+          //not document.getElementById(label.htmlFor): ids collide across
+          //checkbox groups (OTP/ridership/bus speeds all restart at "dataset-0"),
+          //so a global lookup can hide the wrong chart's checkbox entirely.
+          const checkbox = label.previousElementSibling;
+          checkbox.style.display = match ? "" : "none";
         });
       };
 
