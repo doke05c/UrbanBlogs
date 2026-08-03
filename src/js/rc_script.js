@@ -938,15 +938,8 @@ function createScoreForMultipleLineChart ({
         displayName,
         name,
 
-        new Date(
-          new Date(
-            originalDatasetList[name].at(-1).month + "-01"
-          ).setMonth(
-            new Date(
-              originalDatasetList[name].at(-1).month + "-01"
-            ).getMonth() + 1
-          )
-        ).toLocaleDateString("en-US", {
+        new Date(new Date(originalDatasetList[name].at(-1).month).getTime() + 18000001)
+        .toLocaleDateString("en-US", {
           month: "short",
           year: "numeric"
         }),
@@ -1078,7 +1071,7 @@ function createScoreForMultipleLineChart ({
 
       datasetOTPScoreList[name] = [
         `since the same month of 2019, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} rides this month`,
-        `since 2019 average, ${formatter.format(averageCurrent)} average monthly`,        
+        `since same period of 2019, ${formatter.format(averageCurrent)} average monthly`,        
         
         (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "%",
         (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "%",
@@ -1193,7 +1186,6 @@ function createScoreForMultipleLineChart ({
       const latestDate = new Date(latestEntry.month);
       const latestMonth = latestDate.getMonth();
 
-      console.log(latestDate);
 
       //get latest entry and corresponding time ^^
 
@@ -1251,7 +1243,7 @@ function createScoreForMultipleLineChart ({
         (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "% since the same month of 2019",
         (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "% since 2019 average,",
 
-        `${formatter.format(latestEntry.count)} mph this month`,
+        `${formatter.format(latestEntry.count)} mph`,
         `${formatter.format(averageCurrent)} mph`,
         
         displayName,
@@ -2270,6 +2262,8 @@ function makeMultipleLineChart ({
     const scale = 2 / Math.pow(lines_count, .333);
 
     const line_height = Math.max(1, 1.3/lines_count);
+
+
 
     div.innerHTML += `
       <div style="
@@ -3594,6 +3588,57 @@ function sliderMakerMultipleChart({
   }
 }
 
+//get the latest date of any data item, format (Y, M, D)
+function getLatestDateAnyDataLevel({ 
+  dataLevel, //is it a superList, datasetList, or just a dataset?
+  dataItem, //the thing in question
+
+}) {
+  //solve recursively, dataset case first
+  if (dataLevel === "dataset") {
+    const latestEntry = dataItem.reduce((latest, entry) => {
+      if (!entry.month) return latest;
+      if (!latest) return entry;
+      return new Date(entry.month) > new Date(latest.month) ? entry : latest;
+    }, null);
+
+    if (!latestEntry) return null;
+
+    const latestDate = new Date(new Date(latestEntry.month).getTime() + 18000001);
+
+    return new Date(
+      latestDate.getFullYear(), //Y
+      latestDate.getMonth(), //M
+      latestDate.getDate(), //D
+    );
+  }
+
+  //recurse up
+  if (dataLevel === "datasetList" || dataLevel === "superList") {
+    const childLevel = dataLevel === "superList" ? "datasetList" : "dataset";
+
+  const results = Object.values(dataItem)
+    .map(child =>
+      getLatestDateAnyDataLevel({
+        dataLevel: childLevel,
+        dataItem: child,
+      })
+    )
+    .filter(Boolean); // drop nulls (empty/invalid children)
+
+  if (results.length === 0) return null;
+
+    //compare using a real Date built from {year, month, day}
+    return results.reduce((latest, current) => {
+      const latestDate = new Date(latest.year, latest.month, latest.day);
+      const currentDate = new Date(current.year, current.month, current.day);
+      return currentDate > latestDate ? current : latest;
+    });
+  }
+
+  return null; // unknown dataLevel
+}
+
 //KEEP CHECKBOXES PERSISTENT THROUGH DATE SLIDING
 const ridershipCheckedDatasets = {}; 
 const OTPCheckedDatasets = {};
@@ -3698,7 +3743,7 @@ sliderMakerMultipleChart({
   fromLabelId: '#fromLabel',
   toLabelId: '#toLabel',
   startDate: new Date(2015, 0, 1), //Jan 2015
-  endDate: new Date(2026, 4, 1), //May 2026 <<===>> REPLACE LATER WITH SOMETHING TO GET LATEST MONTH IN DATASET
+  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: subwayOTPDatasets}),
   updateChartsFunction: (startDate, endDate) => {
     whichChartsToUpdateOTP(startDate, endDate);
   }
@@ -3756,7 +3801,7 @@ sliderMakerMultipleChart({
   fromLabelId: '#fromLabel_ridership',
   toLabelId: '#toLabel_ridership',
   startDate: new Date(2019, 0, 1), //Jan 2019
-  endDate: new Date(2026, 5, 1), //May 2026 <<===>> REPLACE LATER WITH SOMETHING TO GET LATEST MONTH IN DATASET
+  endDate: getLatestDateAnyDataLevel({dataLevel: "datasetList", dataItem: monthly_multimodal_total_rows}),
   updateChartsFunction: (startDate, endDate) => {
     whichChartsToUpdateRidership(startDate, endDate);
   }
@@ -3841,7 +3886,7 @@ sliderMakerMultipleChart({
   fromLabelId: '#fromLabel_bus_speed',
   toLabelId: '#toLabel_bus_speed',
   startDate: new Date(2015, 0, 1), //Jan 2015
-  endDate: new Date(2026, 5, 1), //Jun 2026 <<===>> REPLACE LATER WITH SOMETHING TO GET LATEST MONTH IN DATASET
+  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: busSpeedsDatasets}),
   updateChartsFunction: (startDate, endDate) => {
     whichChartsToUpdateBusSpeeds(startDate, endDate);
   }
