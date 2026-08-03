@@ -3,9 +3,9 @@ title: 'SSTRP Transportation Report Card'
 description: "The New York City region has been missing a centralized location where all regional transit can be evaluated. Finally, a solution is here."
 ---
 
-## SSTRP Transportation Report Card
+# SSTRP Transportation Report Card
 
-### The New York City region has been missing a centralized location where all regional transit can be evaluated. Finally, a solution is here.
+## The New York City region has been missing a centralized location where all regional transit can be evaluated. Finally, a solution is here.
 
 <div id ="loading-page">
 </div>
@@ -24,6 +24,8 @@ description: "The New York City region has been missing a centralized location w
   <section class="analysis">
     <!-- start OTP chart -->
     <div class="chart">
+      <h3> MTA Monthly Subway On-Time Performance Rate (%) </h3> <!-- #### -->
+      <br>
       <!-- slider -->
       <div class="range_container">
           <div class="sliders_control">
@@ -56,8 +58,6 @@ description: "The New York City region has been missing a centralized location w
       <!--  -->
       <!-- otp chart visual -->
       <!--  -->
-      <h4> MTA Monthly Subway On-Time Performance Rate (%), Custom Date Range, Line: </h4> <!-- #### -->
-      <br>
       <div id="monthly_subway_otp_from_jan_2015_select_box_line_date_range"></div>
       <br>
       <br>
@@ -65,22 +65,99 @@ description: "The New York City region has been missing a centralized location w
       <br>
       <br>
       <br>
+      <br>
+      <br>
+      <h5> Source: MTA Subway Terminal On-Time Performance: Beginning 2015 </h5> <!-- ##### -->
     <!-- end OTP chart -->
     <!--  -->
     </div>
     <!--  -->
     <!-- start OTP interpretation -->
     <aside class="interpretation">
+      <h2> On-Time Performance Score </h2> <!-- ## -->
+      <br>
       <div id="monthly_subway_otp_from_jan_2015_select_box_line_date_range_interpretation"></div>
+      <h4> On-Time Performance is the percentage of scheduled train trips arriving at their terminals within 5 minutes of scheduled arrival time over a 24-hour period. <br> <br>
+      Our on-time performance score is calculated as the average percentage on-time performance over the selected date range. We also show the on-time score for the latest month. <br> <br>
+      Our grading rubric is the following: <br> <br>
+      <style>
+        table {
+          width: 100%;
+          table-layout: fixed;
+          border-collapse: collapse;
+        }
+        th, td {
+          text-align: center;
+          padding: 6px 8px;
+          border: 1px solid #ddd;
+        }
+        tr {
+          text-align: center;
+        }
+      </style>
+      <table>
+        <thead>
+          <tr>
+            <th>Grade</th>
+            <th>Range</th>
+            <th>Grade</th>
+            <th>Range</th>
+            <th>Grade</th>
+            <th>Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A+</td>
+            <td>97.5% and above</td>
+            <td>A</td>
+            <td>92.5% – 97.5%</td>
+            <td>A-</td>
+            <td>90% – 92.5%</td>
+          </tr>
+          <tr>
+            <td>B+</td>
+            <td>87.5% – 90%</td>
+            <td>B</td>
+            <td>82.5% – 87.5%</td>
+            <td>B-</td>
+            <td>80% – 82.5%</td>
+          </tr>
+          <tr>
+            <td>C+</td>
+            <td>77.5% – 80%</td>
+            <td>C</td>
+            <td>72.5% – 77.5%</td>
+            <td>C-</td>
+            <td>70% – 72.5%</td>
+          </tr>
+          <tr>
+            <td>D+</td>
+            <td>67.5% – 70%</td>
+            <td>D</td>
+            <td>62.5% – 67.5%</td>
+            <td>D-</td>
+            <td>60% – 62.5%</td>
+          </tr>
+          <tr>
+            <td>F</td>
+            <td colspan="5">below 60%</td>
+          </tr>
+        </tbody>
+      </table>
+      </h4> <!-- #### explains the methods of the scorecard -->
     <!-- end OTP interpretation -->
     </aside>
   </section>
   <!-- -->
   <!-- -->
-    <!-- RIDERSHIP CHART + INTERPRETATION -->
+  <br>
+  <!-- RIDERSHIP CHART + INTERPRETATION -->
   <section class="analysis">
     <!-- start Ridership chart -->
     <div class="chart">
+      <h3> MTA Monthly Ridership, Various Divisions </h3> <!-- #### -->
+      <br>
       <!-- slider -->
       <div class="range_container">
           <div class="sliders_control">
@@ -104,8 +181,6 @@ description: "The New York City region has been missing a centralized location w
       <!--  -->
       <!-- ridership chart visual -->
       <!--  -->
-      <h4> MTA Monthly Ridership, Custom Divisions, Custom Date Range, Line: </h4> <!-- #### -->
-      <br>
       <div id="monthly_ridership_select_box_line_date_range"></div>
       <br>
       <br>
@@ -113,22 +188,31 @@ description: "The New York City region has been missing a centralized location w
       <br>
       <br>
       <br>
+      <h5> Source: MTA Daily Ridership and Traffic: Beginning 2020 </h5> <!-- ##### -->
     <!-- end ridership chart -->
     <!--  -->
     </div>
     <!--  -->
     <!-- start ridership interpretation -->
     <aside class="interpretation">
+      <h2> Ridership </h2> <!-- #### -->
+      <br>
       <div id="monthly_ridership_select_box_line_date_range_interpretation"></div>
+      <h4> Ridership is the total monthly ridership, based on self-reported data by agencies. <br> <br>
+      Our ridership score is calculated by comparing ridership of the selected date range to the ridership of the agency over the same period in 2019. Likewise, the ridership score of the latest month is compared to the same month in 2019 for that agency. <br> <br>
+      </h4> <!-- #### explains the methods of the scorecard -->
     <!-- end ridership interpretation -->
     </aside>
   </section>
   <!--  -->
   <!--  -->
+  <br>
   <!-- BUS SPEED CHART + INTERPRETATION -->
   <section class="analysis">
     <!-- start OTP chart -->
     <div class="chart">
+      <h3> MTA Monthly Bus Speeds (MPH) </h3> <!-- #### -->
+      <br>
       <!-- slider -->
       <div class="range_container">
           <div class="sliders_control">
@@ -165,8 +249,6 @@ description: "The New York City region has been missing a centralized location w
       <!--  -->
       <!-- otp chart visual -->
       <!--  -->
-      <h4> MTA Monthly Bus Speeds (MPH), Selected Routes, Custom Date Range, Line: </h4> <!-- #### -->
-      <br>
       <div id="monthly_bus_speeds_from_jan_2015_select_box_line_date_range"></div>
       <br>
       <br>
@@ -174,18 +256,25 @@ description: "The New York City region has been missing a centralized location w
       <br>
       <br>
       <br>
+      <h5> Source: MTA Bus Speeds: Beginning 2015 </h5> <!-- ##### -->
     <!-- end OTP chart -->
     <!--  -->
     </div>
     <!--  -->
     <!-- start OTP interpretation -->
     <aside class="interpretation">
+      <h2> Bus Speeds </h2> <!-- #### -->
+      <br>
       <div id="monthly_bus_speeds_from_jan_2015_select_box_line_date_range_interpretation"></div>
+      <h4> Bus Speeds are calculated from distance traveled by a bus over its duration of time spent in service, based on self-reported bus data. <br> <br>
+      Bus speeds are shown in MPH, and are also compared by the selected date range to the ridership of the agency over the same period in 2019. Likewise, the bus speeds of the latest month are compared to the same month in 2019. <br> <br>
+      </h4>
     <!-- end OTP interpretation -->
     </aside>
   </section>
   <!-- -->
   <!-- -->
+  <br>
 
 
 

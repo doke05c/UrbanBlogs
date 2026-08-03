@@ -1241,7 +1241,7 @@ function createScoreForMultipleLineChart ({
       datasetOTPScoreList[name] = [
 
         (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "% since the same month of 2019",
-        (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "% since 2019 average,",
+        (average_current_comp_2019_pct >= 0 ? "+" : "") + average_current_comp_2019_pct + "% since the same period of 2019,",
 
         `${formatter.format(latestEntry.count)} mph`,
         `${formatter.format(averageCurrent)} mph`,
@@ -2233,7 +2233,7 @@ function makeMultipleLineChart ({
   div.style.wordBreak = "break-word";
 
 
-  //put text in <<=====>> REPLACE WITH OTHER THINGS WHEN NOT OTP
+  //put text in
 
   for (const [line, values] of Object.entries(result)) {
     const [
