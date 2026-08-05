@@ -1239,10 +1239,11 @@ const monthly_peak_bus_otp_from_aug_2017_rows =
     await fetch("/src/json/monthly_peak_bus_otp_from_aug_2017.json")
         .then(res => res.json());
 
-for (const bus_line of bus_lines) {
+for (const bus_line of bus_lines_otp) {
     monthly_peak_bus_otp_from_aug_2017_rows[bus_line] =
         monthly_peak_bus_otp_from_aug_2017_rows[bus_line].map(entry => ({
             month: entry.month,
+            number_of_customers: entry.number_of_customers,
             additional_bus_stop_time: entry.additional_bus_stop_time,
             additional_travel_time: entry.additional_travel_time,
             count: entry.customer_journey_time * 100
@@ -1255,16 +1256,123 @@ const monthly_offpeak_bus_otp_from_aug_2017_rows =
     await fetch("/src/json/monthly_offpeak_bus_otp_from_aug_2017.json")
         .then(res => res.json());
 
-for (const bus_line of bus_lines) {
+for (const bus_line of bus_lines_otp) {
     monthly_offpeak_bus_otp_from_aug_2017_rows[bus_line] =
         monthly_offpeak_bus_otp_from_aug_2017_rows[bus_line].map(entry => ({
             month: entry.month,
+            number_of_customers: entry.number_of_customers,
             additional_bus_stop_time: entry.additional_bus_stop_time,
             additional_travel_time: entry.additional_travel_time,
             count: entry.customer_journey_time * 100
         }));
 }
 
+
+//GET MONTHLY OVERALL BUS OTP SINCE AUG 2017
+
+const monthly_overall_bus_otp_from_aug_2017_rows = {};
+
+//for each bus line...
+for (const bus_line of bus_lines_otp) {
+
+  //create a weekday and weekend series for each subway line
+  const weekday = monthly_peak_bus_otp_from_aug_2017_rows[bus_line];
+  const weekend = monthly_offpeak_bus_otp_from_aug_2017_rows[bus_line];
+
+  //build a lookup: month -> weekend entry for each series
+  const weekendByMonth = Object.fromEntries(
+    (weekend ?? []).map(entry => [entry.month, entry])
+  );
+
+  //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
+  monthly_overall_bus_otp_from_aug_2017_rows[bus_line] =
+    weekday
+      .map(weekdayEntry => {
+
+        const weekendEntry = weekendByMonth[weekdayEntry.month];
+
+        const total_number_of_customers =
+          weekdayEntry.number_of_customers + (weekendEntry?.number_of_customers ?? 0);
+
+        const weighted = (weekdayField, weekendField) =>
+          (weekdayEntry.number_of_customers * weekdayEntry[weekdayField] +
+            (weekendEntry?.number_of_customers ?? 0) * (weekendEntry?.[weekendField] ?? 0))
+          / total_number_of_customers;
+
+        //combine into overall database
+        return {
+          month: weekdayEntry.month,
+          number_of_customers: total_number_of_customers,
+          additional_bus_stop_time: weighted('additional_bus_stop_time', 'additional_bus_stop_time'),
+          additional_travel_time: weighted('additional_travel_time', 'additional_travel_time'),
+          customer_journey_time: weighted('count', 'count')
+        };
+      });
+}
+
+
+//function to create systemwide otp entry "line" (for each peak, offpeak, overall)
+function createSystemwideBusOTP(dataset) {
+
+  const monthlyTotals = {};
+
+  //for each bus line...
+  for (const bus_line of Object.keys(monthly_overall_bus_otp_from_aug_2017_rows)) {
+
+      //for each month in each bus line
+      for (const entry of monthly_overall_bus_otp_from_aug_2017_rows[bus_line]) {
+
+          if (!monthlyTotals[entry.month]) {
+              monthlyTotals[entry.month] = {
+                  total_customers: 0,
+                  weighted_bus_stop_time: 0,
+                  weighted_travel_time: 0,
+                  weighted_journey_pct: 0
+              };
+          }
+
+          const customers = entry.number_of_customers;
+
+          monthlyTotals[entry.month].total_customers += customers;
+          monthlyTotals[entry.month].weighted_bus_stop_time += customers * entry.additional_bus_stop_time;
+          monthlyTotals[entry.month].weighted_travel_time += customers * entry.additional_travel_time;
+          monthlyTotals[entry.month].weighted_journey_pct += customers * entry.customer_journey_time;
+      }
+  }
+
+  //create systemwide entry, dividing weighted sums by total customers
+  return Object.entries(monthlyTotals).map(([month, totals]) => ({
+      month,
+      number_of_customers: totals.total_customers,
+      additional_bus_stop_time: totals.weighted_bus_stop_time / totals.total_customers,
+      additional_travel_time: totals.weighted_travel_time / totals.total_customers,
+      customer_journey_time: totals.weighted_journey_pct / totals.total_customers
+  }));
+
+}
+
+//add systemwide to dataset for each of weekday, weekend, overall
+monthly_peak_bus_otp_from_aug_2017_rows["Systemwide"] =
+    createSystemwideBusSpeeds(monthly_peak_bus_otp_from_aug_2017_rows);
+  
+monthly_offpeak_bus_otp_from_aug_2017_rows["Systemwide"] =
+    createSystemwideBusSpeeds(monthly_offpeak_bus_otp_from_aug_2017_rows);
+
+monthly_overall_bus_otp_from_aug_2017_rows["Systemwide"] =
+    createSystemwideBusSpeeds(monthly_overall_bus_otp_from_aug_2017_rows);
+
+const monthly_bus_otp_step_size_reference = Object.fromEntries(
+    Object.keys(monthly_overall_bus_otp_from_aug_2017_rows)
+          .map(line => [line, 20])
+);
+
+//go through the selected choices btwn weekday, weekend, and overall
+//depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
+const busOTPDatasets = {
+    "All-Day": monthly_overall_bus_speeds_from_jan_2015_rows,
+    "Peak": monthly_peak_bus_otp_from_aug_2017_rows,
+    "Off-Peak": monthly_offpeak_bus_otp_from_aug_2017_rows
+};
 
 //number to letter grade conversion
 function getReferenceLetter(score) {
@@ -1354,7 +1462,7 @@ function createScoreForMultipleLineChart ({
         name === "S Fkln" ? "Franklin Ave. Shuttle" :
         name === "JZ" ? "J/Z Trains" :
         name === "Systemwide" ? "Systemwide" :
-        name + " Train";
+        name + " Line"; //tmp, <<=====>> TODO: make bus/train differentiation a real thing
 
       //NEW: update the dataset's OTP score with the OTP of latest month, OTP of time period, grade of latest month, grade of time period
       datasetOTPScoreList[name] = [
@@ -4072,6 +4180,7 @@ function getLatestDateAnyDataLevel({
 const ridershipCheckedDatasets = {}; 
 const OTPCheckedDatasets = {};
 const busSpeedsCheckedDatasets = {};
+const busOTPCheckedDatasets = {};
 
 function whichChartsToUpdateOTP(startDate, endDate) {
 
@@ -4318,6 +4427,92 @@ sliderMakerMultipleChart({
   endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: busSpeedsDatasets}),
   updateChartsFunction: (startDate, endDate) => {
     whichChartsToUpdateBusSpeeds(startDate, endDate);
+  }
+})
+
+
+function whichChartsToUpdateBusOTP(startDate, endDate) {
+
+  //go through all charts which are to be updated, clear them before making new ones
+  for (const oldContainerId of [
+    "monthly_bus_otp_from_aug_2017_select_box_line_date_range",
+  ]) {
+
+    const container = document.getElementById(oldContainerId);
+    container.innerHTML = "";  // remove old chart
+
+  }
+
+  //make new charts.
+  nestedTwoCategorySelectLineChart({
+    datasetSuperList: busOTPDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+    datasetListStepSizeReference: monthly_bus_otp_step_size_reference,
+
+    originalSuperList: busOTPDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                          //will be needed for scorecard making
+
+    containerId: "monthly_bus_otp_from_aug_2017_select_box_line_date_range",
+    
+    interpretationBoxId: "monthly_bus_otp_from_aug_2017_select_box_line_date_range_interpretation",
+    scorecardMode: "OTP",
+
+    checkboxSuperGroupId: "busOTPTimeSelect_date_range", //upper level, selector
+    checkBoxSubGroupId: "bus_otp_checkboxes_date_range", //lower level, checkboxes
+
+    persistenceOfCheckedDatasets: true,
+    listCheckedDatasets: busOTPCheckedDatasets,
+
+    useDropdown: true,
+    dropdownToggleId: "bus_otp_dropdown_toggle_date_range",
+    dropdownFilterId: "bus_otp_route_filter_date_range",
+
+    //systemwide entry exists for bus speeds -- gets its own container to the side of the grid
+    systemwideContainerId: "bus-otp-systemwide_date_range",
+    clearAllButtonId: "bus-otp-clear-all_date_range",
+
+
+    timeOfInterest: "month",
+    aspectRatio: 2,
+
+    lineColors: [
+      "#990000",
+      "#E81416",
+      "#FF2D00",
+      "#FF4500",
+      "#FF6600",
+      "#FF7F00",
+      "#FFA500",
+      "#FFC000",
+      "#79C314",
+      "#008000",
+      "#00A86B",
+      "#008080",
+      "#487DE7",
+      "#0000FF",
+      "#002FA7",
+      "#000080",
+      "#4B369D",
+      "#70369D",
+      "#8B00FF",
+      "#BA55D3",
+      "#DA70D6",
+    ],
+
+    importedDateRange: [new Date(startDate),
+                        new Date(endDate)]
+  });
+  
+}
+
+sliderMakerMultipleChart({
+  fromSliderId: '#fromSlider_bus_otp',
+  toSliderId: '#toSlider_bus_otp',
+  fromLabelId: '#fromLabel_bus_otp',
+  toLabelId: '#toLabel_bus_otp',
+  startDate: new Date(2017, 7, 1), //Aug 2015
+  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: busOTPDatasets}),
+  updateChartsFunction: (startDate, endDate) => {
+    whichChartsToUpdateBusOTP(startDate, endDate);
   }
 })
 
