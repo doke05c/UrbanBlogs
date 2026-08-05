@@ -74,7 +74,7 @@ description: "The New York City region has been missing a centralized location w
     <!--  -->
     <!-- start OTP interpretation -->
     <aside class="interpretation">
-      <h2> On-Time Performance Score </h2> <!-- ## -->
+      <h2> Subway On-Time Performance Score </h2> <!-- ## -->
       <br>
       <div id="monthly_subway_otp_from_jan_2015_select_box_line_date_range_interpretation"></div>
       <h4> On-Time Performance is the percentage of scheduled train trips arriving at their terminals within 5 minutes of scheduled arrival time over a 24-hour period. <br> <br>
@@ -269,6 +269,140 @@ description: "The New York City region has been missing a centralized location w
       <h4> Bus Speeds are calculated from distance traveled by a bus over its duration of time spent in service, based on self-reported bus data. <br> <br>
       Bus speeds are shown in MPH, and are also compared by the selected date range to the ridership of the agency over the same period in 2019. Likewise, the bus speeds of the latest month are compared to the same month in 2019. <br> <br>
       </h4>
+    <!-- end OTP interpretation -->
+    </aside>
+  </section>
+  <!-- -->
+  <!-- -->
+  <br>
+  <!-- BUS SPEED CHART + INTERPRETATION -->
+  <section class="analysis">
+    <!-- start OTP chart -->
+    <div class="chart">
+      <h3> MTA Monthly Bus On-Time Performance Rate (%) </h3> <!-- #### -->
+      <br>
+      <!-- slider -->
+      <div class="range_container">
+          <div class="sliders_control">
+              <input id="fromSlider_bus_otp" class="from_slider" type="range" min="0"/>
+              <input id="toSlider_bus_otp" class="to_slider" type="range" min="0"/>
+              <span id="fromLabel_bus_otp" class="slider_label"></span> 
+              <span id="toLabel_bus_otp" class="slider_label"></span>
+          </div>
+      </div>
+      <!-- -->
+      <!-- date type select for otp -->
+      <!--  -->
+      <label for="busOTPTimeSelect_date_range">Day Type:</label><br>
+      <select id="busOTPTimeSelect_date_range">
+          <option value="All-Day">All-Day</option>
+          <option value="Peak">Peak</option>
+          <option value="Off-Peak">Off-Peak</option>
+      </select>
+      <!-- -->
+      <!-- otp bus lines checkboxes -->
+      <!--  -->
+      <div class="checkbox-row">
+        <div class="dropdown-select">
+          <button type="button" id="bus_otp_dropdown_toggle_date_range">Select routes ▾</button>
+          <input type="text" id="bus_otp_route_filter_date_range" placeholder="Filter routes…" />
+          <div id="bus_otp_checkboxes_date_range"></div>
+        </div>
+        <div class="side-controls">
+          <div id="bus-otp-systemwide_date_range" class="systemwide-box"></div>
+          <button type="button" id="bus-otp-clear-all_date_range" class="clear-all-btn">Clear All</button>
+        </div>
+      </div>
+      <br>
+      <!--  -->
+      <!-- otp chart visual -->
+      <!--  -->
+      <div id="monthly_bus_otp_from_aug_2017_select_box_line_date_range"></div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <h5> Source: MTA Bus Customer Journey Time Performance: Beginning 2017 </h5> <!-- ##### -->
+    <!-- end OTP chart -->
+    <!--  -->
+    </div>
+    <!--  -->
+    <!-- start OTP interpretation -->
+    <aside class="interpretation">
+      <h2> Bus On-Time Performance Score </h2> <!-- #### -->
+      <br>
+      <div id="monthly_bus_otp_from_aug_2017_select_box_line_date_range_interpretation"></div>
+      <h4> On-Time Performance is the percentage of scheduled bus trips arriving at their terminals within 5 minutes of scheduled arrival time over a 24-hour period. It is equivalent to the percentage of customer trips with Additional Bus Stop Time (ABST) + Additional Travel Time (ATT) less than 5 minutes. <br> <br>
+      Our on-time performance score is calculated as the average percentage on-time performance over the selected date range. We also show the on-time score for the latest month. <br> <br>
+      Our grading rubric is the following: <br> <br>
+      <style>
+        table {
+          width: 100%;
+          table-layout: fixed;
+          border-collapse: collapse;
+        }
+        th, td {
+          text-align: center;
+          padding: 6px 8px;
+          border: 1px solid #ddd;
+        }
+        tr {
+          text-align: center;
+        }
+      </style>
+      <table>
+        <thead>
+          <tr>
+            <th>Grade</th>
+            <th>Range</th>
+            <th>Grade</th>
+            <th>Range</th>
+            <th>Grade</th>
+            <th>Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A+</td>
+            <td>97.5% and above</td>
+            <td>A</td>
+            <td>92.5% – 97.5%</td>
+            <td>A-</td>
+            <td>90% – 92.5%</td>
+          </tr>
+          <tr>
+            <td>B+</td>
+            <td>87.5% – 90%</td>
+            <td>B</td>
+            <td>82.5% – 87.5%</td>
+            <td>B-</td>
+            <td>80% – 82.5%</td>
+          </tr>
+          <tr>
+            <td>C+</td>
+            <td>77.5% – 80%</td>
+            <td>C</td>
+            <td>72.5% – 77.5%</td>
+            <td>C-</td>
+            <td>70% – 72.5%</td>
+          </tr>
+          <tr>
+            <td>D+</td>
+            <td>67.5% – 70%</td>
+            <td>D</td>
+            <td>62.5% – 67.5%</td>
+            <td>D-</td>
+            <td>60% – 62.5%</td>
+          </tr>
+          <tr>
+            <td>F</td>
+            <td colspan="5">below 60%</td>
+          </tr>
+        </tbody>
+      </table>
+      </h4> <!-- #### explains the methods of the scorecard -->
     <!-- end OTP interpretation -->
     </aside>
   </section>

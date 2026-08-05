@@ -1305,7 +1305,7 @@ for (const bus_line of bus_lines_otp) {
           number_of_customers: total_number_of_customers,
           additional_bus_stop_time: weighted('additional_bus_stop_time', 'additional_bus_stop_time'),
           additional_travel_time: weighted('additional_travel_time', 'additional_travel_time'),
-          customer_journey_time: weighted('count', 'count')
+          count: weighted('count', 'count')
         };
       });
 }
@@ -1317,10 +1317,10 @@ function createSystemwideBusOTP(dataset) {
   const monthlyTotals = {};
 
   //for each bus line...
-  for (const bus_line of Object.keys(monthly_overall_bus_otp_from_aug_2017_rows)) {
+  for (const bus_line of Object.keys(dataset)) {
 
       //for each month in each bus line
-      for (const entry of monthly_overall_bus_otp_from_aug_2017_rows[bus_line]) {
+      for (const entry of dataset[bus_line]) {
 
           if (!monthlyTotals[entry.month]) {
               monthlyTotals[entry.month] = {
@@ -1336,7 +1336,7 @@ function createSystemwideBusOTP(dataset) {
           monthlyTotals[entry.month].total_customers += customers;
           monthlyTotals[entry.month].weighted_bus_stop_time += customers * entry.additional_bus_stop_time;
           monthlyTotals[entry.month].weighted_travel_time += customers * entry.additional_travel_time;
-          monthlyTotals[entry.month].weighted_journey_pct += customers * entry.customer_journey_time;
+          monthlyTotals[entry.month].weighted_journey_pct += customers * entry.count;
       }
   }
 
@@ -1346,20 +1346,20 @@ function createSystemwideBusOTP(dataset) {
       number_of_customers: totals.total_customers,
       additional_bus_stop_time: totals.weighted_bus_stop_time / totals.total_customers,
       additional_travel_time: totals.weighted_travel_time / totals.total_customers,
-      customer_journey_time: totals.weighted_journey_pct / totals.total_customers
+      count: totals.weighted_journey_pct / totals.total_customers
   }));
 
 }
 
 //add systemwide to dataset for each of weekday, weekend, overall
 monthly_peak_bus_otp_from_aug_2017_rows["Systemwide"] =
-    createSystemwideBusSpeeds(monthly_peak_bus_otp_from_aug_2017_rows);
+    createSystemwideBusOTP(monthly_peak_bus_otp_from_aug_2017_rows);
   
 monthly_offpeak_bus_otp_from_aug_2017_rows["Systemwide"] =
-    createSystemwideBusSpeeds(monthly_offpeak_bus_otp_from_aug_2017_rows);
+    createSystemwideBusOTP(monthly_offpeak_bus_otp_from_aug_2017_rows);
 
 monthly_overall_bus_otp_from_aug_2017_rows["Systemwide"] =
-    createSystemwideBusSpeeds(monthly_overall_bus_otp_from_aug_2017_rows);
+    createSystemwideBusOTP(monthly_overall_bus_otp_from_aug_2017_rows);
 
 const monthly_bus_otp_step_size_reference = Object.fromEntries(
     Object.keys(monthly_overall_bus_otp_from_aug_2017_rows)
@@ -1369,7 +1369,7 @@ const monthly_bus_otp_step_size_reference = Object.fromEntries(
 //go through the selected choices btwn weekday, weekend, and overall
 //depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
 const busOTPDatasets = {
-    "All-Day": monthly_overall_bus_speeds_from_jan_2015_rows,
+    "All-Day": monthly_overall_bus_otp_from_aug_2017_rows,
     "Peak": monthly_peak_bus_otp_from_aug_2017_rows,
     "Off-Peak": monthly_offpeak_bus_otp_from_aug_2017_rows
 };

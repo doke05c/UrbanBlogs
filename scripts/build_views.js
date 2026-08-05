@@ -1117,6 +1117,7 @@ async function build() {
         monthly_peak_bus_otp_from_aug_2017[bus_line] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
+                number_of_customers AS number_of_customers,
                 additional_bus_stop_time AS additional_bus_stop_time,
                 additional_travel_time AS additional_travel_time,
                 customer_journey_time AS customer_journey_time,
@@ -1143,6 +1144,7 @@ async function build() {
         monthly_offpeak_bus_otp_from_aug_2017[bus_line] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
+                number_of_customers AS number_of_customers,
                 additional_bus_stop_time AS additional_bus_stop_time,
                 additional_travel_time AS additional_travel_time,
                 customer_journey_time AS customer_journey_time,
