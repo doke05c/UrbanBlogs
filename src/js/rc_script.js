@@ -1363,7 +1363,7 @@ monthly_overall_bus_otp_from_aug_2017_rows["Systemwide"] =
 
 const monthly_bus_otp_step_size_reference = Object.fromEntries(
     Object.keys(monthly_overall_bus_otp_from_aug_2017_rows)
-          .map(line => [line, 20])
+          .map(line => [line, 15])
 );
 
 //go through the selected choices btwn weekday, weekend, and overall
@@ -1455,6 +1455,17 @@ function createScoreForMultipleLineChart ({
                   new Date(entry.month) <= importedDateRange[1]
               ).length;                                   //divide by the number of valid values in the range (non-zero)
       
+      const SPECIAL_NAMES = new Set(["S Rock", "S 42nd", "S Fkln", "JZ", "Systemwide"]);
+
+      //returns true if ANY name in the list has both a letter and a digit
+      function isBusLineSet(dataset) {
+          return Object.keys(dataset)
+              .filter(name => !SPECIAL_NAMES.has(name))
+              .some(name => /[A-Za-z]/.test(name) && /[0-9]/.test(name));
+      }
+
+      const isBus = isBusLineSet(originalDatasetList); 
+
       //display name beautifier for weird lines
       const displayName =
         name === "S Rock" ? "Rockaway Park Shuttle" :
@@ -1462,7 +1473,8 @@ function createScoreForMultipleLineChart ({
         name === "S Fkln" ? "Franklin Ave. Shuttle" :
         name === "JZ" ? "J/Z Trains" :
         name === "Systemwide" ? "Systemwide" :
-        name + " Line"; //tmp, <<=====>> TODO: make bus/train differentiation a real thing
+        isBus ? name :
+        name + " Train";
 
       //NEW: update the dataset's OTP score with the OTP of latest month, OTP of time period, grade of latest month, grade of time period
       datasetOTPScoreList[name] = [
