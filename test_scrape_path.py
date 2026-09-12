@@ -43,3 +43,13 @@ for link in tree.xpath("//a"):
     response.raise_for_status()
 
     filepath.write_bytes(response.content)
+
+
+output_dir = Path("path_ridership")
+
+for file in output_dir.glob("*-PATH-Ridership-Report.pdf"):
+    year = file.name.split("-")[0]
+    new_file = output_dir / f"{year}-PATH-Monthly-Ridership-Report.pdf"
+
+    file.rename(new_file)
+    print(f"Renamed: {file.name} -> {new_file.name}")

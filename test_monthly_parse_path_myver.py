@@ -12,6 +12,7 @@ from click import option
 from tabula import read_pdf
 from utz import err, now, relpath, sxs
 from pathlib import Path
+from datetime import datetime
 
 COLS_AVG = ['station', 'total', 'avg weekday', 'avg sat', 'avg sun', 'avg holiday']
 COLS_SUM = ['station', 'avg daily', 'total weekday', 'total sat', 'total sun', 'total holiday']
@@ -132,5 +133,80 @@ def run_monthly(year: int, last_month: int | None = None, template_path: str | N
 
 if __name__ == '__main__':
 
-    for year in range(2017, 2027):
+    for year in range(2013, (datetime.now().year + 1)): #current year + 1, exclusive
         run_monthly(year)
+
+
+#CLEAN PARQUETS: REMOVE SUBTOTALS, CLEAN NUMBERED STATION NAMES, COMBINE TOGETHER
+
+database_dir = Path("path_ridership/database")
+
+remove_rows = [
+    "UPTOWN SUBTOTAL",
+    "NEW YORK SUBTOTAL",
+    "NEW JERSEY SUBTOTAL"
+]
+
+for parquet_file in database_dir.glob("data_*.parquet"):
+
+    if "-day-types" in parquet_file.name:
+        continue
+
+    df = pd.read_parquet(parquet_file)
+
+    # print(parquet_file.name)
+    # print(df.columns.tolist())
+
+    #clear out rows to remove
+    df = df[
+        ~df.index.get_level_values("station").isin(remove_rows)
+    ]
+
+    #turn month/station index levels back into regular columns
+    df = df.reset_index()
+
+    #rename "[num]Street" to "[num] Street"
+
+    station_rename_dict = {
+        "9thStreet": "9th Street",
+        "14thStreet": "14th Street",
+        "23rdStreet": "23rd Street",
+        "33rdStreet": "33rd Street",
+        "MONTHLY TOTAL": "Total"
+    }
+
+    df["station"] = df["station"].replace(station_rename_dict)
+
+    df.to_parquet(
+        parquet_file,
+        engine="fastparquet",
+        index=False
+    )
+
+    print(f"Cleaned {parquet_file}")
+
+
+files = [
+    f for f in database_dir.glob("data_*.parquet")
+    if "-day-types" not in f.name
+]
+
+df = pd.concat(
+    [pd.read_parquet(f) for f in files],
+    ignore_index=True
+)
+
+df.to_parquet(
+    database_dir / "path-ridership-cleaned-monthly.parquet",
+    engine="fastparquet",
+    index=False
+)
+
+print(f"Merged parquet files")
+
+for file in database_dir.glob("data_*.parquet"):
+    # if "-day-types" not in file.name:
+        file.unlink()
+        print(f"Deleted {file}")
+
+print(f"Removed individual year parquet files")
