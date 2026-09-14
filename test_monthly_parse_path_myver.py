@@ -172,6 +172,7 @@ for parquet_file in database_dir.glob("data_*.parquet"):
         "14thStreet": "14th Street",
         "23rdStreet": "23rd Street",
         "33rdStreet": "33rd Street",
+        "Pavonia/ Newport" : "Newport",
         "MONTHLY TOTAL": "Total"
     }
 

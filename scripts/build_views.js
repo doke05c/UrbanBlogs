@@ -7,14 +7,20 @@ import duckdb from "duckdb"; // <- use duckdb sql
 import fs from "fs"; // <- read file
 
 
-const db = new duckdb.Database("src/report_card.duckdb"); //<- load duckdb file
-const conn = db.connect();
+const mta_api_db = new duckdb.Database("src/report_card.duckdb"); //<- load duckdb file
+const mta_api_conn = mta_api_db.connect();
+
+
+const path_monthly_db = new duckdb.Database(":memory:"); //<- load monthly PATH ridership
+const path_monthly_conn = path_monthly_db.connect();
+
+
 
 
 // helper to asynchronously (put on queue) run sql query
-function query(sql) {
+function query(sql, db) {
   return new Promise((resolve, reject) => {
-    conn.all(sql, (err, rows) => {
+    db.all(sql, (err, rows) => {
       if (err) reject(err);
       else resolve(rows);
     });
@@ -48,7 +54,7 @@ async function build() {
         
         GROUP BY month
         ORDER BY month;
-    `);
+    `, mta_api_conn);
 
     fs.writeFileSync(
         "src/json/monthly_subway_entries_from_mar_2020.json",
@@ -79,7 +85,7 @@ async function build() {
         
         GROUP BY month
         ORDER BY month;
-    `);
+    `, mta_api_conn);
 
     fs.writeFileSync(
         "src/json/monthly_lirr_entries_from_mar_2020.json",
@@ -110,7 +116,7 @@ async function build() {
         
         GROUP BY month
         ORDER BY month;
-    `);
+    `, mta_api_conn);
 
     fs.writeFileSync(
         "src/json/monthly_mnr_entries_from_mar_2020.json",
@@ -141,7 +147,7 @@ async function build() {
         
         GROUP BY month
         ORDER BY month;
-    `);
+    `, mta_api_conn);
 
     fs.writeFileSync(
         "src/json/monthly_sir_entries_from_mar_2020.json",
@@ -172,7 +178,7 @@ async function build() {
         
         GROUP BY month
         ORDER BY month;
-    `);
+    `, mta_api_conn);
 
     fs.writeFileSync(
         "src/json/monthly_bus_entries_from_mar_2020.json",
@@ -203,7 +209,7 @@ async function build() {
         
         GROUP BY month
         ORDER BY month;
-    `);
+    `, mta_api_conn);
 
     fs.writeFileSync(
         "src/json/monthly_aar_entries_from_mar_2020.json",
@@ -215,7 +221,7 @@ async function build() {
     const monthly_weekday_subway_otp_rate_from_jan_2015 = {};
 
     for (const subway_line of ["1", "2", "3", "4", "5", "6", "7", "S 42nd", "GS", "A", "B", "C", "D", "E", "F", "G", "J", "JZ", "L", "M", "N", "Q", "R", "S Fkln", "FS", "S Rock", "H"]) {
-        monthly_weekday_subway_otp_rate_from_jan_2015[subway_line] = await query (`
+        monthly_weekday_subway_otp_rate_from_jan_2015[subway_line] = await query(`
             SELECT
                 strftime(month, '%Y-%m') AS month,
                 num_on_time_trips AS num_on_time_trips,
@@ -228,7 +234,7 @@ async function build() {
                 AND month >= DATE '2015-01-01'
 
             ORDER BY month;
-        `);
+        `, mta_api_conn);
 
         fs.writeFileSync(
             `src/json/monthly_weekday_subway_otp_rate_from_jan_2015.json`,
@@ -254,7 +260,7 @@ async function build() {
                 AND month >= DATE '2015-01-01'
 
             ORDER BY month;
-        `);
+        `, mta_api_conn);
 
         fs.writeFileSync(
             `src/json/monthly_weekend_subway_otp_rate_from_jan_2015.json`,
@@ -678,7 +684,7 @@ async function build() {
 
             GROUP BY month,
             ORDER BY month;
-        `);
+        `, mta_api_conn);
 
         fs.writeFileSync(
             `src/json/monthly_weekday_bus_speeds_from_jan_2015.json`,
@@ -704,7 +710,7 @@ async function build() {
 
             GROUP BY month,
             ORDER BY month;
-        `);
+        `, mta_api_conn);
 
         fs.writeFileSync(
             `src/json/monthly_weekend_bus_speeds_from_jan_2015.json`,
@@ -1128,7 +1134,7 @@ async function build() {
                 AND month >= DATE '2017-07-01'
 
             ORDER BY month;
-        `);
+        `, mta_api_conn);
 
         fs.writeFileSync(
             `src/json/monthly_peak_bus_otp_from_aug_2017.json`,
@@ -1155,11 +1161,165 @@ async function build() {
                 AND month >= DATE '2017-07-01'
 
             ORDER BY month;
-        `);
+        `, mta_api_conn);
 
         fs.writeFileSync(
             `src/json/monthly_offpeak_bus_otp_from_aug_2017.json`,
             JSON.stringify(monthly_offpeak_bus_otp_from_aug_2017)
+        )
+    }
+
+    const path_stations = [
+        "Christopher Street",
+        "9th Street",
+        "14th Street",
+        "23rd Street",
+        "33rd Street",
+        "WTC",
+        "Newark",
+        "Harrison",
+        "Journal Square",
+        "Grove Street",
+        "Exchange Place",
+        "Newport",
+        "Hoboken",
+        "Total"
+    ]
+    
+    //entire history of weekday path ridership since 01/2013
+
+    const monthly_weekday_path_ridership_from_jan_2013 = {};
+
+        for (const path_station of path_stations) {
+        monthly_weekday_path_ridership_from_jan_2013[path_station] = await query (`
+            SELECT
+                strftime(month, '%Y-%m') AS month,
+                SUM("total weekday") AS count,
+            FROM read_parquet(
+                'path_ridership/database/path-ridership-cleaned-monthly.parquet'
+            )
+
+            WHERE station = '${path_station}'
+                AND month >= DATE '2013-01-01'
+
+            GROUP BY month
+            ORDER BY month;
+        `, path_monthly_conn);
+
+        fs.writeFileSync(
+            `src/json/monthly_weekday_path_ridership_from_jan_2013.json`,
+            JSON.stringify(
+                monthly_weekday_path_ridership_from_jan_2013,
+                (_, value) => typeof value === "bigint" ? Number(value) : value
+            )        
+        )
+    }
+
+    const monthly_sat_path_ridership_from_jan_2013 = {};
+
+        for (const path_station of path_stations) {
+        monthly_sat_path_ridership_from_jan_2013[path_station] = await query (`
+            SELECT
+                strftime(month, '%Y-%m') AS month,
+                SUM("total sat") AS count,
+            FROM read_parquet(
+                'path_ridership/database/path-ridership-cleaned-monthly.parquet'
+            )
+
+            WHERE station = '${path_station}'
+                AND month >= DATE '2013-01-01'
+
+            GROUP BY month
+            ORDER BY month;
+        `, path_monthly_conn);
+
+        fs.writeFileSync(
+            `src/json/monthly_sat_path_ridership_from_jan_2013.json`,
+            JSON.stringify(
+                monthly_sat_path_ridership_from_jan_2013,
+                (_, value) => typeof value === "bigint" ? Number(value) : value
+            )        
+        )
+    }
+
+    const monthly_sun_path_ridership_from_jan_2013 = {};
+
+        for (const path_station of path_stations) {
+        monthly_sun_path_ridership_from_jan_2013[path_station] = await query (`
+            SELECT
+                strftime(month, '%Y-%m') AS month,
+                SUM("total sun") AS count,
+            FROM read_parquet(
+                'path_ridership/database/path-ridership-cleaned-monthly.parquet'
+            )
+
+            WHERE station = '${path_station}'
+                AND month >= DATE '2013-01-01'
+
+            GROUP BY month
+            ORDER BY month;
+        `, path_monthly_conn);
+
+        fs.writeFileSync(
+            `src/json/monthly_sun_path_ridership_from_jan_2013.json`,
+            JSON.stringify(
+                monthly_sun_path_ridership_from_jan_2013,
+                (_, value) => typeof value === "bigint" ? Number(value) : value
+            )        
+        )
+    }
+
+    const monthly_holiday_path_ridership_from_jan_2013 = {};
+
+        for (const path_station of path_stations) {
+        monthly_holiday_path_ridership_from_jan_2013[path_station] = await query (`
+            SELECT
+                strftime(month, '%Y-%m') AS month,
+                SUM("total holiday") AS count,
+            FROM read_parquet(
+                'path_ridership/database/path-ridership-cleaned-monthly.parquet'
+            )
+
+            WHERE station = '${path_station}'
+                AND month >= DATE '2013-01-01'
+
+            GROUP BY month
+            ORDER BY month;
+        `, path_monthly_conn);
+
+        fs.writeFileSync(
+            `src/json/monthly_holiday_path_ridership_from_jan_2013.json`,
+            JSON.stringify(
+                monthly_holiday_path_ridership_from_jan_2013,
+                (_, value) => typeof value === "bigint" ? Number(value) : value
+            )        
+        )
+    }
+
+    const monthly_total_path_ridership_from_jan_2013 = {};
+
+        for (const path_station of path_stations) {
+        monthly_total_path_ridership_from_jan_2013[path_station] = await query (`
+            SELECT
+                strftime(month, '%Y-%m') AS month,
+                SUM("total") AS count,
+            FROM read_parquet(
+                'path_ridership/database/path-ridership-cleaned-monthly.parquet'
+            )
+
+            WHERE station = '${path_station}'
+                AND month >= DATE '2013-01-01'
+
+            GROUP BY month
+            ORDER BY month;
+        `, path_monthly_conn);
+
+        fs.writeFileSync(
+            `src/json/monthly_total_path_ridership_from_jan_2013.json`,
+            JSON.stringify(
+                monthly_total_path_ridership_from_jan_2013,
+                (_, value) => typeof value === "bigint" ? Number(value) : value
+            )        
         )
     }
     
@@ -1178,7 +1338,7 @@ async function build() {
 
         GROUP BY date
         ORDER BY date;
-    `);
+    `, mta_api_conn);
 
     fs.writeFileSync(
         "src/json/last_7_days_cbd.json",
@@ -1203,7 +1363,7 @@ async function build() {
         GROUP BY DATE(date)
         ORDER BY DATE(date)
 
-    `);
+    `, mta_api_conn);
 
     fs.writeFileSync(
         "src/json/last_7_days_bridge_tunnel.json",
@@ -1232,7 +1392,7 @@ async function build() {
         
         GROUP BY month
         ORDER BY month;
-    `);
+    `, mta_api_conn);
     
     fs.writeFileSync(
         "src/json/monthly_cbd.json",
@@ -1254,7 +1414,7 @@ async function build() {
         
         GROUP BY DATE(date), mode
         ORDER BY DATE(date), mode
-    `);
+    `, mta_api_conn);
 
     fs.writeFileSync(
         "src/json/last_7_days_overall.json",
@@ -1279,7 +1439,7 @@ async function export_mta_old_ridership(mode, filename) {
 
         GROUP BY month
         ORDER BY month;
-        `);
+        `, mta_api_conn);
 
     fs.writeFileSync(
         `src/json/${filename}.json`,
