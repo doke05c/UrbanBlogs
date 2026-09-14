@@ -1374,6 +1374,121 @@ const busOTPDatasets = {
     "Off-Peak": monthly_offpeak_bus_otp_from_aug_2017_rows
 };
 
+//LIST OF PATH STATIONS
+const path_stations = [
+  "Christopher Street",
+  "9th Street",
+  "14th Street",
+  "23rd Street",
+  "33rd Street",
+  "WTC",
+  "Newark",
+  "Harrison",
+  "Journal Square",
+  "Grove Street",
+  "Exchange Place",
+  "Newport",
+  "Hoboken",
+  "Total"
+]
+
+//GET MONTHLY WEEKDAY PATH RIDERSHIP SINCE JAN 2013
+
+const monthly_weekday_path_ridership_from_jan_2013_rows =
+    await fetch("/src/json/monthly_weekday_path_ridership_from_jan_2013.json")
+        .then(res => res.json());
+
+for (const path_station of path_stations) {
+    monthly_weekday_path_ridership_from_jan_2013_rows[path_station] =
+        monthly_weekday_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+            month: entry.month,
+            count: entry.count
+        }));
+}
+
+//GET MONTHLY SATURDAY PATH RIDERSHIP SINCE JAN 2013
+
+const monthly_sat_path_ridership_from_jan_2013_rows =
+    await fetch("/src/json/monthly_sat_path_ridership_from_jan_2013.json")
+        .then(res => res.json());
+
+for (const path_station of path_stations) {
+    monthly_sat_path_ridership_from_jan_2013_rows[path_station] =
+        monthly_sat_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+            month: entry.month,
+            count: entry.count
+        }));
+}
+
+//GET MONTHLY SUNDAY PATH RIDERSHIP SINCE JAN 2013
+
+const monthly_sun_path_ridership_from_jan_2013_rows =
+    await fetch("/src/json/monthly_sun_path_ridership_from_jan_2013.json")
+        .then(res => res.json());
+
+for (const path_station of path_stations) {
+    monthly_sun_path_ridership_from_jan_2013_rows[path_station] =
+        monthly_sun_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+            month: entry.month,
+            count: entry.count
+        }));
+}
+
+//GET MONTHLY HOLIDAY PATH RIDERSHIP SINCE JAN 2013
+
+const monthly_holiday_path_ridership_from_jan_2013_rows =
+    await fetch("/src/json/monthly_holiday_path_ridership_from_jan_2013.json")
+        .then(res => res.json());
+
+for (const path_station of path_stations) {
+    monthly_holiday_path_ridership_from_jan_2013_rows[path_station] =
+        monthly_holiday_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+            month: entry.month,
+            count: entry.count
+        }));
+}
+
+//GET MONTHLY OVERALL PATH RIDERSHIP SINCE JAN 2013
+
+const monthly_overall_path_ridership_from_jan_2013_rows =
+    await fetch("/src/json/monthly_total_path_ridership_from_jan_2013.json")
+        .then(res => res.json());
+
+for (const path_station of path_stations) {
+    monthly_overall_path_ridership_from_jan_2013_rows[path_station] =
+        monthly_overall_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+            month: entry.month,
+            count: entry.count
+        }));
+}
+
+const monthly_path_ridership_from_jan_2013_step_size_reference = {
+  "Christopher Street": 5000,
+  "9th Street": 5000,
+  "14th Street": 5000,
+  "23rd Street": 5000,
+  "33rd Street": 30000,
+  "WTC": 30000,
+  "Newark": 15000,
+  "Harrison": 5000,
+  "Journal Square": 15000,
+  "Grove Street": 15000,
+  "Exchange Place": 15000,
+  "Newport": 15000,
+  "Hoboken": 15000,
+  "Total": 150000
+}
+
+//go through the selected choices btwn weekday, weekend, and overall
+//depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
+const pathMonthlyRidershipDatasets = {
+    "Weekday": monthly_weekday_path_ridership_from_jan_2013_rows,
+    "Saturday": monthly_sat_path_ridership_from_jan_2013_rows,
+    "Sunday": monthly_sun_path_ridership_from_jan_2013_rows,
+    "Holiday": monthly_holiday_path_ridership_from_jan_2013_rows,
+    "Overall": monthly_overall_path_ridership_from_jan_2013_rows
+};
+
 //number to letter grade conversion
 function getReferenceLetter(score) {
   if (score >= 97.45) return "A+";
