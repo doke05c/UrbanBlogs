@@ -70,7 +70,8 @@ description: "The New York City region has been missing a centralized location w
       <br>
       <br>
       <br>
-      <h5> Source: Port Authority, PATH Monthly Ridership Stats; PDF Parser Algorithm by Ryan Williams </h5> <!-- ##### -->
+      <h5> Source: Port Authority, PATH Monthly Ridership Stats; 
+      <br> PDF Parser Algorithm by Ryan Williams, Hudson County Complete Streets </h5> <!-- ##### -->
     <!-- path monthly ridership chart -->
     <!--  -->
     </div>

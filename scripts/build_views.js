@@ -1183,7 +1183,7 @@ async function build() {
         "Exchange Place",
         "Newport",
         "Hoboken",
-        "Total"
+        "Systemwide"
     ]
     
     //entire history of weekday path ridership since 01/2013

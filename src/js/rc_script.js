@@ -1389,7 +1389,7 @@ const path_stations = [
   "Exchange Place",
   "Newport",
   "Hoboken",
-  "Total"
+  "Systemwide"
 ]
 
 //GET MONTHLY WEEKDAY PATH RIDERSHIP SINCE JAN 2013
@@ -1476,7 +1476,7 @@ const monthly_path_ridership_from_jan_2013_step_size_reference = {
   "Exchange Place": 15000,
   "Newport": 15000,
   "Hoboken": 15000,
-  "Total": 150000
+  "Systemwide": 150000
 }
 
 //go through the selected choices btwn weekday, weekend, and overall
@@ -4305,9 +4305,110 @@ function getLatestDateAnyDataLevel({
 
 //KEEP CHECKBOXES PERSISTENT THROUGH DATE SLIDING
 const ridershipCheckedDatasets = {}; 
+const pathRidershipCheckedDatasets = {};
 const OTPCheckedDatasets = {};
 const busSpeedsCheckedDatasets = {};
 const busOTPCheckedDatasets = {};
+
+function whichChartsToUpdatePathMonthlyRidership(startDate, endDate) {
+
+  //go through all charts which are to be updated, clear them before making new ones
+  for (const oldContainerId of [
+    "monthly_path_ridership_from_jan_2013_select_box_line_date_range",
+  ]) {
+
+    const container = document.getElementById(oldContainerId);
+    container.innerHTML = "";  // remove old chart
+
+  }
+
+  //make new charts.
+  nestedTwoCategorySelectLineChart({
+    datasetSuperList: pathMonthlyRidershipDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+    datasetListStepSizeReference: monthly_path_ridership_from_jan_2013_step_size_reference,
+
+    originalSuperList: pathMonthlyRidershipDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                          //will be needed for scorecard making
+
+    containerId: "monthly_path_ridership_from_jan_2013_select_box_line_date_range",
+    
+    interpretationBoxId: "monthly_path_ridership_from_jan_2013_select_box_line_date_range_interpretation",
+    scorecardMode: "Ridership",
+
+    checkboxSuperGroupId: "pathMonthlyRidershipDaySelect_date_range", //upper level, selector
+    checkBoxSubGroupId: "path-monthly-ridership-checkboxes_date_range", //lower level, checkboxes
+
+    //systemwide entry exists for OTP -- gets its own container to the side of the grid
+    systemwideContainerId: "path-monthly-ridership-systemwide_date_range",
+    clearAllButtonId: "path-monthly-ridership-clear-all_date_range",
+
+    persistenceOfCheckedDatasets: true,
+    listCheckedDatasets: pathRidershipCheckedDatasets,
+
+    timeOfInterest: "month",
+    aspectRatio: 2,
+    lineColors: [
+      //Christopher Street
+      "#636EFA",
+
+      //9th Street
+      "#E45756",
+
+      //14th Street
+      "#00CC96",
+
+      //23rd Street
+      "#AB63FA",
+
+      //33rd Street
+      "#FFA15A",
+
+      //WTC
+      "#19D3F3",
+
+      //Newark
+      "#FF6692",
+
+      //Harrison
+      "#B6E880",
+
+      //Journal Square
+      "#FF97FF",
+
+      //Grove Street
+      "#FECB52",
+
+      //Exchange Place
+      "#EF553B",
+
+      //Newport
+      "#7F7F7F",
+
+      //Hoboken
+      "#17BECF",
+
+      //systemwide
+      "#00aaff"
+    ],
+
+    importedDateRange: [new Date(startDate),
+                        new Date(endDate)]
+  });
+  
+}
+
+sliderMakerMultipleChart({
+  fromSliderId: '#fromSlider_path_monthly_ridership',
+  toSliderId: '#toSlider_path_monthly_ridership',
+  fromLabelId: '#fromLabel_path_monthly_ridership',
+  toLabelId: '#toLabel_path_monthly_ridership',
+  startDate: new Date(2013, 0, 1), //Jan 2013
+  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: pathMonthlyRidershipDatasets}),
+  updateChartsFunction: (startDate, endDate) => {
+    whichChartsToUpdatePathMonthlyRidership(startDate, endDate);
+  }
+})
+
 
 function whichChartsToUpdateOTP(startDate, endDate) {
 
