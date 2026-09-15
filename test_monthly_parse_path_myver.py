@@ -173,7 +173,7 @@ for parquet_file in database_dir.glob("data_*.parquet"):
         "23rdStreet": "23rd Street",
         "33rdStreet": "33rd Street",
         "Pavonia/ Newport" : "Newport",
-        "MONTHLY TOTAL": "Total"
+        "MONTHLY TOTAL": "Systemwide"
     }
 
     df["station"] = df["station"].replace(station_rename_dict)

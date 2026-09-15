@@ -20,6 +20,75 @@ description: "The New York City region has been missing a centralized location w
   <!-- run database json -->
   <script type="module" src="/src/js/rc_script.js"></script>
 
+
+<!-- OTP CHART + INTERPRETATION -->
+  <section class="analysis">
+    <!-- start OTP chart -->
+    <div class="chart">
+      <h3> PATH Monthly Ridership</h3> <!-- #### -->
+      <br>
+      <!-- slider -->
+      <div class="range_container">
+          <div class="sliders_control">
+              <input id="fromSlider_path_monthly_ridership" class="from_slider" type="range" min="0"/>
+              <input id="toSlider_path_monthly_ridership" class="to_slider" type="range" min="0"/>
+              <span id="fromLabel_path_monthly_ridership" class="slider_label"></span> 
+              <span id="toLabel_path_monthly_ridership" class="slider_label"></span>
+          </div>
+      </div>
+      <!-- -->
+      <!-- date type select for path ridership -->
+      <!--  -->
+      <label for="pathMonthlyRidershipDaySelect_date_range">Day Type:</label><br>
+      <select id="pathMonthlyRidershipDaySelect_date_range">
+          <option value="Overall">Overall</option>
+          <option value="Weekday">Weekday</option>
+          <option value="Saturday">Saturday</option>
+          <option value="Sunday">Sunday</option>
+          <option value="Holiday">Holiday</option>
+      </select>
+      <!-- -->
+      <!-- path-monthly-ridership lines checkboxes -->
+      <!--  -->
+      <div class="checkbox-row">
+        <div id="path-monthly-ridership-checkboxes_date_range" class="checkbox-grid"></div>
+        <div class="side-controls">
+          <div id="path-monthly-ridership-systemwide_date_range" class="systemwide-box"></div>
+          <button type="button" id="path-monthly-ridership-clear-all_date_range" class="clear-all-btn">Clear All</button>
+        </div>
+      </div>
+      <br>      
+      <!--  -->
+      <!-- path monthly ridership chart visual -->
+      <!--  -->
+      <div id="monthly_path_ridership_from_jan_2013_select_box_line_date_range"></div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <h5> Source: Port Authority, PATH Monthly Ridership Stats; PDF Parser Algorithm by Ryan Williams </h5> <!-- ##### -->
+    <!-- path monthly ridership chart -->
+    <!--  -->
+    </div>
+    <!--  -->
+    <!-- start path monthly ridership interpretation -->
+    <aside class="interpretation">
+      <h2> Ridership </h2> <!-- ## -->
+      <br>
+      <div id="monthly_path_ridership_from_jan_2013_select_box_line_date_range_interpretation"></div>
+     <h4> Ridership is the total monthly ridership, based on self-reported data by agencies. <br> <br>
+      Our ridership score is calculated by comparing ridership of the selected date range to the ridership of the agency over the same period in 2019. Likewise, the ridership score of the latest month is compared to the same month in 2019 for that agency. <br> <br>
+      </h4> <!-- #### explains the methods of the scorecard -->
+    <!-- end path monthly ridership interpretation -->
+    </aside>
+  </section>
+  <!-- -->
+  <!-- -->
+  <br>
   <!-- OTP CHART + INTERPRETATION -->
   <section class="analysis">
     <!-- start OTP chart -->
