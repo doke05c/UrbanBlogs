@@ -1194,7 +1194,7 @@ async function build() {
         monthly_weekday_path_ridership_from_jan_2013[path_station] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
-                SUM("total weekday") AS count,
+                SUM("avg weekday") AS count,
             FROM read_parquet(
                 'path_ridership/database/path-ridership-cleaned-monthly.parquet'
             )
@@ -1221,7 +1221,7 @@ async function build() {
         monthly_sat_path_ridership_from_jan_2013[path_station] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
-                SUM("total sat") AS count,
+                SUM("avg sat") AS count,
             FROM read_parquet(
                 'path_ridership/database/path-ridership-cleaned-monthly.parquet'
             )
@@ -1248,7 +1248,7 @@ async function build() {
         monthly_sun_path_ridership_from_jan_2013[path_station] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
-                SUM("total sun") AS count,
+                SUM("avg sun") AS count,
             FROM read_parquet(
                 'path_ridership/database/path-ridership-cleaned-monthly.parquet'
             )
@@ -1275,7 +1275,7 @@ async function build() {
         monthly_holiday_path_ridership_from_jan_2013[path_station] = await query (`
             SELECT
                 strftime(month, '%Y-%m') AS month,
-                SUM("total holiday") AS count,
+                SUM("avg holiday") AS count,
             FROM read_parquet(
                 'path_ridership/database/path-ridership-cleaned-monthly.parquet'
             )

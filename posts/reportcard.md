@@ -41,11 +41,11 @@ description: "The New York City region has been missing a centralized location w
       <!--  -->
       <label for="pathMonthlyRidershipDaySelect_date_range">Day Type:</label><br>
       <select id="pathMonthlyRidershipDaySelect_date_range">
-          <option value="Overall">Overall</option>
-          <option value="Weekday">Weekday</option>
-          <option value="Saturday">Saturday</option>
-          <option value="Sunday">Sunday</option>
-          <option value="Holiday">Holiday</option>
+          <option value="Overall">Month Total</option>
+          <option value="Weekday">Weekday Average</option>
+          <option value="Saturday">Saturday Average</option>
+          <option value="Sunday">Sunday Average</option>
+          <option value="Holiday">Holiday Average</option>
       </select>
       <!-- -->
       <!-- path-monthly-ridership lines checkboxes -->
