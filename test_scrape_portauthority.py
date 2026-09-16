@@ -6,6 +6,9 @@ from urllib.parse import urljoin
 
 #get PANYNJ page url
 BASE_URL = "https://www.panynj.gov"
+
+###### PATH ######
+
 MODEL_URL = f"{BASE_URL}/content/path/en.model.json"
 
 output_dir = Path("path_ridership")
@@ -50,6 +53,57 @@ output_dir = Path("path_ridership")
 for file in output_dir.glob("*-PATH-Ridership-Report.pdf"):
     year = file.name.split("-")[0]
     new_file = output_dir / f"{year}-PATH-Monthly-Ridership-Report.pdf"
+
+    file.rename(new_file)
+    print(f"Renamed: {file.name} -> {new_file.name}")
+
+
+###### PANYNJ ######
+
+MODEL_URL = f"{BASE_URL}/content/bridges-tunnels/en.model.json"
+
+output_dir = Path("panynj_crossings")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+#get AEM page model
+response = requests.get(MODEL_URL)
+response.raise_for_status()
+data = response.json()
+
+#navigate to Stats page
+stats = data[":children"]["/bridges-tunnels/en/traffic---volume-information---b-t"]
+root = stats[":items"]["root"]
+responsivegrid = root[":items"]["responsivegrid"]
+
+#get HTML inside the text component
+text_html = responsivegrid[":items"]["textblock"]["text"]
+tree = html.fromstring(text_html)
+
+#find monthly reports
+for link in tree.xpath("//a"):
+    name = link.text_content().strip()
+    href = link.get("href")
+
+    if "traffic-e-zpass-usage" not in href:
+        continue
+    
+    url = urljoin(BASE_URL, href)
+    filename = url.split("/")[-1]
+    filepath = output_dir / filename
+
+    print(f"Downloading {filename}...")
+
+    response = requests.get(url)
+    response.raise_for_status()
+
+    filepath.write_bytes(response.content)
+
+
+output_dir = Path("panynj_crossings")
+
+for file in output_dir.glob("traffic-e-zpass-usage-*.pdf"):
+    year = file.stem.split("-")[-1]
+    new_file = output_dir / f"traffic-e-zpass-usage-{year}.pdf"
 
     file.rename(new_file)
     print(f"Renamed: {file.name} -> {new_file.name}")

@@ -15,8 +15,10 @@ sleep 0.5
 cd "/home/doke30/urban_blogs/UrbanBlogs/"
 
 echo "Pulling data from Port Authority, NJ..."
-python3 test_scrape_path.py
+python3 test_scrape_portauthority.py
+
 python3 test_monthly_parse_path_myver.py
+python3 test_monthly_parse_panynjbt_myver.py
 
 echo "Running data view updates, creating .jsons"
 node scripts/build_views.js
