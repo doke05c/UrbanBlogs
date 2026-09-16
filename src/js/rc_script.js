@@ -1462,23 +1462,6 @@ for (const path_station of path_stations) {
         }));
 }
 
-const monthly_path_ridership_from_jan_2013_step_size_reference = {
-  "Christopher Street": 5000,
-  "9th Street": 5000,
-  "14th Street": 5000,
-  "23rd Street": 5000,
-  "33rd Street": 30000,
-  "WTC": 30000,
-  "Newark": 15000,
-  "Harrison": 5000,
-  "Journal Square": 15000,
-  "Grove Street": 15000,
-  "Exchange Place": 15000,
-  "Newport": 15000,
-  "Hoboken": 15000,
-  "Systemwide": 150000
-}
-
 //go through the selected choices btwn weekday, weekend, and overall
 //depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
 const pathMonthlyRidershipDatasets = {
@@ -1488,6 +1471,12 @@ const pathMonthlyRidershipDatasets = {
     "Holiday": monthly_holiday_path_ridership_from_jan_2013_rows,
     "Overall": monthly_overall_path_ridership_from_jan_2013_rows
 };
+
+//step size differs A LOT between day types here (weekday ridership dwarfs sunday/holiday
+//ridership at the same station), so this is built per day type -- shaped like the superlist
+//itself -- instead of one flat reference. See buildStepSizeReferenceFromSuperList above.
+const monthly_path_ridership_from_jan_2013_step_size_reference =
+    buildStepSizeReferenceFromSuperList(pathMonthlyRidershipDatasets);
 
 //number to letter grade conversion
 function getReferenceLetter(score) {
@@ -1924,6 +1913,54 @@ function createScoreForMultipleLineChart ({
 
   return datasetOTPScoreList;
 
+}
+
+
+//STEP-SIZE REFERENCE HELPERS
+//
+//A flat stepSizeReference (dataset name -> step size) works fine when every group in a
+//superlist sits in a similar value range (eg. OTP is always 0-100%, bus speeds are always
+//a handful of mph). It breaks down when groups have wildly different scales -- eg. PATH
+//weekday ridership dwarfs PATH Sunday/holiday ridership at the same station -- because one
+//step size ends up either way too big (tiny, cramped text) or way too small (huge text) for
+//most of the groups.
+//
+//computeNiceStepSize picks a "round" step size (1/2/5/10 x a power of ten) that gives
+//roughly targetSteps gridlines for a given max value.
+function computeNiceStepSize(maxValue, targetSteps = 12) {
+  if (!maxValue || maxValue <= 0) return 1;
+
+  const roughStep = maxValue / targetSteps;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
+  const residual = roughStep / magnitude; //normalized to [1, 10)
+
+  let niceResidual;
+  if (residual <= 1) niceResidual = 1;
+  else if (residual <= 2) niceResidual = 2;
+  else if (residual <= 5) niceResidual = 5;
+  else niceResidual = 10;
+
+  return niceResidual * magnitude;
+}
+
+//buildStepSizeReferenceFromSuperList walks a superlist (group name -> { dataset name -> rows })
+//and returns a reference of the SAME shape (group name -> { dataset name -> step size}),
+//with each step size computed from that group's own data. This is what lets a superlist like
+//PATH ridership have a different, appropriately-scaled step size per day type instead of one
+//flat reference forced across all of them.
+function buildStepSizeReferenceFromSuperList(superList, targetSteps = 12) {
+  const reference = {};
+
+  for (const [groupName, datasetList] of Object.entries(superList)) {
+    reference[groupName] = {};
+
+    for (const [name, rows] of Object.entries(datasetList)) {
+      const maxCount = Math.max(0, ...rows.map(entry => entry.count ?? 0));
+      reference[groupName][name] = computeNiceStepSize(maxCount, targetSteps);
+    }
+  }
+
+  return reference;
 }
 
 //plot multiple lines in one chart. helper for makeLineChart (input single dataset as parameter)
@@ -3889,6 +3926,17 @@ function clickSelectMultipleLineChart({
 const daySelectCallbacks = new WeakMap();
 
 
+//datasetListStepSizeReference passed into nestedTwoCategorySelectLineChart can be EITHER:
+//  - flat: dataset name -> step size (used as-is for every group, eg. OTP %, bus mph)
+//  - nested per group, shaped like datasetSuperList itself: group name -> { dataset name -> step size }
+//    (needed when groups sit on very different scales, eg. PATH ridership by day type)
+//This picks out the right one for the currently selected group.
+function resolveStepSizeReferenceForGroup(datasetListStepSizeReference, groupName) {
+  const firstValue = Object.values(datasetListStepSizeReference)[0];
+  const isNestedPerGroup = firstValue !== null && typeof firstValue === "object";
+  return isNestedPerGroup ? datasetListStepSizeReference[groupName] : datasetListStepSizeReference;
+}
+
 function nestedTwoCategorySelectLineChart({
   datasetSuperList, //superlist is a list of lists (ie: superlist[value] = a list)
 
@@ -3950,7 +3998,7 @@ function nestedTwoCategorySelectLineChart({
 
     datasetList: datasetSuperList[select.value], //now the list is being taken from the superlist to plot
     originalDatasetList: originalSuperList[select.value], //same goes for original dataset, taken from originalsuperlist
-    datasetListStepSizeReference: datasetListStepSizeReference,
+    datasetListStepSizeReference: resolveStepSizeReferenceForGroup(datasetListStepSizeReference, select.value),
     containerId: containerId,
     interpretationBoxId: interpretationBoxId,
     scorecardMode: scorecardMode,
@@ -4000,7 +4048,7 @@ function nestedTwoCategorySelectLineChart({
     clickSelectMultipleLineChart({
       datasetList: datasetSuperList[select.value], //now the list is being taken from the superlist to plot
       originalDatasetList: originalSuperList[select.value], //same goes for original dataset, taken from originalsuperlist
-      datasetListStepSizeReference: datasetListStepSizeReference,
+      datasetListStepSizeReference: resolveStepSizeReferenceForGroup(datasetListStepSizeReference, select.value),
       containerId: containerId,
       interpretationBoxId: interpretationBoxId,
       scorecardMode: scorecardMode,
@@ -4338,7 +4386,7 @@ function whichChartsToUpdatePathMonthlyRidership(startDate, endDate) {
     checkboxSuperGroupId: "pathMonthlyRidershipDaySelect_date_range", //upper level, selector
     checkBoxSubGroupId: "path-monthly-ridership-checkboxes_date_range", //lower level, checkboxes
 
-    //systemwide entry exists for OTP -- gets its own container to the side of the grid
+    //systemwide entry exists for path ridership -- gets its own container to the side of the grid
     systemwideContainerId: "path-monthly-ridership-systemwide_date_range",
     clearAllButtonId: "path-monthly-ridership-clear-all_date_range",
 
