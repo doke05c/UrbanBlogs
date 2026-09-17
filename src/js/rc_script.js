@@ -2652,12 +2652,6 @@ function makeMultipleLineChart ({
       //establish point size relative to number of points
       const circle_radius = Math.max((5.5 - ((pointCount/20) * Object.entries(datasetList).length/3)), 3);
 
-      console.log("min_date:", min_date);
-      console.log("max_date:", max_date);
-      console.log("pointCount:", pointCount);
-      console.log("datasetList length:", Object.entries(datasetList).length);
-      console.log(datasetList);
-
       line_circle.setAttribute("cx", p.x); //set x position of circle to our x
       line_circle.setAttribute("cy", p.y); //set y position of circle to our y
       line_circle.setAttribute("r", circle_radius); //set radius
