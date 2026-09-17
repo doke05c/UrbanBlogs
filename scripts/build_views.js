@@ -15,6 +15,9 @@ const path_monthly_db = new duckdb.Database(":memory:"); //<- load monthly PATH 
 const path_monthly_conn = path_monthly_db.connect();
 
 
+const panynj_monthly_db = new duckdb.Database(":memory:"); //<- load monthly PANYNJ crossings
+const panynj_monthly_conn = panynj_monthly_db.connect();
+
 
 
 // helper to asynchronously (put on queue) run sql query
@@ -1186,7 +1189,7 @@ async function build() {
         "Systemwide"
     ]
     
-    //entire history of weekday path ridership since 01/2013
+    //entire history of path ridership since 01/2013
 
     const monthly_weekday_path_ridership_from_jan_2013 = {};
 
@@ -1321,6 +1324,75 @@ async function build() {
                 (_, value) => typeof value === "bigint" ? Number(value) : value
             )        
         )
+    }
+
+
+    const panynj_crossings = [
+        "Bayonne Bridge",
+        "George Washington Bridge",
+        "Goethals Bridge",
+        "Holland Tunnel",
+        "Lincoln Tunnel",
+        "Outerbridge Crossing",
+        "Systemwide"
+    ]
+
+    //entire history of panynj crossings since 01/2011
+
+    const panynj_vehicle_types = [
+        "Automobiles",
+        "Buses",
+        "Trucks",
+        "Total Vehicles"
+    ];
+
+    for (const panynj_vehicle_type of panynj_vehicle_types) {
+
+        const monthly_panynj_crossings_from_jan_2011 = {};
+
+        for (const panynj_crossing of panynj_crossings) {
+
+            monthly_panynj_crossings_from_jan_2011[panynj_crossing] =
+                await query(`
+                    SELECT
+                        STRFTIME(
+                            MAKE_DATE(
+                                "Year",
+                                MONTH(STRPTIME("Month", '%b')),
+                                1
+                            ),
+                            '%Y-%m'
+                        ) AS month,
+                        SUM("count") AS count
+                    FROM read_parquet(
+                        'panynj_crossings/database/traffic.parquet'
+                    )
+                    WHERE "Crossing" = '${panynj_crossing}'
+                        AND "Type" = '${panynj_vehicle_type}'
+                        AND MAKE_DATE(
+                            "Year",
+                            MONTH(STRPTIME("Month", '%b')),
+                            1
+                        ) >= DATE '2011-01-01'
+                    GROUP BY "Year", "Month"
+                    ORDER BY month;
+                `, panynj_monthly_conn);
+        }
+
+        const filename = {
+            "Automobiles": "monthly_automo_panynj_crossings_from_jan_2011.json",
+            "Buses": "monthly_buses_panynj_crossings_from_jan_2011.json",
+            "Trucks": "monthly_trucks_panynj_crossings_from_jan_2011.json",
+            "Total Vehicles": "monthly_total_vehicles_panynj_crossings_from_jan_2011.json"
+        }[panynj_vehicle_type];
+
+        fs.writeFileSync(
+            `src/json/${filename}`,
+            JSON.stringify(
+                monthly_panynj_crossings_from_jan_2011,
+                (_, value) => typeof value === "bigint" ? Number(value) : value
+            )
+        );
     }
     
 

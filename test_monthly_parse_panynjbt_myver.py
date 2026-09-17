@@ -10,6 +10,7 @@
 from pathlib import Path
 from re import match
 
+import pandas as pd
 import click
 import pdfplumber
 import pyarrow as pa
@@ -290,6 +291,30 @@ def main(data_dir: str, output_dir: str, years: str | None):
     else:
         print("No E-ZPass data found")
 
+    database_dir = Path("panynj_crossings/database")
+
+    for parquet_file in database_dir.glob("*.parquet"):
+
+        df = pd.read_parquet(parquet_file)
+
+        crossings_rename_dict = {
+            "All Crossings": "Systemwide"
+        }
+
+        df["Crossing"] = df["Crossing"].replace(crossings_rename_dict)
+
+        df.to_parquet(
+            parquet_file,
+            engine="fastparquet",
+            index=False
+        )
+
+        print(f"Cleaned {parquet_file}")
+    
+
 
 if __name__ == "__main__":
     main()
+
+print("hi :)")
+

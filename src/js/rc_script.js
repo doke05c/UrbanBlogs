@@ -1478,6 +1478,60 @@ const pathMonthlyRidershipDatasets = {
 const monthly_path_ridership_from_jan_2013_step_size_reference =
     buildStepSizeReferenceFromSuperList(pathMonthlyRidershipDatasets);
 
+
+//LIST OF PANYNJ CROSSINGS
+const panynj_crossings = [
+  "Bayonne Bridge",
+  "George Washington Bridge",
+  "Goethals Bridge",
+  "Holland Tunnel",
+  "Lincoln Tunnel",
+  "Outerbridge Crossing",
+  "Systemwide"
+]
+
+const panynj_vehicle_types = [
+    "Automobiles",
+    "Buses",
+    "Trucks",
+    "Total Vehicles"
+];
+
+const panynj_vehicle_type_filenames = {
+    "Automobiles": "monthly_automo_panynj_crossings_from_jan_2011.json",
+    "Buses": "monthly_buses_panynj_crossings_from_jan_2011.json",
+    "Trucks": "monthly_trucks_panynj_crossings_from_jan_2011.json",
+    "Total Vehicles": "monthly_total_vehicles_panynj_crossings_from_jan_2011.json"
+};
+
+//GET MONTHLY PANYNJ CROSSINGS SINCE JAN 2011
+
+const panynjMonthlyCrossingDatasets = {};
+
+for (const panynj_vehicle_type of panynj_vehicle_types) {
+
+    const data = await fetch(
+        `/src/json/${panynj_vehicle_type_filenames[panynj_vehicle_type]}`
+    ).then(res => res.json());
+
+    panynjMonthlyCrossingDatasets[panynj_vehicle_type] = {};
+
+    for (const panynj_crossing of panynj_crossings) {
+
+        panynjMonthlyCrossingDatasets[panynj_vehicle_type][panynj_crossing] =
+            data[panynj_crossing].map(entry => ({
+                month: entry.month,
+                count: entry.count
+            }));
+    }
+}
+
+//step size differs A LOT between day types here (weekday ridership dwarfs sunday/holiday
+//ridership at the same station), so this is built per day type -- shaped like the superlist
+//itself -- instead of one flat reference. See buildStepSizeReferenceFromSuperList above.
+const monthly_panynj_crossings_from_jan_2011_step_size_reference =
+    buildStepSizeReferenceFromSuperList(panynjMonthlyCrossingDatasets);
+
 //number to letter grade conversion
 function getReferenceLetter(score) {
   if (score >= 97.45) return "A+";
@@ -1601,7 +1655,7 @@ function createScoreForMultipleLineChart ({
 
     }
 
-  } else if (mode == "Ridership") {
+  } else if (mode == "Ridership" || mode == "Traffic Count") {
 
     for (const [name, dataset] of Object.entries(datasetList)) {  
 
@@ -1723,7 +1777,7 @@ function createScoreForMultipleLineChart ({
       });
 
       datasetOTPScoreList[name] = [
-        `since the same month of 2019, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} rides this month`,
+        `since the same month of 2019, ${formatter.format(originalDatasetList[name][originalDatasetList[name].length - 1].count)} trips this month`,
         `since same period of 2019, ${formatter.format(averageCurrent)} average monthly`,        
         
         (latest_comp_2019_pct >= 0 ? "+" : "") + latest_comp_2019_pct + "%",
@@ -2597,6 +2651,12 @@ function makeMultipleLineChart ({
 
       //establish point size relative to number of points
       const circle_radius = Math.max((5.5 - ((pointCount/20) * Object.entries(datasetList).length/3)), 3);
+
+      console.log("min_date:", min_date);
+      console.log("max_date:", max_date);
+      console.log("pointCount:", pointCount);
+      console.log("datasetList length:", Object.entries(datasetList).length);
+      console.log(datasetList);
 
       line_circle.setAttribute("cx", p.x); //set x position of circle to our x
       line_circle.setAttribute("cy", p.y); //set y position of circle to our y
@@ -4354,6 +4414,7 @@ function getLatestDateAnyDataLevel({
 //KEEP CHECKBOXES PERSISTENT THROUGH DATE SLIDING
 const ridershipCheckedDatasets = {}; 
 const pathRidershipCheckedDatasets = {};
+const panynjCrossingCheckedDatasets = {};
 const OTPCheckedDatasets = {};
 const busSpeedsCheckedDatasets = {};
 const busOTPCheckedDatasets = {};
@@ -4457,6 +4518,83 @@ sliderMakerMultipleChart({
   }
 })
 
+function whichChartsToUpdatePanynjMonthlyCrossings(startDate, endDate) {
+
+  //go through all charts which are to be updated, clear them before making new ones
+  for (const oldContainerId of [
+    "monthly_panynj_crossings_from_jan_2011_select_box_line_date_range",
+  ]) {
+
+    const container = document.getElementById(oldContainerId);
+    container.innerHTML = "";  // remove old chart
+
+  }
+
+  //make new charts.
+  nestedTwoCategorySelectLineChart({
+    datasetSuperList: panynjMonthlyCrossingDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+    datasetListStepSizeReference: monthly_panynj_crossings_from_jan_2011_step_size_reference,
+
+    originalSuperList: panynjMonthlyCrossingDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                          //will be needed for scorecard making
+
+    containerId: "monthly_panynj_crossings_from_jan_2011_select_box_line_date_range",
+    
+    interpretationBoxId: "monthly_panynj_monthly_crossings_from_jan_2011_select_box_line_date_range_interpretation",
+    scorecardMode: "Traffic Count",
+
+    checkboxSuperGroupId: "panynjMonthlyCrossingsVehicleSelect_date_range", //upper level, selector
+    checkBoxSubGroupId: "panynj-monthly-crossings-checkboxes_date_range", //lower level, checkboxes
+
+    //systemwide entry exists for path ridership -- gets its own container to the side of the grid
+    systemwideContainerId: "panynj-monthly-crossings-systemwide_date_range",
+    clearAllButtonId: "panynj-monthly-crossings-clear-all_date_range",
+
+    persistenceOfCheckedDatasets: true,
+    listCheckedDatasets: panynjCrossingCheckedDatasets,
+
+    timeOfInterest: "month",
+    aspectRatio: 2,
+    lineColors: [
+        // Bayonne Bridge
+        "#AB63FA",
+
+        // George Washington Bridge
+        "#FFA15A",
+
+        // Goethals Bridge
+        "#EF553B",
+
+        // Holland Tunnel
+        "#FECB52",
+
+        // Lincoln Tunnel
+        "#636EFA",
+
+        // Outerbridge Crossing
+        "#00CC96",
+
+        // Systemwide
+        "#00aaff"
+    ],
+
+    importedDateRange: [new Date(startDate),
+                        new Date(endDate)]
+  });
+  
+}
+
+sliderMakerMultipleChart({
+  fromSliderId: '#fromSlider_panynj_monthly_crossings',
+  toSliderId: '#toSlider_panynj_monthly_crossings',
+  fromLabelId: '#fromLabel_panynj_monthly_crossings',
+  toLabelId: '#toLabel_panynj_monthly_crossings',
+  startDate: new Date(2011, 0, 1), //Jan 2011
+  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: panynjMonthlyCrossingDatasets}),
+  updateChartsFunction: (startDate, endDate) => {
+    whichChartsToUpdatePanynjMonthlyCrossings(startDate, endDate);
+  }
+})
 
 function whichChartsToUpdateOTP(startDate, endDate) {
 

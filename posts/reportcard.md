@@ -21,9 +21,9 @@ description: "The New York City region has been missing a centralized location w
   <script type="module" src="/src/js/rc_script.js"></script>
 
 
-<!-- OTP CHART + INTERPRETATION -->
+<!-- PATH MONTHLY RIDERSHIP CHART + INTERPRETATION -->
   <section class="analysis">
-    <!-- start OTP chart -->
+    <!-- start PATH MONTHLY RIDERSHIP chart -->
     <div class="chart">
       <h3> PATH Monthly Ridership</h3> <!-- #### -->
       <br>
@@ -85,6 +85,74 @@ description: "The New York City region has been missing a centralized location w
       Our ridership score is calculated by comparing ridership of the selected date range to the ridership of the agency over the same period in 2019. Likewise, the ridership score of the latest month is compared to the same month in 2019 for that agency. <br> <br>
       </h4> <!-- #### explains the methods of the scorecard -->
     <!-- end path monthly ridership interpretation -->
+    </aside>
+  </section>
+  <!-- -->
+  <!-- -->
+  <br>
+  <!-- PANYNJ MONTHLY CROSSING CHART + INTERPRETATION -->
+  <section class="analysis">
+    <!-- start PANYNJ MONTHLY CROSSING chart -->
+    <div class="chart">
+      <h3> PANYNJ Bridge & Tunnel Crossings</h3> <!-- #### -->
+      <br>
+      <!-- slider -->
+      <div class="range_container">
+          <div class="sliders_control">
+              <input id="fromSlider_panynj_monthly_crossings" class="from_slider" type="range" min="0"/>
+              <input id="toSlider_panynj_monthly_crossings" class="to_slider" type="range" min="0"/>
+              <span id="fromLabel_panynj_monthly_crossings" class="slider_label"></span> 
+              <span id="toLabel_panynj_monthly_crossings" class="slider_label"></span>
+          </div>
+      </div>
+      <!-- -->
+      <!-- vehicle type select for path ridership -->
+      <!--  -->
+      <label for="panynjMonthlyCrossingsVehicleSelect_date_range">Vehicle Type:</label><br>
+      <select id="panynjMonthlyCrossingsVehicleSelect_date_range">
+          <option value="Total Vehicles">All Vehicle Total</option>
+          <option value="Automobiles">Automobiles</option>
+          <option value="Buses">Buses</option>
+          <option value="Trucks">Trucks</option>
+      </select>
+      <!-- -->
+      <!-- panynj-monthly-crossing lines checkboxes -->
+      <!--  -->
+      <div class="checkbox-row">
+        <div id="panynj-monthly-crossings-checkboxes_date_range" class="checkbox-grid"></div>
+        <div class="side-controls">
+          <div id="panynj-monthly-crossings-systemwide_date_range" class="systemwide-box"></div>
+          <button type="button" id="panynj-monthly-crossings-clear-all_date_range" class="clear-all-btn">Clear All</button>
+        </div>
+      </div>
+      <br>      
+      <!--  -->
+      <!-- panynj monthly crossings chart visual -->
+      <!--  -->
+      <div id="monthly_panynj_crossings_from_jan_2011_select_box_line_date_range"></div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <h5> Source: Port Authority, Monthly Traffic & Volume Stats; 
+      <br> PDF Parser Algorithm by Ryan Williams, Hudson County Complete Streets </h5> <!-- ##### -->
+    <!-- panynj monthly crossings chart -->
+    <!--  -->
+    </div>
+    <!--  -->
+    <!-- start panynj monthly crossings interpretation -->
+    <aside class="interpretation">
+      <h2> Crossing Counts </h2> <!-- ## -->
+      <br>
+      <div id="monthly_panynj_monthly_crossings_from_jan_2011_select_box_line_date_range_interpretation"></div>
+     <h4> Traffic crossings counts are the total number of crossings, based on self-reported data by agencies. <br> <br>
+      Our crossings score is calculated by comparing crossing counts of the selected date range to the crossing counts of the facility over the same period in 2019. Likewise, the crossing count score of the latest month is compared to the same month in 2019 for that agency. <br> <br>
+      </h4> <!-- #### explains the methods of the scorecard -->
+    <!-- end panynj monthly crossings interpretation -->
     </aside>
   </section>
   <!-- -->
