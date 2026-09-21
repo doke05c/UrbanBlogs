@@ -3,6 +3,10 @@ import requests
 import json
 from pathlib import Path
 from urllib.parse import urljoin
+from bs4 import BeautifulSoup
+import pandas as pd
+
+# pip install openpyxl
 
 #get PANYNJ page url
 BASE_URL = "https://www.panynj.gov"
@@ -58,7 +62,7 @@ for file in output_dir.glob("*-PATH-Ridership-Report.pdf"):
     print(f"Renamed: {file.name} -> {new_file.name}")
 
 
-###### PANYNJ ######
+###### PANYNJ CROSSINGS ######
 
 MODEL_URL = f"{BASE_URL}/content/bridges-tunnels/en.model.json"
 
@@ -89,6 +93,7 @@ for link in tree.xpath("//a"):
     
     url = urljoin(BASE_URL, href)
     filename = url.split("/")[-1]
+
     filepath = output_dir / filename
 
     print(f"Downloading {filename}...")
@@ -107,3 +112,70 @@ for file in output_dir.glob("traffic-e-zpass-usage-*.pdf"):
 
     file.rename(new_file)
     print(f"Renamed: {file.name} -> {new_file.name}")
+
+
+###### NJT FTA DATA ######
+
+BASE_URL = "https://www.transit.dot.gov"
+MODEL_URL = f"{BASE_URL}/ntd/data-product/monthly-module-adjusted-data-release"
+
+output_dir = Path("njt_data")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+headers = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64; rv:155.0) "
+        "Gecko/20100101 Firefox/155.0"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+}
+
+
+session = requests.Session()
+
+response = session.get(MODEL_URL, headers=headers)
+response.raise_for_status()
+
+soup = BeautifulSoup(response.text, "html.parser")
+
+xlsx_link = next(
+    a["href"]
+    for a in soup.find_all("a", href=True)
+    if a["href"].lower().endswith(".xlsx")
+)
+
+xlsx_url = urljoin(MODEL_URL, xlsx_link)
+
+print(xlsx_url)
+
+
+filename = "Complete_Monthly_Ridership.xlsx"
+
+output_file = output_dir / filename
+
+print(f"Downloading {filename}...")
+
+xlsx_response = session.get(xlsx_url, headers=headers)
+xlsx_response.raise_for_status()
+
+with open(output_file, "wb") as f:
+    f.write(xlsx_response.content)
+
+print(f"Wrote {output_file}")
+
+filepath.write_bytes(xlsx_response.content)
+
+fta_xlsx = pd.ExcelFile(output_file)
+
+print(fta_xlsx.sheet_names)
+
+print(fta_xlsx.parse("UPT"))
+
+df_fta_xlsx_upt = fta_xlsx.parse("UPT")
+df_fta_xlsx_upt_njt = df_fta_xlsx_upt[df_fta_xlsx_upt["Agency"] == "New Jersey Transit Corporation"] 
+
+((fta_xlsx.parse("UPT"))).to_csv("njt_data/FTA_UPT_Ridership.csv")
+df_fta_xlsx_upt_njt.to_csv("njt_data/FTA_UPT_NJT_Ridership.csv")
+
+# fta_xlsx.parse(sheet_name)
