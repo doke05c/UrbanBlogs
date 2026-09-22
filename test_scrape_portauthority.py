@@ -147,8 +147,6 @@ xlsx_link = next(
 
 xlsx_url = urljoin(MODEL_URL, xlsx_link)
 
-print(xlsx_url)
-
 
 filename = "Complete_Monthly_Ridership.xlsx"
 
@@ -162,15 +160,9 @@ xlsx_response.raise_for_status()
 with open(output_file, "wb") as f:
     f.write(xlsx_response.content)
 
-print(f"Wrote {output_file}")
-
 filepath.write_bytes(xlsx_response.content)
 
 fta_xlsx = pd.ExcelFile(output_file)
-
-print(fta_xlsx.sheet_names)
-
-print(fta_xlsx.parse("UPT"))
 
 df_fta_xlsx_upt = fta_xlsx.parse("UPT")
 df_fta_xlsx_upt_njt = df_fta_xlsx_upt[df_fta_xlsx_upt["Agency"] == "New Jersey Transit Corporation"] 
@@ -178,4 +170,92 @@ df_fta_xlsx_upt_njt = df_fta_xlsx_upt[df_fta_xlsx_upt["Agency"] == "New Jersey T
 ((fta_xlsx.parse("UPT"))).to_csv("njt_data/FTA_UPT_Ridership.csv")
 df_fta_xlsx_upt_njt.to_csv("njt_data/FTA_UPT_NJT_Ridership.csv")
 
-# fta_xlsx.parse(sheet_name)
+
+def combine_rows(df, combinations, output_name):
+    monthly_cols = [
+        col for col in df.columns
+        if "/" in str(col)
+    ]
+
+    work = df.copy()
+
+    work[monthly_cols] = (
+        work[monthly_cols]
+        .replace(",", "", regex=True)
+        .apply(pd.to_numeric, errors="coerce")
+    )
+
+    row_keys = list(zip(
+        work["Mode"],
+        work["TOS"],
+        work["3 Mode"]
+    ))
+
+    mask = [
+        key in combinations
+        for key in row_keys
+    ]
+
+    to_combine = work[mask]
+
+    if to_combine.empty:
+        return None
+
+    # Use the first matching row as the template
+    combined = to_combine.iloc[0].copy()
+
+    # Sum the monthly columns
+    combined[monthly_cols] = to_combine[monthly_cols].sum()
+
+    # Set the new name
+    combined["Mode/Type of Service Status"] = output_name
+
+    combined = combined.drop(["Mode", "TOS", "3 Mode"])
+
+    # Return ONLY the new combined row
+    return combined.to_frame().T
+
+
+df_fta_xlsx_upt_njt_combined = pd.concat([
+    combine_rows(
+        df_fta_xlsx_upt_njt,
+        {
+            ("MB", "DO", "Bus"),
+            ("MB", "PT", "Bus")
+        },
+        "Bus"
+    ),
+
+    combine_rows(
+        df_fta_xlsx_upt_njt,
+        {
+            ("CR", "DO", "Rail")
+        },
+        "Commuter Rail"
+    ),
+
+    combine_rows(
+        df_fta_xlsx_upt_njt,
+        {
+            ("LR", "DO", "Rail"),
+            ("LR", "PT", "Rail")
+        },
+        "Light Rail"
+    ),
+
+    combine_rows(
+        df_fta_xlsx_upt_njt,
+        {
+            ("DR", "PT", "Bus")
+        },
+        "AccessLink"
+    )
+], ignore_index=True)
+
+df_fta_xlsx_upt_njt_combined.to_csv(
+    "njt_data/Cleaned_NJT_Ridership.csv",
+    mode="w",
+    index=False
+)
+
+print(f"Wrote Cleaned_NJT_Ridership.csv")
