@@ -19,6 +19,8 @@ const panynj_monthly_db = new duckdb.Database(":memory:"); //<- load monthly PAN
 const panynj_monthly_conn = panynj_monthly_db.connect();
 
 
+const njt_monthly_db = new duckdb.Database(":memory:"); //<- load monthly NJT riderships
+const njt_monthly_conn = panynj_monthly_db.connect();
 
 // helper to asynchronously (put on queue) run sql query
 function query(sql, db) {
@@ -1394,7 +1396,42 @@ async function build() {
             )
         );
     }
+
+    //entire history of njt ridership since 01/2002
     
+    const njt_agencies = [
+        "Bus",
+        "Commuter Rail",
+        "Light Rail",
+        "AccessLink"
+    ]
+
+    const monthly_njt_ridership_from_jan_2002 = {};
+
+    for (const njt_agency of njt_agencies) {
+
+        const rows = await query(`
+            SELECT
+                STRFTIME(CAST("Date" AS DATE), '%Y-%m') AS month,
+                "${njt_agency}" AS count
+            FROM read_csv('njt_data/Cleaned_NJT_Ridership.csv')
+            WHERE CAST("Date" AS DATE) >= DATE '2002-01-01'
+            ORDER BY month;
+        `, njt_monthly_conn);
+
+        monthly_njt_ridership_from_jan_2002[njt_agency] = rows;
+    }
+
+    fs.writeFileSync(
+        "src/json/monthly_njt_ridership_from_jan_2002.json",
+        JSON.stringify(
+            monthly_njt_ridership_from_jan_2002,
+            (_, value) => typeof value === "bigint" ? Number(value) : value
+        )
+    );
+
+
+
 
     //past 7 days of cbd entries
     const last7d_entries = await query(`
