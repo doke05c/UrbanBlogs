@@ -5,6 +5,7 @@ from pathlib import Path
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import pandas as pd
+import re # regex
 
 # pip install openpyxl
 
@@ -252,10 +253,19 @@ df_fta_xlsx_upt_njt_combined = pd.concat([
     )
 ], ignore_index=True)
 
-df_fta_xlsx_upt_njt_combined.to_csv(
+df_fta_xlsx_upt_njt_combined_date_cols = [c for c in df_fta_xlsx_upt_njt_combined.columns if re.fullmatch(r"\d{1,2}/\d{4}", c)]
+
+df_fta_xlsx_upt_njt_combined_wide = df_fta_xlsx_upt_njt_combined.set_index("Mode/Type of Service Status")[df_fta_xlsx_upt_njt_combined_date_cols]
+
+njt_output = df_fta_xlsx_upt_njt_combined_wide.T
+njt_output.index = pd.to_datetime(njt_output.index, format="%m/%Y")
+njt_output.index.name = "Date"
+njt_output = njt_output.astype(int)
+
+njt_output.to_csv(
     "njt_data/Cleaned_NJT_Ridership.csv",
     mode="w",
-    index=False
+    index=True
 )
 
-print(f"Wrote Cleaned_NJT_Ridership.csv")
+print("Wrote Cleaned_NJT_Ridership.csv")
