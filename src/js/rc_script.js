@@ -36,27 +36,27 @@ const monthly_sir_entries_from_mar_2020_rows = await fetch("/src/json/monthly_si
 
 //////////////////////////////////////////////// NEW ^^ OLD VV
 
-//GET MONTHLY SUBWAY ENTRIES SINCE MAR 2020
+//GET MONTHLY SUBWAY ENTRIES UP TO MAR 2020
 const monthly_entries_subway_to_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_to_mar_2020_old.json")
     .then(res => res.json());
 
-//GET MONTHLY LIRR ENTRIES SINCE MAR 2020
+//GET MONTHLY LIRR ENTRIES UP TO MAR 2020
 const monthly_lirr_entries_to_mar_2020_rows = await fetch("/src/json/monthly_lirr_entries_to_mar_2020_old.json")
     .then(res => res.json());
 
-//GET MONTHLY MNR ENTRIES SINCE MAR 2020
+//GET MONTHLY MNR ENTRIES UP TO MAR 2020
 const monthly_mnr_entries_to_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_to_mar_2020_old.json")
     .then(res => res.json());
 
-//GET MONTHLY AAR ENTRIES SINCE MAR 2020
+//GET MONTHLY AAR ENTRIES UP TO MAR 2020
 const monthly_aar_entries_to_mar_2020_rows = await fetch("/src/json/monthly_aar_entries_to_mar_2020_old.json")
     .then(res => res.json());
 
-//GET MONTHLY BUS ENTRIES SINCE MAR 2020
+//GET MONTHLY BUS ENTRIES UP TO MAR 2020
 const monthly_bus_entries_to_mar_2020_rows = await fetch("/src/json/monthly_bus_entries_to_mar_2020_old.json")
     .then(res => res.json());
 
-//GET MONTHLY SIR ENTRIES SINCE MAR 2020
+//GET MONTHLY SIR ENTRIES UP TO MAR 2020
 const monthly_sir_entries_to_mar_2020_rows = await fetch("/src/json/monthly_sir_entries_to_mar_2020_old.json")
     .then(res => res.json());
 
@@ -1310,7 +1310,6 @@ for (const bus_line of bus_lines_otp) {
       });
 }
 
-
 //function to create systemwide otp entry "line" (for each peak, offpeak, overall)
 function createSystemwideBusOTP(dataset) {
 
@@ -1531,6 +1530,24 @@ for (const panynj_vehicle_type of panynj_vehicle_types) {
 //itself -- instead of one flat reference. See buildStepSizeReferenceFromSuperList above.
 const monthly_panynj_crossings_from_jan_2011_step_size_reference =
     buildStepSizeReferenceFromSuperList(panynjMonthlyCrossingDatasets);
+
+
+//GET MONTHLY NJT RIDERSHIP SINCE JAN 2002
+
+const monthly_njt_ridership_from_jan_2002_rows =
+    await fetch("/src/json/monthly_njt_ridership_from_jan_2002.json")
+        .then(res => res.json());
+
+const monthly_njt_ridership_step_size_reference = {
+  "Bus Ridership": 1_000_000,
+  "Commuter Rail Ridership": 1_000_000,
+  "Light Rail Ridership": 20_000_000,
+  "AccessLink Ridership": 50_000,
+};
+
+	
+
+
 
 //number to letter grade conversion
 function getReferenceLetter(score) {

@@ -224,7 +224,7 @@ df_fta_xlsx_upt_njt_combined = pd.concat([
             ("MB", "DO", "Bus"),
             ("MB", "PT", "Bus")
         },
-        "Bus"
+        "Bus Ridership"
     ),
 
     combine_rows(
@@ -232,7 +232,7 @@ df_fta_xlsx_upt_njt_combined = pd.concat([
         {
             ("CR", "DO", "Rail")
         },
-        "Commuter Rail"
+        "Commuter Rail Ridership"
     ),
 
     combine_rows(
@@ -241,7 +241,7 @@ df_fta_xlsx_upt_njt_combined = pd.concat([
             ("LR", "DO", "Rail"),
             ("LR", "PT", "Rail")
         },
-        "Light Rail"
+        "Light Rail Ridership"
     ),
 
     combine_rows(
@@ -249,7 +249,7 @@ df_fta_xlsx_upt_njt_combined = pd.concat([
         {
             ("DR", "PT", "Bus")
         },
-        "AccessLink"
+        "AccessLink Ridership"
     )
 ], ignore_index=True)
 
