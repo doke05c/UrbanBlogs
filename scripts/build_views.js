@@ -1400,10 +1400,10 @@ async function build() {
     //entire history of njt ridership since 01/2002
     
     const njt_agencies = [
-        "Bus",
-        "Commuter Rail",
-        "Light Rail",
-        "AccessLink"
+        "Bus Ridership",
+        "Commuter Rail Ridership",
+        "Light Rail Ridership",
+        "AccessLink Ridership"
     ]
 
     const monthly_njt_ridership_from_jan_2002 = {};

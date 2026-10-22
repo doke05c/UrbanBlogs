@@ -1539,10 +1539,10 @@ const monthly_njt_ridership_from_jan_2002_rows =
         .then(res => res.json());
 
 const monthly_njt_ridership_step_size_reference = {
-  "Bus Ridership": 1_000_000,
+  "Bus Ridership": 2_000_000,
   "Commuter Rail Ridership": 1_000_000,
-  "Light Rail Ridership": 20_000_000,
-  "AccessLink Ridership": 50_000,
+  "Light Rail Ridership": 500_000,
+  "AccessLink Ridership": 25_000,
 };
 
 	
@@ -2233,6 +2233,9 @@ function makeMultipleLineChart ({
       "datasetListStepSizeReference is required when passLineColorsAsStatic is true"
     );
   }
+  
+  console.log("hi from console :3");
+  console.log(datasetList);
 
   //make chart loader
   const multi_line = document.createElement(containerId); //<- Chart element
@@ -4426,9 +4429,67 @@ function getLatestDateAnyDataLevel({
 const ridershipCheckedDatasets = {}; 
 const pathRidershipCheckedDatasets = {};
 const panynjCrossingCheckedDatasets = {};
+const njtRidershipCheckedDatasets = {};
 const OTPCheckedDatasets = {};
 const busSpeedsCheckedDatasets = {};
 const busOTPCheckedDatasets = {};
+
+
+function whichChartsToUpdateNJTRidership(startDate, endDate) {
+
+  //go through all charts which are to be updated, clear them before making new ones
+  for (const oldContainerId of [
+    "monthly_njt_ridership_select_box_line_date_range",
+  ]) {
+
+    const container = document.getElementById(oldContainerId);
+    container.innerHTML = "";  // remove old chart
+
+  }
+
+  //make new charts.
+  clickSelectMultipleLineChart({
+    datasetList: monthly_njt_ridership_from_jan_2002_rows,
+    datasetListStepSizeReference: monthly_njt_ridership_step_size_reference,
+
+    originalDatasetList: monthly_njt_ridership_from_jan_2002_rows, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                          //will be needed for scorecard making
+
+    containerId: "monthly_njt_ridership_select_box_line_date_range",
+    
+    interpretationBoxId: "monthly_njt_ridership_select_box_line_date_range_interpretation",
+    scorecardMode: "Ridership",
+
+    checkBoxGroupId: "njt-ridership-checkboxes_date_range", //lower level, checkboxes
+
+    //no systemwideContainerId here ridership's dataset has no "Systemwide" entry,
+    clearAllButtonId: "njt-ridership-clear-all_date_range",
+
+    persistenceOfCheckedDatasets: true,
+
+    checkedDatasets: njtRidershipCheckedDatasets,
+
+    timeOfInterest: "month",
+    aspectRatio: 2,
+
+    importedDateRange: [new Date(startDate),
+                        new Date(endDate)]
+  });
+  
+}
+
+sliderMakerMultipleChart({
+  fromSliderId: '#fromSlider_NJT_ridership',
+  toSliderId: '#toSlider_NJT_ridership',
+  fromLabelId: '#fromLabel_NJT_ridership',
+  toLabelId: '#toLabel_NJT_ridership',
+  startDate: new Date(2002, 0, 1), //Jan 2002
+  endDate: getLatestDateAnyDataLevel({dataLevel: "datasetList", dataItem: monthly_njt_ridership_from_jan_2002_rows}),
+  updateChartsFunction: (startDate, endDate) => {
+    whichChartsToUpdateNJTRidership(startDate, endDate);
+  }
+})
+
 
 function whichChartsToUpdatePathMonthlyRidership(startDate, endDate) {
 
