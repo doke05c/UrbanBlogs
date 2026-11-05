@@ -11,1545 +11,1554 @@ if (loading && reportCardContentEl && getComputedStyle(reportCardContentEl).visi
     loading.style.color = "#888";
 }
 
+const PAGE = window.REPORT_CARD_PAGE;
 
+if (PAGE == "mta-bus") {
 
-//GET MONTHLY SUBWAY ENTRIES SINCE MAR 2020
-const monthly_entries_subway_from_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_from_mar_2020.json")
-    .then(res => res.json());
+  const bus_lines = [
+      "B1",
+      "B100",
+      "B102",
+      "B103",
+      "B11",
+      "B12",
+      "B13",
+      "B14",
+      "B15",
+      "B16",
+      "B17",
+      "B2",
+      "B20",
+      "B24",
+      "B25",
+      "B26",
+      "B3",
+      "B31",
+      "B32",
+      "B35",
+      "B36",
+      "B37",
+      "B38",
+      "B39",
+      "B4",
+      "B41",
+      "B42",
+      "B43",
+      "B44",
+      "B44+",
+      "B45",
+      "B46",
+      "B46+",
+      "B47",
+      "B48",
+      "B49",
+      "B52",
+      "B54",
+      "B57",
+      "B6",
+      "B60",
+      "B61",
+      "B62",
+      "B63",
+      "B64",
+      "B65",
+      "B67",
+      "B68",
+      "B69",
+      "B7",
+      "B70",
+      "B74",
+      "B8",
+      "B82",
+      "B82+",
+      "B83",
+      "B84",
+      "B9",
+      "BM1",
+      "BM2",
+      "BM3",
+      "BM4",
+      "BM5",
+      "BX1",
+      "BX10",
+      "BX11",
+      "BX12",
+      "BX12+",
+      "BX13",
+      "BX15",
+      "BX16",
+      "BX17",
+      "BX18",
+      "BX18A",
+      "BX18B",
+      "BX19",
+      "BX2",
+      "BX20",
+      "BX21",
+      "BX22",
+      "BX23",
+      "BX24",
+      "BX25",
+      "BX26",
+      "BX27",
+      "BX28",
+      "BX29",
+      "BX3",
+      "BX30",
+      "BX31",
+      "BX32",
+      "BX33",
+      "BX34",
+      "BX35",
+      "BX36",
+      "BX38",
+      "BX39",
+      "BX4",
+      "BX40",
+      "BX41",
+      "BX41+",
+      "BX42",
+      "BX46",
+      "BX4A",
+      "BX5",
+      "BX6",
+      "BX6+",
+      "BX7",
+      "BX8",
+      "BX9",
+      "BXM1",
+      "BXM10",
+      "BXM11",
+      "BXM18",
+      "BXM2",
+      "BXM3",
+      "BXM4",
+      "BXM6",
+      "BXM7",
+      "BXM8",
+      "BXM9",
+      "M1",
+      "M10",
+      "M100",
+      "M101",
+      "M102",
+      "M103",
+      "M104",
+      "M106",
+      "M11",
+      "M116",
+      "M12",
+      "M125",
+      "M14A",
+      "M14A+",
+      "M14D",
+      "M14D+",
+      "M15",
+      "M15+",
+      "M2",
+      "M20",
+      "M21",
+      "M22",
+      "M23",
+      "M23+",
+      "M3",
+      "M31",
+      "M34+",
+      "M34A+",
+      "M35",
+      "M4",
+      "M42",
+      "M5",
+      "M50",
+      "M55",
+      "M57",
+      "M60+",
+      "M66",
+      "M7",
+      "M72",
+      "M79",
+      "M79+",
+      "M8",
+      "M86",
+      "M86+",
+      "M9",
+      "M96",
+      "M98",
+      "Q1",
+      "Q10",
+      "Q100",
+      "Q101",
+      "Q102",
+      "Q103",
+      "Q104",
+      "Q11",
+      "Q110",
+      "Q111",
+      "Q112",
+      "Q113",
+      "Q114",
+      "Q115",
+      "Q12",
+      "Q13",
+      "Q14",
+      "Q15",
+      "Q15A",
+      "Q16",
+      "Q17",
+      "Q18",
+      "Q19",
+      "Q2",
+      "Q20",
+      "Q20A",
+      "Q20B",
+      "Q21",
+      "Q22",
+      "Q23",
+      "Q24",
+      "Q25",
+      "Q26",
+      "Q27",
+      "Q28",
+      "Q29",
+      "Q3",
+      "Q30",
+      "Q31",
+      "Q32",
+      "Q33",
+      "Q34",
+      "Q35",
+      "Q36",
+      "Q37",
+      "Q38",
+      "Q39",
+      "Q4",
+      "Q40",
+      "Q41",
+      "Q42",
+      "Q43",
+      "Q44",
+      "Q44+",
+      "Q45",
+      "Q46",
+      "Q47",
+      "Q48",
+      "Q49",
+      "Q5",
+      "Q50",
+      "Q51",
+      "Q52",
+      "Q52+",
+      "Q53",
+      "Q53+",
+      "Q54",
+      "Q55",
+      "Q56",
+      "Q58",
+      "Q59",
+      "Q6",
+      "Q60",
+      "Q61",
+      "Q63",
+      "Q64",
+      "Q65",
+      "Q66",
+      "Q67",
+      "Q69",
+      "Q7",
+      "Q70",
+      "Q70+",
+      "Q72",
+      "Q74",
+      "Q75",
+      "Q76",
+      "Q77",
+      "Q8",
+      "Q80",
+      "Q82",
+      "Q83",
+      "Q84",
+      "Q85",
+      "Q86",
+      "Q87",
+      "Q88",
+      "Q89",
+      "Q9",
+      "Q90",
+      "Q98",
+      "QM1",
+      "QM10",
+      "QM11",
+      "QM12",
+      "QM15",
+      "QM16",
+      "QM17",
+      "QM18",
+      "QM2",
+      "QM20",
+      "QM21",
+      "QM24",
+      "QM25",
+      "QM3",
+      "QM31",
+      "QM32",
+      "QM34",
+      "QM35",
+      "QM36",
+      "QM4",
+      "QM40",
+      "QM42",
+      "QM44",
+      "QM5",
+      "QM6",
+      "QM63",
+      "QM64",
+      "QM65",
+      "QM68",
+      "QM7",
+      "QM8",
+      "S40",
+      "S42",
+      "S44",
+      "S46",
+      "S48",
+      "S51",
+      "S52",
+      "S53",
+      "S54",
+      "S55",
+      "S56",
+      "S57",
+      "S59",
+      "S61",
+      "S62",
+      "S66",
+      "S74",
+      "S76",
+      "S78",
+      "S79+",
+      "S81",
+      "S84",
+      "S86",
+      "S89",
+      "S90",
+      "S91",
+      "S92",
+      "S93",
+      "S94",
+      "S96",
+      "S98",
+      "SIM1",
+      "SIM10",
+      "SIM11",
+      "SIM15",
+      "SIM1C",
+      "SIM2",
+      "SIM22",
+      "SIM23",
+      "SIM24",
+      "SIM25",
+      "SIM26",
+      "SIM3",
+      "SIM30",
+      "SIM31",
+      "SIM32",
+      "SIM33",
+      "SIM33C",
+      "SIM34",
+      "SIM35",
+      "SIM3C",
+      "SIM4",
+      "SIM4C",
+      "SIM4X",
+      "SIM5",
+      "SIM5X",
+      "SIM6",
+      "SIM6X",
+      "SIM7",
+      "SIM8",
+      "SIM8X",
+      "SIM9",
+      "X1",
+      "X10",
+      "X10B",
+      "X11",
+      "X12",
+      "X14",
+      "X15",
+      "X17",
+      "X17A",
+      "X17J",
+      "X19",
+      "X2",
+      "X21",
+      "X22",
+      "X22A",
+      "X27",
+      "X28",
+      "X3",
+      "X30",
+      "X31",
+      "X37",
+      "X38",
+      "X4",
+      "X42",
+      "X5",
+      "X63",
+      "X64",
+      "X68",
+      "X7",
+      "X8",
+      "X9"
+  ]
 
-//GET MONTHLY LIRR ENTRIES SINCE MAR 2020
-const monthly_lirr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_lirr_entries_from_mar_2020.json")
-    .then(res => res.json());
+  //GET MONTHLY WEEKDAY BUS SPEEDS SINCE JAN 2015
 
-//GET MONTHLY MNR ENTRIES SINCE MAR 2020
-const monthly_mnr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_from_mar_2020.json")
-    .then(res => res.json());
+  const monthly_weekday_bus_speeds_from_jan_2015_rows =
+      await fetch("/src/json/monthly_weekday_bus_speeds_from_jan_2015.json")
+          .then(res => res.json());
 
-//GET MONTHLY AAR ENTRIES SINCE MAR 2020
-const monthly_aar_entries_from_mar_2020_rows = await fetch("/src/json/monthly_aar_entries_from_mar_2020.json")
-    .then(res => res.json());
+  for (const bus_line of bus_lines) {
+      monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line] =
+          monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line].map(entry => ({
+              month: entry.month,
+              total_operating_time: entry.total_operating_time,
+              total_mileage: entry.total_mileage,
+              count: entry.average_speed
+          }));
+  }
 
-//GET MONTHLY BUS ENTRIES SINCE MAR 2020
-const monthly_bus_entries_from_mar_2020_rows = await fetch("/src/json/monthly_bus_entries_from_mar_2020.json")
-    .then(res => res.json());
+  //GET MONTHLY WEEKEND BUS SPEEDS SINCE JAN 2015
 
-//GET MONTHLY SIR ENTRIES SINCE MAR 2020
-const monthly_sir_entries_from_mar_2020_rows = await fetch("/src/json/monthly_sir_entries_from_mar_2020.json")
-    .then(res => res.json());
+  const monthly_weekend_bus_speeds_from_jan_2015_rows =
+      await fetch("/src/json/monthly_weekend_bus_speeds_from_jan_2015.json")
+          .then(res => res.json());
 
-//////////////////////////////////////////////// NEW ^^ OLD VV
+  for (const bus_line of bus_lines) {
+      monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line] =
+          monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line].map(entry => ({
+              month: entry.month,
+              total_operating_time: entry.total_operating_time,
+              total_mileage: entry.total_mileage,
+              count: entry.average_speed
+          }));
+  }
 
-//GET MONTHLY SUBWAY ENTRIES UP TO MAR 2020
-const monthly_entries_subway_to_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_to_mar_2020_old.json")
-    .then(res => res.json());
+  //GET MONTHLY OVERALL BUS SPEEDS SINCE JAN 2015
 
-//GET MONTHLY LIRR ENTRIES UP TO MAR 2020
-const monthly_lirr_entries_to_mar_2020_rows = await fetch("/src/json/monthly_lirr_entries_to_mar_2020_old.json")
-    .then(res => res.json());
+  const monthly_overall_bus_speeds_from_jan_2015_rows = {};
 
-//GET MONTHLY MNR ENTRIES UP TO MAR 2020
-const monthly_mnr_entries_to_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_to_mar_2020_old.json")
-    .then(res => res.json());
+  //for each bus line...
+  for (const bus_line of bus_lines) {
 
-//GET MONTHLY AAR ENTRIES UP TO MAR 2020
-const monthly_aar_entries_to_mar_2020_rows = await fetch("/src/json/monthly_aar_entries_to_mar_2020_old.json")
-    .then(res => res.json());
+    //create a weekday and weekend series for each subway line
+    const weekday = monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line];
+    const weekend = monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line];
 
-//GET MONTHLY BUS ENTRIES UP TO MAR 2020
-const monthly_bus_entries_to_mar_2020_rows = await fetch("/src/json/monthly_bus_entries_to_mar_2020_old.json")
-    .then(res => res.json());
+    //build a lookup: month -> weekend entry for each series
+    const weekendByMonth = Object.fromEntries(
+      (weekend ?? []).map(entry => [entry.month, entry])
+    );
 
-//GET MONTHLY SIR ENTRIES UP TO MAR 2020
-const monthly_sir_entries_to_mar_2020_rows = await fetch("/src/json/monthly_sir_entries_to_mar_2020_old.json")
-    .then(res => res.json());
+    //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
+    monthly_overall_bus_speeds_from_jan_2015_rows[bus_line] =
+      weekday
+        .map(weekdayEntry => {
 
-//COMBINED MONTHLY MTA ENTRIES (OLD + NEW)
+          const weekendEntry = weekendByMonth[weekdayEntry.month];
 
-//SUBWAY
-const monthly_entries_subway_total_rows = [
-    ...monthly_entries_subway_to_mar_2020_rows,
-    ...monthly_entries_subway_from_mar_2020_rows
-];
+          const total_mileage =
+            weekdayEntry.total_mileage + (weekendEntry?.total_mileage ?? 0);
 
-//LIRR
-const monthly_lirr_entries_total_rows = [
-    ...monthly_lirr_entries_to_mar_2020_rows,
-    ...monthly_lirr_entries_from_mar_2020_rows
-];
+          const total_operating_time =
+            weekdayEntry.total_operating_time + (weekendEntry?.total_operating_time ?? 0);
 
-//MNR
-const monthly_mnr_entries_total_rows = [
-    ...monthly_mnr_entries_to_mar_2020_rows,
-    ...monthly_mnr_entries_from_mar_2020_rows
-];
+          //combine into overall database
+          return {
+            month: weekdayEntry.month,
+            total_mileage,
+            total_operating_time,
+            count: total_mileage / total_operating_time
+          };
+        });
+  }
 
-//AAR
-const monthly_aar_entries_total_rows = [
-    ...monthly_aar_entries_to_mar_2020_rows,
-    ...monthly_aar_entries_from_mar_2020_rows
-];
+  //function to create systemwide otp entry "line" (for each weekday, weekend, overall)
+  function createSystemwideBusSpeeds(dataset) {
 
-//BUS
-const monthly_bus_entries_total_rows = [
-    ...monthly_bus_entries_to_mar_2020_rows,
-    ...monthly_bus_entries_from_mar_2020_rows
-];
+      const monthlyTotals = {};
 
-//SIR
-const monthly_sir_entries_total_rows = [
-    ...monthly_sir_entries_to_mar_2020_rows,
-    ...monthly_sir_entries_from_mar_2020_rows
-];
+      //for each bus line...
+      for (const bus_line of Object.keys(dataset)) {
+          
+          //for each month in each subway line
+          for (const entry of dataset[bus_line]) {
 
-//CREATE LIST OF MTA 6-MODE PUBLIC TRANSIT ENTRIES SINCE MAR 2020
-const monthly_multimodal_total_rows = {
-  "MNR Ridership": monthly_mnr_entries_total_rows,
-  "LIRR Ridership": monthly_lirr_entries_total_rows,
-  "Subway Ridership": monthly_entries_subway_total_rows,
-  "SIR Ridership": monthly_sir_entries_total_rows,
-  "Bus Ridership": monthly_bus_entries_total_rows,
-  "Access-a-Ride Ridership": monthly_aar_entries_total_rows,
-};
+              //if there is yet to be a monthly value for the number of scheduled and on time trips, create a month element and fill it with 0 for now. 
+              if (!monthlyTotals[entry.month]) {
+                  monthlyTotals[entry.month] = {
+                      total_mileage: 0,
+                      total_operating_time: 0
+                  };
+              }
 
-const monthly_multimodal_step_size_reference = {
-  "MNR Ridership": 1_000_000,
-  "LIRR Ridership": 1_000_000,
-  "Subway Ridership": 20_000_000,
-  "SIR Ridership": 50_000,
-  "Bus Ridership": 5_000_000,
-  "Access-a-Ride Ridership": 200_000,
-};
+              //add values to total
+              monthlyTotals[entry.month].total_mileage += entry.total_mileage;
+              monthlyTotals[entry.month].total_operating_time += entry.total_operating_time;
+          }
+      }
 
+      //create a new entry "line" for systemwide, add our values to it
+      return Object.entries(monthlyTotals).map(([month, totals]) => ({
+          month,
+          total_mileage: totals.total_mileage,
+          total_operating_time: totals.total_operating_time,
+          count: totals.total_mileage / totals.total_operating_time
+      }));
+  }
 
-//GET MONTHLY WEEKDAY SUBWAY OTP RATES SINCE JAN 2015
+  //add systemwide to dataset for each of weekday, weekend, overall
+  monthly_weekday_bus_speeds_from_jan_2015_rows["Systemwide"] =
+      createSystemwideBusSpeeds(monthly_weekday_bus_speeds_from_jan_2015_rows);
+    
+  monthly_weekend_bus_speeds_from_jan_2015_rows["Systemwide"] =
+      createSystemwideBusSpeeds(monthly_weekend_bus_speeds_from_jan_2015_rows);
 
-//list of subway lines:
-let subway_line_list =
-[
-  "1", "2", "3", "4", "5", "6", "7",
-  "S 42nd", "GS", "A", "B", "C", "D", "E", "F", "G", "J",
-  "JZ", "L", "M", "N", "Q", "R", "S Fkln", "FS", "S Rock", "H"
-]
+  monthly_overall_bus_speeds_from_jan_2015_rows["Systemwide"] =
+      createSystemwideBusSpeeds(monthly_overall_bus_speeds_from_jan_2015_rows);
 
-const monthly_weekday_subway_otp_rate_from_jan_2015_rows =
-    await fetch("/src/json/monthly_weekday_subway_otp_rate_from_jan_2015.json")
-        .then(res => res.json());
-
-for (const subway_line of subway_line_list) {
-    monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line] =
-        monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line].map(entry => ({
-            month: entry.month,
-            on_time_trips: entry.num_on_time_trips,
-            sched_trips: entry.num_sched_trips,
-            count: entry.otp_rate * 100
-        }));
-}
-
-//GET MONTHLY WEEKEND SUBWAY OTP RATES SINCE JAN 2015
-
-const monthly_weekend_subway_otp_rate_from_jan_2015_rows =
-    await fetch("/src/json/monthly_weekend_subway_otp_rate_from_jan_2015.json")
-        .then(res => res.json());
-
-for (const subway_line of subway_line_list) {
-    monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line] =
-        monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line].map(entry => ({
-            month: entry.month,
-            on_time_trips: entry.num_on_time_trips,
-            sched_trips: entry.num_sched_trips,
-            count: entry.otp_rate * 100
-        }));
-}
-
-//function to combine lines together. keeps the keepline, removes removeline
-function combineLines(dataset, keepLine, removeLine) {
-
-    const combined = {};
-
-    for (const entry of dataset[keepLine]) {
-        combined[entry.month] = {
-            on_time_trips: entry.on_time_trips,
-            sched_trips: entry.sched_trips
-        };
-    }
-
-    for (const entry of dataset[removeLine]) {
-
-        if (!combined[entry.month]) {
-            combined[entry.month] = {
-                on_time_trips: 0,
-                sched_trips: 0
-            };
-        }
-
-        combined[entry.month].on_time_trips += entry.on_time_trips;
-        combined[entry.month].sched_trips += entry.sched_trips;
-    }
-
-  dataset[keepLine] = Object.entries(combined)
-    .map(([month, totals]) => ({
-        month,
-        on_time_trips: totals.on_time_trips,
-        sched_trips: totals.sched_trips,
-        count: totals.on_time_trips / totals.sched_trips * 100
-    }))
-    .sort((a, b) => a.month.localeCompare(b.month));
-
-  delete dataset[removeLine];
-}
-
-for (const dataset of [
-    monthly_weekday_subway_otp_rate_from_jan_2015_rows,
-    monthly_weekend_subway_otp_rate_from_jan_2015_rows
-]) {
-    combineLines(dataset, "S 42nd", "GS");
-    combineLines(dataset, "S Fkln", "FS");
-    combineLines(dataset, "S Rock", "H");
-    combineLines(dataset, "JZ", "J");
-}
-
-//update subway_line_list:
-subway_line_list =
-[
-  "1", "2", "3", "4", "5", "6", "7",
-  "S 42nd", "A", "B", "C", "D", "E", "F", "G",
-  "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock",
-]
-
-//GET MONTHLY OVERALL SUBWAY OTP RATES SINCE JAN 2015
-
-const monthly_overall_subway_otp_rate_from_jan_2015_rows = {};
-
-//for each subway line...
-for (const subway_line of subway_line_list) {
-
-  //create a weekday and weekend series for each subway line
-  const weekday = monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line];
-  const weekend = monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line];
-
-  //build a lookup: month -> weekend entry for each series
-  const weekendByMonth = Object.fromEntries(
-    (weekend ?? []).map(entry => [entry.month, entry])
+  const monthly_bus_speeds_step_size_reference = Object.fromEntries(
+      Object.keys(monthly_overall_bus_speeds_from_jan_2015_rows)
+            .map(line => [line, 2])
   );
 
-  //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
-  monthly_overall_subway_otp_rate_from_jan_2015_rows[subway_line] =
-    weekday
-      .map(weekdayEntry => {
+  //go through the selected choices btwn weekday, weekend, and overall
+  //depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
+  const busSpeedsDatasets = {
+      "Overall": monthly_overall_bus_speeds_from_jan_2015_rows,
+      "Weekday": monthly_weekday_bus_speeds_from_jan_2015_rows,
+      "Weekend": monthly_weekend_bus_speeds_from_jan_2015_rows
+  };
 
-        const weekendEntry = weekendByMonth[weekdayEntry.month];
+  //LIST OF BUS LINES FOR OTP
+  const bus_lines_otp = [
+      "B1",
+      "B100",
+      "B103",
+      "B11",
+      "B12",
+      "B13",
+      "B14",
+      "B15",
+      "B16",
+      "B17",
+      "B2",
+      "B20",
+      "B24",
+      "B25",
+      "B26",
+      "B3",
+      "B31",
+      "B32",
+      "B35",
+      "B36",
+      "B37",
+      "B38",
+      "B39",
+      "B4",
+      "B41",
+      "B42",
+      "B43",
+      "B44",
+      "B44+",
+      "B45",
+      "B46",
+      "B46+",
+      "B47",
+      "B48",
+      "B49",
+      "B52",
+      "B54",
+      "B57",
+      "B6",
+      "B60",
+      "B61",
+      "B62",
+      "B63",
+      "B64",
+      "B65",
+      "B67",
+      "B68",
+      "B69",
+      "B7",
+      "B70",
+      "B74",
+      "B8",
+      "B82",
+      "B82+",
+      "B83",
+      "B84",
+      "B9",
+      "BM1",
+      "BM2",
+      "BM3",
+      "BM4",
+      "BM5",
+      "BX1",
+      "BX10",
+      "BX11",
+      "BX12",
+      "BX12+",
+      "BX13",
+      "BX15",
+      "BX16",
+      "BX17",
+      "BX18",
+      "BX18A",
+      "BX18B",
+      "BX19",
+      "BX2",
+      "BX20",
+      "BX21",
+      "BX22",
+      "BX23",
+      "BX24",
+      "BX25",
+      "BX26",
+      "BX27",
+      "BX28",
+      "BX29",
+      "BX3",
+      "BX30",
+      "BX31",
+      "BX32",
+      "BX33",
+      "BX34",
+      "BX35",
+      "BX36",
+      "BX38",
+      "BX39",
+      "BX4",
+      "BX40",
+      "BX41",
+      "BX41+",
+      "BX42",
+      "BX46",
+      "BX4A",
+      "BX5",
+      "BX6",
+      "BX6+",
+      "BX7",
+      "BX8",
+      "BX9",
+      "BXM1",
+      "BXM10",
+      "BXM11",
+      "BXM18",
+      "BXM2",
+      "BXM3",
+      "BXM4",
+      "BXM6",
+      "BXM7",
+      "BXM8",
+      "BXM9",
+      "M1",
+      "M10",
+      "M100",
+      "M101",
+      "M102",
+      "M103",
+      "M104",
+      "M106",
+      "M11",
+      "M116",
+      "M12",
+      "M125",
+      "M14A",
+      "M14A+",
+      "M14D",
+      "M14D+",
+      "M15",
+      "M15+",
+      "M2",
+      "M20",
+      "M21",
+      "M22",
+      "M23+",
+      "M3",
+      "M31",
+      "M34+",
+      "M34A+",
+      "M35",
+      "M4",
+      "M42",
+      "M5",
+      "M50",
+      "M55",
+      "M57",
+      "M60+",
+      "M66",
+      "M7",
+      "M72",
+      "M79+",
+      "M8",
+      "M86+",
+      "M9",
+      "M96",
+      "M98",
+      "Q1",
+      "Q10",
+      "Q100",
+      "Q101",
+      "Q102",
+      "Q103",
+      "Q104",
+      "Q11",
+      "Q110",
+      "Q111",
+      "Q112",
+      "Q113",
+      "Q114",
+      "Q115",
+      "Q12",
+      "Q13",
+      "Q14",
+      "Q15",
+      "Q15A",
+      "Q16",
+      "Q17",
+      "Q18",
+      "Q19",
+      "Q2",
+      "Q20",
+      "Q20A",
+      "Q20B",
+      "Q21",
+      "Q22",
+      "Q23",
+      "Q24",
+      "Q25",
+      "Q26",
+      "Q27",
+      "Q28",
+      "Q29",
+      "Q3",
+      "Q30",
+      "Q31",
+      "Q32",
+      "Q33",
+      "Q34",
+      "Q35",
+      "Q36",
+      "Q37",
+      "Q38",
+      "Q39",
+      "Q4",
+      "Q40",
+      "Q41",
+      "Q42",
+      "Q43",
+      "Q44+",
+      "Q45",
+      "Q46",
+      "Q47",
+      "Q48",
+      "Q49",
+      "Q5",
+      "Q50",
+      "Q51",
+      "Q52",
+      "Q52+",
+      "Q53",
+      "Q53+",
+      "Q54",
+      "Q55",
+      "Q56",
+      "Q58",
+      "Q59",
+      "Q6",
+      "Q60",
+      "Q61",
+      "Q63",
+      "Q64",
+      "Q65",
+      "Q66",
+      "Q67",
+      "Q69",
+      "Q7",
+      "Q70+",
+      "Q72",
+      "Q74",
+      "Q75",
+      "Q76",
+      "Q77",
+      "Q8",
+      "Q80",
+      "Q82",
+      "Q83",
+      "Q84",
+      "Q85",
+      "Q86",
+      "Q87",
+      "Q88",
+      "Q89",
+      "Q9",
+      "Q90",
+      "Q98",
+      "QM1",
+      "QM10",
+      "QM11",
+      "QM12",
+      "QM15",
+      "QM16",
+      "QM17",
+      "QM18",
+      "QM2",
+      "QM20",
+      "QM21",
+      "QM24",
+      "QM25",
+      "QM3",
+      "QM31",
+      "QM32",
+      "QM34",
+      "QM35",
+      "QM36",
+      "QM4",
+      "QM40",
+      "QM42",
+      "QM44",
+      "QM5",
+      "QM6",
+      "QM63",
+      "QM64",
+      "QM65",
+      "QM68",
+      "QM7",
+      "QM8",
+      "S40",
+      "S42",
+      "S44",
+      "S46",
+      "S48",
+      "S51",
+      "S52",
+      "S53",
+      "S54",
+      "S55",
+      "S56",
+      "S57",
+      "S59",
+      "S61",
+      "S62",
+      "S66",
+      "S74",
+      "S76",
+      "S78",
+      "S79+",
+      "S81",
+      "S84",
+      "S86",
+      "S89",
+      "S90",
+      "S91",
+      "S92",
+      "S93",
+      "S94",
+      "S96",
+      "S98",
+      "SBS12",
+      "SIM1",
+      "SIM10",
+      "SIM11",
+      "SIM15",
+      "SIM1C",
+      "SIM2",
+      "SIM22",
+      "SIM23",
+      "SIM24",
+      "SIM25",
+      "SIM26",
+      "SIM3",
+      "SIM30",
+      "SIM31",
+      "SIM32",
+      "SIM33",
+      "SIM33C",
+      "SIM34",
+      "SIM35",
+      "SIM3C",
+      "SIM4",
+      "SIM4C",
+      "SIM4X",
+      "SIM5",
+      "SIM5X",
+      "SIM6",
+      "SIM6X",
+      "SIM7",
+      "SIM8",
+      "SIM8X",
+      "SIM9",
+      "T117",
+      "T323",
+      "T403",
+      "T430",
+      "T464",
+      "X1",
+      "X10",
+      "X10B",
+      "X11",
+      "X12",
+      "X14",
+      "X15",
+      "X17",
+      "X17A",
+      "X17J",
+      "X19",
+      "X2",
+      "X21",
+      "X22",
+      "X22A",
+      "X27",
+      "X28",
+      "X3",
+      "X30",
+      "X31",
+      "X37",
+      "X38",
+      "X4",
+      "X42",
+      "X5",
+      "X63",
+      "X64",
+      "X68",
+      "X7",
+      "X8",
+      "X9",
+  ]
 
-        const on_time_trips =
-          weekdayEntry.on_time_trips + (weekendEntry?.on_time_trips ?? 0);
+  //GET MONTHLY PEAK BUS OTP SINCE AUG 2017
 
-        const sched_trips =
-          weekdayEntry.sched_trips + (weekendEntry?.sched_trips ?? 0);
+  const monthly_peak_bus_otp_from_aug_2017_rows =
+      await fetch("/src/json/monthly_peak_bus_otp_from_aug_2017.json")
+          .then(res => res.json());
 
-        //combine into overall database
-        return {
-          month: weekdayEntry.month,
-          on_time_trips,
-          sched_trips,
-          count: on_time_trips / sched_trips * 100
-        };
-      });
-}
+  for (const bus_line of bus_lines_otp) {
+      monthly_peak_bus_otp_from_aug_2017_rows[bus_line] =
+          monthly_peak_bus_otp_from_aug_2017_rows[bus_line].map(entry => ({
+              month: entry.month,
+              number_of_customers: entry.number_of_customers,
+              additional_bus_stop_time: entry.additional_bus_stop_time,
+              additional_travel_time: entry.additional_travel_time,
+              count: entry.customer_journey_time * 100
+          }));
+  }
 
-//function to create systemwide otp entry "line" (for each weekday, weekend, overall)
-function createSystemwideOTP(dataset) {
+  //GET MONTHLY OFFPEAK BUS OTP SINCE AUG 2017
 
-    const monthlyTotals = {};
+  const monthly_offpeak_bus_otp_from_aug_2017_rows =
+      await fetch("/src/json/monthly_offpeak_bus_otp_from_aug_2017.json")
+          .then(res => res.json());
 
-    //for each subway line...
-    for (const subway_line of Object.keys(dataset)) {
-        
-        //for each month in each subway line
-        for (const entry of dataset[subway_line]) {
+  for (const bus_line of bus_lines_otp) {
+      monthly_offpeak_bus_otp_from_aug_2017_rows[bus_line] =
+          monthly_offpeak_bus_otp_from_aug_2017_rows[bus_line].map(entry => ({
+              month: entry.month,
+              number_of_customers: entry.number_of_customers,
+              additional_bus_stop_time: entry.additional_bus_stop_time,
+              additional_travel_time: entry.additional_travel_time,
+              count: entry.customer_journey_time * 100
+          }));
+  }
 
-            //if there is yet to be a monthly value for the number of scheduled and on time trips, create a month element and fill it with 0 for now. 
-            if (!monthlyTotals[entry.month]) {
-                monthlyTotals[entry.month] = {
-                    on_time_trips: 0,
-                    sched_trips: 0
-                };
-            }
 
-            //add values to total
-            monthlyTotals[entry.month].on_time_trips += entry.on_time_trips;
-            monthlyTotals[entry.month].sched_trips += entry.sched_trips;
-        }
-    }
+  //GET MONTHLY OVERALL BUS OTP SINCE AUG 2017
 
-    //create a new entry "line" for systemwide, add our values to it
-    return Object.entries(monthlyTotals).map(([month, totals]) => ({
-        month,
-        on_time_trips: totals.on_time_trips,
-        sched_trips: totals.sched_trips,
-        count: totals.on_time_trips / totals.sched_trips * 100
-    }));
-}
+  const monthly_overall_bus_otp_from_aug_2017_rows = {};
 
-//add systemwide to dataset for each of weekday, weekend, overall
-monthly_weekday_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
-    createSystemwideOTP(monthly_weekday_subway_otp_rate_from_jan_2015_rows);
-  
-monthly_weekend_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
-    createSystemwideOTP(monthly_weekend_subway_otp_rate_from_jan_2015_rows);
+  //for each bus line...
+  for (const bus_line of bus_lines_otp) {
 
-monthly_overall_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
-    createSystemwideOTP(monthly_overall_subway_otp_rate_from_jan_2015_rows);
+    //create a weekday and weekend series for each subway line
+    const weekday = monthly_peak_bus_otp_from_aug_2017_rows[bus_line];
+    const weekend = monthly_offpeak_bus_otp_from_aug_2017_rows[bus_line];
 
-const monthly_subway_otp_rate_step_size_reference = Object.fromEntries(
-  [
-    "1", "2", "3", "4", "5", "6", "7",
-    "S 42nd", "A", "B", "C", "D", "E", "F", "G",
-    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock", "Systemwide"
-  ].map(line => [line, 20])
-);
+    //build a lookup: month -> weekend entry for each series
+    const weekendByMonth = Object.fromEntries(
+      (weekend ?? []).map(entry => [entry.month, entry])
+    );
 
-//go through the selected choices btwn weekday, weekend, and overall
-//depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
-const subwayOTPDatasets = {
-    "Overall": monthly_overall_subway_otp_rate_from_jan_2015_rows,
-    "Weekday": monthly_weekday_subway_otp_rate_from_jan_2015_rows,
-    "Weekend": monthly_weekend_subway_otp_rate_from_jan_2015_rows
-};
+    //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
+    monthly_overall_bus_otp_from_aug_2017_rows[bus_line] =
+      weekday
+        .map(weekdayEntry => {
 
-const bus_lines = [
-    "B1",
-    "B100",
-    "B102",
-    "B103",
-    "B11",
-    "B12",
-    "B13",
-    "B14",
-    "B15",
-    "B16",
-    "B17",
-    "B2",
-    "B20",
-    "B24",
-    "B25",
-    "B26",
-    "B3",
-    "B31",
-    "B32",
-    "B35",
-    "B36",
-    "B37",
-    "B38",
-    "B39",
-    "B4",
-    "B41",
-    "B42",
-    "B43",
-    "B44",
-    "B44+",
-    "B45",
-    "B46",
-    "B46+",
-    "B47",
-    "B48",
-    "B49",
-    "B52",
-    "B54",
-    "B57",
-    "B6",
-    "B60",
-    "B61",
-    "B62",
-    "B63",
-    "B64",
-    "B65",
-    "B67",
-    "B68",
-    "B69",
-    "B7",
-    "B70",
-    "B74",
-    "B8",
-    "B82",
-    "B82+",
-    "B83",
-    "B84",
-    "B9",
-    "BM1",
-    "BM2",
-    "BM3",
-    "BM4",
-    "BM5",
-    "BX1",
-    "BX10",
-    "BX11",
-    "BX12",
-    "BX12+",
-    "BX13",
-    "BX15",
-    "BX16",
-    "BX17",
-    "BX18",
-    "BX18A",
-    "BX18B",
-    "BX19",
-    "BX2",
-    "BX20",
-    "BX21",
-    "BX22",
-    "BX23",
-    "BX24",
-    "BX25",
-    "BX26",
-    "BX27",
-    "BX28",
-    "BX29",
-    "BX3",
-    "BX30",
-    "BX31",
-    "BX32",
-    "BX33",
-    "BX34",
-    "BX35",
-    "BX36",
-    "BX38",
-    "BX39",
-    "BX4",
-    "BX40",
-    "BX41",
-    "BX41+",
-    "BX42",
-    "BX46",
-    "BX4A",
-    "BX5",
-    "BX6",
-    "BX6+",
-    "BX7",
-    "BX8",
-    "BX9",
-    "BXM1",
-    "BXM10",
-    "BXM11",
-    "BXM18",
-    "BXM2",
-    "BXM3",
-    "BXM4",
-    "BXM6",
-    "BXM7",
-    "BXM8",
-    "BXM9",
-    "M1",
-    "M10",
-    "M100",
-    "M101",
-    "M102",
-    "M103",
-    "M104",
-    "M106",
-    "M11",
-    "M116",
-    "M12",
-    "M125",
-    "M14A",
-    "M14A+",
-    "M14D",
-    "M14D+",
-    "M15",
-    "M15+",
-    "M2",
-    "M20",
-    "M21",
-    "M22",
-    "M23",
-    "M23+",
-    "M3",
-    "M31",
-    "M34+",
-    "M34A+",
-    "M35",
-    "M4",
-    "M42",
-    "M5",
-    "M50",
-    "M55",
-    "M57",
-    "M60+",
-    "M66",
-    "M7",
-    "M72",
-    "M79",
-    "M79+",
-    "M8",
-    "M86",
-    "M86+",
-    "M9",
-    "M96",
-    "M98",
-    "Q1",
-    "Q10",
-    "Q100",
-    "Q101",
-    "Q102",
-    "Q103",
-    "Q104",
-    "Q11",
-    "Q110",
-    "Q111",
-    "Q112",
-    "Q113",
-    "Q114",
-    "Q115",
-    "Q12",
-    "Q13",
-    "Q14",
-    "Q15",
-    "Q15A",
-    "Q16",
-    "Q17",
-    "Q18",
-    "Q19",
-    "Q2",
-    "Q20",
-    "Q20A",
-    "Q20B",
-    "Q21",
-    "Q22",
-    "Q23",
-    "Q24",
-    "Q25",
-    "Q26",
-    "Q27",
-    "Q28",
-    "Q29",
-    "Q3",
-    "Q30",
-    "Q31",
-    "Q32",
-    "Q33",
-    "Q34",
-    "Q35",
-    "Q36",
-    "Q37",
-    "Q38",
-    "Q39",
-    "Q4",
-    "Q40",
-    "Q41",
-    "Q42",
-    "Q43",
-    "Q44",
-    "Q44+",
-    "Q45",
-    "Q46",
-    "Q47",
-    "Q48",
-    "Q49",
-    "Q5",
-    "Q50",
-    "Q51",
-    "Q52",
-    "Q52+",
-    "Q53",
-    "Q53+",
-    "Q54",
-    "Q55",
-    "Q56",
-    "Q58",
-    "Q59",
-    "Q6",
-    "Q60",
-    "Q61",
-    "Q63",
-    "Q64",
-    "Q65",
-    "Q66",
-    "Q67",
-    "Q69",
-    "Q7",
-    "Q70",
-    "Q70+",
-    "Q72",
-    "Q74",
-    "Q75",
-    "Q76",
-    "Q77",
-    "Q8",
-    "Q80",
-    "Q82",
-    "Q83",
-    "Q84",
-    "Q85",
-    "Q86",
-    "Q87",
-    "Q88",
-    "Q89",
-    "Q9",
-    "Q90",
-    "Q98",
-    "QM1",
-    "QM10",
-    "QM11",
-    "QM12",
-    "QM15",
-    "QM16",
-    "QM17",
-    "QM18",
-    "QM2",
-    "QM20",
-    "QM21",
-    "QM24",
-    "QM25",
-    "QM3",
-    "QM31",
-    "QM32",
-    "QM34",
-    "QM35",
-    "QM36",
-    "QM4",
-    "QM40",
-    "QM42",
-    "QM44",
-    "QM5",
-    "QM6",
-    "QM63",
-    "QM64",
-    "QM65",
-    "QM68",
-    "QM7",
-    "QM8",
-    "S40",
-    "S42",
-    "S44",
-    "S46",
-    "S48",
-    "S51",
-    "S52",
-    "S53",
-    "S54",
-    "S55",
-    "S56",
-    "S57",
-    "S59",
-    "S61",
-    "S62",
-    "S66",
-    "S74",
-    "S76",
-    "S78",
-    "S79+",
-    "S81",
-    "S84",
-    "S86",
-    "S89",
-    "S90",
-    "S91",
-    "S92",
-    "S93",
-    "S94",
-    "S96",
-    "S98",
-    "SIM1",
-    "SIM10",
-    "SIM11",
-    "SIM15",
-    "SIM1C",
-    "SIM2",
-    "SIM22",
-    "SIM23",
-    "SIM24",
-    "SIM25",
-    "SIM26",
-    "SIM3",
-    "SIM30",
-    "SIM31",
-    "SIM32",
-    "SIM33",
-    "SIM33C",
-    "SIM34",
-    "SIM35",
-    "SIM3C",
-    "SIM4",
-    "SIM4C",
-    "SIM4X",
-    "SIM5",
-    "SIM5X",
-    "SIM6",
-    "SIM6X",
-    "SIM7",
-    "SIM8",
-    "SIM8X",
-    "SIM9",
-    "X1",
-    "X10",
-    "X10B",
-    "X11",
-    "X12",
-    "X14",
-    "X15",
-    "X17",
-    "X17A",
-    "X17J",
-    "X19",
-    "X2",
-    "X21",
-    "X22",
-    "X22A",
-    "X27",
-    "X28",
-    "X3",
-    "X30",
-    "X31",
-    "X37",
-    "X38",
-    "X4",
-    "X42",
-    "X5",
-    "X63",
-    "X64",
-    "X68",
-    "X7",
-    "X8",
-    "X9"
-]
+          const weekendEntry = weekendByMonth[weekdayEntry.month];
 
-//GET MONTHLY WEEKDAY BUS SPEEDS SINCE JAN 2015
+          const total_number_of_customers =
+            weekdayEntry.number_of_customers + (weekendEntry?.number_of_customers ?? 0);
 
-const monthly_weekday_bus_speeds_from_jan_2015_rows =
-    await fetch("/src/json/monthly_weekday_bus_speeds_from_jan_2015.json")
-        .then(res => res.json());
+          const weighted = (weekdayField, weekendField) =>
+            (weekdayEntry.number_of_customers * weekdayEntry[weekdayField] +
+              (weekendEntry?.number_of_customers ?? 0) * (weekendEntry?.[weekendField] ?? 0))
+            / total_number_of_customers;
 
-for (const bus_line of bus_lines) {
-    monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line] =
-        monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line].map(entry => ({
-            month: entry.month,
-            total_operating_time: entry.total_operating_time,
-            total_mileage: entry.total_mileage,
-            count: entry.average_speed
-        }));
-}
+          //combine into overall database
+          return {
+            month: weekdayEntry.month,
+            number_of_customers: total_number_of_customers,
+            additional_bus_stop_time: weighted('additional_bus_stop_time', 'additional_bus_stop_time'),
+            additional_travel_time: weighted('additional_travel_time', 'additional_travel_time'),
+            count: weighted('count', 'count')
+          };
+        });
+  }
 
-//GET MONTHLY WEEKEND BUS SPEEDS SINCE JAN 2015
-
-const monthly_weekend_bus_speeds_from_jan_2015_rows =
-    await fetch("/src/json/monthly_weekend_bus_speeds_from_jan_2015.json")
-        .then(res => res.json());
-
-for (const bus_line of bus_lines) {
-    monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line] =
-        monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line].map(entry => ({
-            month: entry.month,
-            total_operating_time: entry.total_operating_time,
-            total_mileage: entry.total_mileage,
-            count: entry.average_speed
-        }));
-}
-
-//GET MONTHLY OVERALL BUS SPEEDS SINCE JAN 2015
-
-const monthly_overall_bus_speeds_from_jan_2015_rows = {};
-
-//for each bus line...
-for (const bus_line of bus_lines) {
-
-  //create a weekday and weekend series for each subway line
-  const weekday = monthly_weekday_bus_speeds_from_jan_2015_rows[bus_line];
-  const weekend = monthly_weekend_bus_speeds_from_jan_2015_rows[bus_line];
-
-  //build a lookup: month -> weekend entry for each series
-  const weekendByMonth = Object.fromEntries(
-    (weekend ?? []).map(entry => [entry.month, entry])
-  );
-
-  //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
-  monthly_overall_bus_speeds_from_jan_2015_rows[bus_line] =
-    weekday
-      .map(weekdayEntry => {
-
-        const weekendEntry = weekendByMonth[weekdayEntry.month];
-
-        const total_mileage =
-          weekdayEntry.total_mileage + (weekendEntry?.total_mileage ?? 0);
-
-        const total_operating_time =
-          weekdayEntry.total_operating_time + (weekendEntry?.total_operating_time ?? 0);
-
-        //combine into overall database
-        return {
-          month: weekdayEntry.month,
-          total_mileage,
-          total_operating_time,
-          count: total_mileage / total_operating_time
-        };
-      });
-}
-
-//function to create systemwide otp entry "line" (for each weekday, weekend, overall)
-function createSystemwideBusSpeeds(dataset) {
+  //function to create systemwide otp entry "line" (for each peak, offpeak, overall)
+  function createSystemwideBusOTP(dataset) {
 
     const monthlyTotals = {};
 
     //for each bus line...
     for (const bus_line of Object.keys(dataset)) {
-        
-        //for each month in each subway line
+
+        //for each month in each bus line
         for (const entry of dataset[bus_line]) {
 
-            //if there is yet to be a monthly value for the number of scheduled and on time trips, create a month element and fill it with 0 for now. 
             if (!monthlyTotals[entry.month]) {
                 monthlyTotals[entry.month] = {
-                    total_mileage: 0,
-                    total_operating_time: 0
+                    total_customers: 0,
+                    weighted_bus_stop_time: 0,
+                    weighted_travel_time: 0,
+                    weighted_journey_pct: 0
                 };
             }
 
-            //add values to total
-            monthlyTotals[entry.month].total_mileage += entry.total_mileage;
-            monthlyTotals[entry.month].total_operating_time += entry.total_operating_time;
+            const customers = entry.number_of_customers;
+
+            monthlyTotals[entry.month].total_customers += customers;
+            monthlyTotals[entry.month].weighted_bus_stop_time += customers * entry.additional_bus_stop_time;
+            monthlyTotals[entry.month].weighted_travel_time += customers * entry.additional_travel_time;
+            monthlyTotals[entry.month].weighted_journey_pct += customers * entry.count;
         }
     }
 
-    //create a new entry "line" for systemwide, add our values to it
+    //create systemwide entry, dividing weighted sums by total customers
     return Object.entries(monthlyTotals).map(([month, totals]) => ({
         month,
-        total_mileage: totals.total_mileage,
-        total_operating_time: totals.total_operating_time,
-        count: totals.total_mileage / totals.total_operating_time
+        number_of_customers: totals.total_customers,
+        additional_bus_stop_time: totals.weighted_bus_stop_time / totals.total_customers,
+        additional_travel_time: totals.weighted_travel_time / totals.total_customers,
+        count: totals.weighted_journey_pct / totals.total_customers
     }));
-}
 
-//add systemwide to dataset for each of weekday, weekend, overall
-monthly_weekday_bus_speeds_from_jan_2015_rows["Systemwide"] =
-    createSystemwideBusSpeeds(monthly_weekday_bus_speeds_from_jan_2015_rows);
-  
-monthly_weekend_bus_speeds_from_jan_2015_rows["Systemwide"] =
-    createSystemwideBusSpeeds(monthly_weekend_bus_speeds_from_jan_2015_rows);
+  }
 
-monthly_overall_bus_speeds_from_jan_2015_rows["Systemwide"] =
-    createSystemwideBusSpeeds(monthly_overall_bus_speeds_from_jan_2015_rows);
+  //add systemwide to dataset for each of weekday, weekend, overall
+  monthly_peak_bus_otp_from_aug_2017_rows["Systemwide"] =
+      createSystemwideBusOTP(monthly_peak_bus_otp_from_aug_2017_rows);
+    
+  monthly_offpeak_bus_otp_from_aug_2017_rows["Systemwide"] =
+      createSystemwideBusOTP(monthly_offpeak_bus_otp_from_aug_2017_rows);
 
-const monthly_bus_speeds_step_size_reference = Object.fromEntries(
-    Object.keys(monthly_overall_bus_speeds_from_jan_2015_rows)
-          .map(line => [line, 2])
-);
+  monthly_overall_bus_otp_from_aug_2017_rows["Systemwide"] =
+      createSystemwideBusOTP(monthly_overall_bus_otp_from_aug_2017_rows);
 
-//go through the selected choices btwn weekday, weekend, and overall
-//depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
-const busSpeedsDatasets = {
-    "Overall": monthly_overall_bus_speeds_from_jan_2015_rows,
-    "Weekday": monthly_weekday_bus_speeds_from_jan_2015_rows,
-    "Weekend": monthly_weekend_bus_speeds_from_jan_2015_rows
-};
-
-//LIST OF BUS LINES FOR OTP
-const bus_lines_otp = [
-    "B1",
-    "B100",
-    "B103",
-    "B11",
-    "B12",
-    "B13",
-    "B14",
-    "B15",
-    "B16",
-    "B17",
-    "B2",
-    "B20",
-    "B24",
-    "B25",
-    "B26",
-    "B3",
-    "B31",
-    "B32",
-    "B35",
-    "B36",
-    "B37",
-    "B38",
-    "B39",
-    "B4",
-    "B41",
-    "B42",
-    "B43",
-    "B44",
-    "B44+",
-    "B45",
-    "B46",
-    "B46+",
-    "B47",
-    "B48",
-    "B49",
-    "B52",
-    "B54",
-    "B57",
-    "B6",
-    "B60",
-    "B61",
-    "B62",
-    "B63",
-    "B64",
-    "B65",
-    "B67",
-    "B68",
-    "B69",
-    "B7",
-    "B70",
-    "B74",
-    "B8",
-    "B82",
-    "B82+",
-    "B83",
-    "B84",
-    "B9",
-    "BM1",
-    "BM2",
-    "BM3",
-    "BM4",
-    "BM5",
-    "BX1",
-    "BX10",
-    "BX11",
-    "BX12",
-    "BX12+",
-    "BX13",
-    "BX15",
-    "BX16",
-    "BX17",
-    "BX18",
-    "BX18A",
-    "BX18B",
-    "BX19",
-    "BX2",
-    "BX20",
-    "BX21",
-    "BX22",
-    "BX23",
-    "BX24",
-    "BX25",
-    "BX26",
-    "BX27",
-    "BX28",
-    "BX29",
-    "BX3",
-    "BX30",
-    "BX31",
-    "BX32",
-    "BX33",
-    "BX34",
-    "BX35",
-    "BX36",
-    "BX38",
-    "BX39",
-    "BX4",
-    "BX40",
-    "BX41",
-    "BX41+",
-    "BX42",
-    "BX46",
-    "BX4A",
-    "BX5",
-    "BX6",
-    "BX6+",
-    "BX7",
-    "BX8",
-    "BX9",
-    "BXM1",
-    "BXM10",
-    "BXM11",
-    "BXM18",
-    "BXM2",
-    "BXM3",
-    "BXM4",
-    "BXM6",
-    "BXM7",
-    "BXM8",
-    "BXM9",
-    "M1",
-    "M10",
-    "M100",
-    "M101",
-    "M102",
-    "M103",
-    "M104",
-    "M106",
-    "M11",
-    "M116",
-    "M12",
-    "M125",
-    "M14A",
-    "M14A+",
-    "M14D",
-    "M14D+",
-    "M15",
-    "M15+",
-    "M2",
-    "M20",
-    "M21",
-    "M22",
-    "M23+",
-    "M3",
-    "M31",
-    "M34+",
-    "M34A+",
-    "M35",
-    "M4",
-    "M42",
-    "M5",
-    "M50",
-    "M55",
-    "M57",
-    "M60+",
-    "M66",
-    "M7",
-    "M72",
-    "M79+",
-    "M8",
-    "M86+",
-    "M9",
-    "M96",
-    "M98",
-    "Q1",
-    "Q10",
-    "Q100",
-    "Q101",
-    "Q102",
-    "Q103",
-    "Q104",
-    "Q11",
-    "Q110",
-    "Q111",
-    "Q112",
-    "Q113",
-    "Q114",
-    "Q115",
-    "Q12",
-    "Q13",
-    "Q14",
-    "Q15",
-    "Q15A",
-    "Q16",
-    "Q17",
-    "Q18",
-    "Q19",
-    "Q2",
-    "Q20",
-    "Q20A",
-    "Q20B",
-    "Q21",
-    "Q22",
-    "Q23",
-    "Q24",
-    "Q25",
-    "Q26",
-    "Q27",
-    "Q28",
-    "Q29",
-    "Q3",
-    "Q30",
-    "Q31",
-    "Q32",
-    "Q33",
-    "Q34",
-    "Q35",
-    "Q36",
-    "Q37",
-    "Q38",
-    "Q39",
-    "Q4",
-    "Q40",
-    "Q41",
-    "Q42",
-    "Q43",
-    "Q44+",
-    "Q45",
-    "Q46",
-    "Q47",
-    "Q48",
-    "Q49",
-    "Q5",
-    "Q50",
-    "Q51",
-    "Q52",
-    "Q52+",
-    "Q53",
-    "Q53+",
-    "Q54",
-    "Q55",
-    "Q56",
-    "Q58",
-    "Q59",
-    "Q6",
-    "Q60",
-    "Q61",
-    "Q63",
-    "Q64",
-    "Q65",
-    "Q66",
-    "Q67",
-    "Q69",
-    "Q7",
-    "Q70+",
-    "Q72",
-    "Q74",
-    "Q75",
-    "Q76",
-    "Q77",
-    "Q8",
-    "Q80",
-    "Q82",
-    "Q83",
-    "Q84",
-    "Q85",
-    "Q86",
-    "Q87",
-    "Q88",
-    "Q89",
-    "Q9",
-    "Q90",
-    "Q98",
-    "QM1",
-    "QM10",
-    "QM11",
-    "QM12",
-    "QM15",
-    "QM16",
-    "QM17",
-    "QM18",
-    "QM2",
-    "QM20",
-    "QM21",
-    "QM24",
-    "QM25",
-    "QM3",
-    "QM31",
-    "QM32",
-    "QM34",
-    "QM35",
-    "QM36",
-    "QM4",
-    "QM40",
-    "QM42",
-    "QM44",
-    "QM5",
-    "QM6",
-    "QM63",
-    "QM64",
-    "QM65",
-    "QM68",
-    "QM7",
-    "QM8",
-    "S40",
-    "S42",
-    "S44",
-    "S46",
-    "S48",
-    "S51",
-    "S52",
-    "S53",
-    "S54",
-    "S55",
-    "S56",
-    "S57",
-    "S59",
-    "S61",
-    "S62",
-    "S66",
-    "S74",
-    "S76",
-    "S78",
-    "S79+",
-    "S81",
-    "S84",
-    "S86",
-    "S89",
-    "S90",
-    "S91",
-    "S92",
-    "S93",
-    "S94",
-    "S96",
-    "S98",
-    "SBS12",
-    "SIM1",
-    "SIM10",
-    "SIM11",
-    "SIM15",
-    "SIM1C",
-    "SIM2",
-    "SIM22",
-    "SIM23",
-    "SIM24",
-    "SIM25",
-    "SIM26",
-    "SIM3",
-    "SIM30",
-    "SIM31",
-    "SIM32",
-    "SIM33",
-    "SIM33C",
-    "SIM34",
-    "SIM35",
-    "SIM3C",
-    "SIM4",
-    "SIM4C",
-    "SIM4X",
-    "SIM5",
-    "SIM5X",
-    "SIM6",
-    "SIM6X",
-    "SIM7",
-    "SIM8",
-    "SIM8X",
-    "SIM9",
-    "T117",
-    "T323",
-    "T403",
-    "T430",
-    "T464",
-    "X1",
-    "X10",
-    "X10B",
-    "X11",
-    "X12",
-    "X14",
-    "X15",
-    "X17",
-    "X17A",
-    "X17J",
-    "X19",
-    "X2",
-    "X21",
-    "X22",
-    "X22A",
-    "X27",
-    "X28",
-    "X3",
-    "X30",
-    "X31",
-    "X37",
-    "X38",
-    "X4",
-    "X42",
-    "X5",
-    "X63",
-    "X64",
-    "X68",
-    "X7",
-    "X8",
-    "X9",
-]
-
-//GET MONTHLY PEAK BUS OTP SINCE AUG 2017
-
-const monthly_peak_bus_otp_from_aug_2017_rows =
-    await fetch("/src/json/monthly_peak_bus_otp_from_aug_2017.json")
-        .then(res => res.json());
-
-for (const bus_line of bus_lines_otp) {
-    monthly_peak_bus_otp_from_aug_2017_rows[bus_line] =
-        monthly_peak_bus_otp_from_aug_2017_rows[bus_line].map(entry => ({
-            month: entry.month,
-            number_of_customers: entry.number_of_customers,
-            additional_bus_stop_time: entry.additional_bus_stop_time,
-            additional_travel_time: entry.additional_travel_time,
-            count: entry.customer_journey_time * 100
-        }));
-}
-
-//GET MONTHLY OFFPEAK BUS OTP SINCE AUG 2017
-
-const monthly_offpeak_bus_otp_from_aug_2017_rows =
-    await fetch("/src/json/monthly_offpeak_bus_otp_from_aug_2017.json")
-        .then(res => res.json());
-
-for (const bus_line of bus_lines_otp) {
-    monthly_offpeak_bus_otp_from_aug_2017_rows[bus_line] =
-        monthly_offpeak_bus_otp_from_aug_2017_rows[bus_line].map(entry => ({
-            month: entry.month,
-            number_of_customers: entry.number_of_customers,
-            additional_bus_stop_time: entry.additional_bus_stop_time,
-            additional_travel_time: entry.additional_travel_time,
-            count: entry.customer_journey_time * 100
-        }));
-}
-
-
-//GET MONTHLY OVERALL BUS OTP SINCE AUG 2017
-
-const monthly_overall_bus_otp_from_aug_2017_rows = {};
-
-//for each bus line...
-for (const bus_line of bus_lines_otp) {
-
-  //create a weekday and weekend series for each subway line
-  const weekday = monthly_peak_bus_otp_from_aug_2017_rows[bus_line];
-  const weekend = monthly_offpeak_bus_otp_from_aug_2017_rows[bus_line];
-
-  //build a lookup: month -> weekend entry for each series
-  const weekendByMonth = Object.fromEntries(
-    (weekend ?? []).map(entry => [entry.month, entry])
+  const monthly_bus_otp_step_size_reference = Object.fromEntries(
+      Object.keys(monthly_overall_bus_otp_from_aug_2017_rows)
+            .map(line => [line, 15])
   );
 
-  //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
-  monthly_overall_bus_otp_from_aug_2017_rows[bus_line] =
-    weekday
-      .map(weekdayEntry => {
+  //go through the selected choices btwn weekday, weekend, and overall
+  //depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
+  const busOTPDatasets = {
+      "All-Day": monthly_overall_bus_otp_from_aug_2017_rows,
+      "Peak": monthly_peak_bus_otp_from_aug_2017_rows,
+      "Off-Peak": monthly_offpeak_bus_otp_from_aug_2017_rows
+  };
 
-        const weekendEntry = weekendByMonth[weekdayEntry.month];
-
-        const total_number_of_customers =
-          weekdayEntry.number_of_customers + (weekendEntry?.number_of_customers ?? 0);
-
-        const weighted = (weekdayField, weekendField) =>
-          (weekdayEntry.number_of_customers * weekdayEntry[weekdayField] +
-            (weekendEntry?.number_of_customers ?? 0) * (weekendEntry?.[weekendField] ?? 0))
-          / total_number_of_customers;
-
-        //combine into overall database
-        return {
-          month: weekdayEntry.month,
-          number_of_customers: total_number_of_customers,
-          additional_bus_stop_time: weighted('additional_bus_stop_time', 'additional_bus_stop_time'),
-          additional_travel_time: weighted('additional_travel_time', 'additional_travel_time'),
-          count: weighted('count', 'count')
-        };
-      });
 }
 
-//function to create systemwide otp entry "line" (for each peak, offpeak, overall)
-function createSystemwideBusOTP(dataset) {
+if (PAGE == "mta-ridership") {
+  //GET MONTHLY SUBWAY ENTRIES SINCE MAR 2020
+  const monthly_entries_subway_from_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_from_mar_2020.json")
+      .then(res => res.json());
 
-  const monthlyTotals = {};
+  //GET MONTHLY LIRR ENTRIES SINCE MAR 2020
+  const monthly_lirr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_lirr_entries_from_mar_2020.json")
+      .then(res => res.json());
 
-  //for each bus line...
-  for (const bus_line of Object.keys(dataset)) {
+  //GET MONTHLY MNR ENTRIES SINCE MAR 2020
+  const monthly_mnr_entries_from_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_from_mar_2020.json")
+      .then(res => res.json());
 
-      //for each month in each bus line
-      for (const entry of dataset[bus_line]) {
+  //GET MONTHLY AAR ENTRIES SINCE MAR 2020
+  const monthly_aar_entries_from_mar_2020_rows = await fetch("/src/json/monthly_aar_entries_from_mar_2020.json")
+      .then(res => res.json());
 
-          if (!monthlyTotals[entry.month]) {
-              monthlyTotals[entry.month] = {
-                  total_customers: 0,
-                  weighted_bus_stop_time: 0,
-                  weighted_travel_time: 0,
-                  weighted_journey_pct: 0
+  //GET MONTHLY BUS ENTRIES SINCE MAR 2020
+  const monthly_bus_entries_from_mar_2020_rows = await fetch("/src/json/monthly_bus_entries_from_mar_2020.json")
+      .then(res => res.json());
+
+  //GET MONTHLY SIR ENTRIES SINCE MAR 2020
+  const monthly_sir_entries_from_mar_2020_rows = await fetch("/src/json/monthly_sir_entries_from_mar_2020.json")
+      .then(res => res.json());
+
+  //////////////////////////////////////////////// NEW ^^ OLD VV
+
+  //GET MONTHLY SUBWAY ENTRIES UP TO MAR 2020
+  const monthly_entries_subway_to_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_to_mar_2020_old.json")
+      .then(res => res.json());
+
+  //GET MONTHLY LIRR ENTRIES UP TO MAR 2020
+  const monthly_lirr_entries_to_mar_2020_rows = await fetch("/src/json/monthly_lirr_entries_to_mar_2020_old.json")
+      .then(res => res.json());
+
+  //GET MONTHLY MNR ENTRIES UP TO MAR 2020
+  const monthly_mnr_entries_to_mar_2020_rows = await fetch("/src/json/monthly_mnr_entries_to_mar_2020_old.json")
+      .then(res => res.json());
+
+  //GET MONTHLY AAR ENTRIES UP TO MAR 2020
+  const monthly_aar_entries_to_mar_2020_rows = await fetch("/src/json/monthly_aar_entries_to_mar_2020_old.json")
+      .then(res => res.json());
+
+  //GET MONTHLY BUS ENTRIES UP TO MAR 2020
+  const monthly_bus_entries_to_mar_2020_rows = await fetch("/src/json/monthly_bus_entries_to_mar_2020_old.json")
+      .then(res => res.json());
+
+  //GET MONTHLY SIR ENTRIES UP TO MAR 2020
+  const monthly_sir_entries_to_mar_2020_rows = await fetch("/src/json/monthly_sir_entries_to_mar_2020_old.json")
+      .then(res => res.json());
+
+  //COMBINED MONTHLY MTA ENTRIES (OLD + NEW)
+
+  //SUBWAY
+  const monthly_entries_subway_total_rows = [
+      ...monthly_entries_subway_to_mar_2020_rows,
+      ...monthly_entries_subway_from_mar_2020_rows
+  ];
+
+  //LIRR
+  const monthly_lirr_entries_total_rows = [
+      ...monthly_lirr_entries_to_mar_2020_rows,
+      ...monthly_lirr_entries_from_mar_2020_rows
+  ];
+
+  //MNR
+  const monthly_mnr_entries_total_rows = [
+      ...monthly_mnr_entries_to_mar_2020_rows,
+      ...monthly_mnr_entries_from_mar_2020_rows
+  ];
+
+  //AAR
+  const monthly_aar_entries_total_rows = [
+      ...monthly_aar_entries_to_mar_2020_rows,
+      ...monthly_aar_entries_from_mar_2020_rows
+  ];
+
+  //BUS
+  const monthly_bus_entries_total_rows = [
+      ...monthly_bus_entries_to_mar_2020_rows,
+      ...monthly_bus_entries_from_mar_2020_rows
+  ];
+
+  //SIR
+  const monthly_sir_entries_total_rows = [
+      ...monthly_sir_entries_to_mar_2020_rows,
+      ...monthly_sir_entries_from_mar_2020_rows
+  ];
+
+  //CREATE LIST OF MTA 6-MODE PUBLIC TRANSIT ENTRIES SINCE MAR 2020
+  const monthly_multimodal_total_rows = {
+    "MNR Ridership": monthly_mnr_entries_total_rows,
+    "LIRR Ridership": monthly_lirr_entries_total_rows,
+    "Subway Ridership": monthly_entries_subway_total_rows,
+    "SIR Ridership": monthly_sir_entries_total_rows,
+    "Bus Ridership": monthly_bus_entries_total_rows,
+    "Access-a-Ride Ridership": monthly_aar_entries_total_rows,
+  };
+
+  const monthly_multimodal_step_size_reference = {
+    "MNR Ridership": 1_000_000,
+    "LIRR Ridership": 1_000_000,
+    "Subway Ridership": 20_000_000,
+    "SIR Ridership": 50_000,
+    "Bus Ridership": 5_000_000,
+    "Access-a-Ride Ridership": 200_000,
+  };
+
+}
+
+if (PAGE == "mta-subway") {
+
+  //GET MONTHLY WEEKDAY SUBWAY OTP RATES SINCE JAN 2015
+
+  //list of subway lines:
+  let subway_line_list =
+  [
+    "1", "2", "3", "4", "5", "6", "7",
+    "S 42nd", "GS", "A", "B", "C", "D", "E", "F", "G", "J",
+    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "FS", "S Rock", "H"
+  ]
+
+  const monthly_weekday_subway_otp_rate_from_jan_2015_rows =
+      await fetch("/src/json/monthly_weekday_subway_otp_rate_from_jan_2015.json")
+          .then(res => res.json());
+
+  for (const subway_line of subway_line_list) {
+      monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line] =
+          monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line].map(entry => ({
+              month: entry.month,
+              on_time_trips: entry.num_on_time_trips,
+              sched_trips: entry.num_sched_trips,
+              count: entry.otp_rate * 100
+          }));
+  }
+
+  //GET MONTHLY WEEKEND SUBWAY OTP RATES SINCE JAN 2015
+
+  const monthly_weekend_subway_otp_rate_from_jan_2015_rows =
+      await fetch("/src/json/monthly_weekend_subway_otp_rate_from_jan_2015.json")
+          .then(res => res.json());
+
+  for (const subway_line of subway_line_list) {
+      monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line] =
+          monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line].map(entry => ({
+              month: entry.month,
+              on_time_trips: entry.num_on_time_trips,
+              sched_trips: entry.num_sched_trips,
+              count: entry.otp_rate * 100
+          }));
+  }
+
+  //function to combine lines together. keeps the keepline, removes removeline
+  function combineLines(dataset, keepLine, removeLine) {
+
+      const combined = {};
+
+      for (const entry of dataset[keepLine]) {
+          combined[entry.month] = {
+              on_time_trips: entry.on_time_trips,
+              sched_trips: entry.sched_trips
+          };
+      }
+
+      for (const entry of dataset[removeLine]) {
+
+          if (!combined[entry.month]) {
+              combined[entry.month] = {
+                  on_time_trips: 0,
+                  sched_trips: 0
               };
           }
 
-          const customers = entry.number_of_customers;
+          combined[entry.month].on_time_trips += entry.on_time_trips;
+          combined[entry.month].sched_trips += entry.sched_trips;
+      }
 
-          monthlyTotals[entry.month].total_customers += customers;
-          monthlyTotals[entry.month].weighted_bus_stop_time += customers * entry.additional_bus_stop_time;
-          monthlyTotals[entry.month].weighted_travel_time += customers * entry.additional_travel_time;
-          monthlyTotals[entry.month].weighted_journey_pct += customers * entry.count;
+    dataset[keepLine] = Object.entries(combined)
+      .map(([month, totals]) => ({
+          month,
+          on_time_trips: totals.on_time_trips,
+          sched_trips: totals.sched_trips,
+          count: totals.on_time_trips / totals.sched_trips * 100
+      }))
+      .sort((a, b) => a.month.localeCompare(b.month));
+
+    delete dataset[removeLine];
+  }
+
+  for (const dataset of [
+      monthly_weekday_subway_otp_rate_from_jan_2015_rows,
+      monthly_weekend_subway_otp_rate_from_jan_2015_rows
+  ]) {
+      combineLines(dataset, "S 42nd", "GS");
+      combineLines(dataset, "S Fkln", "FS");
+      combineLines(dataset, "S Rock", "H");
+      combineLines(dataset, "JZ", "J");
+  }
+
+  //update subway_line_list:
+  subway_line_list =
+  [
+    "1", "2", "3", "4", "5", "6", "7",
+    "S 42nd", "A", "B", "C", "D", "E", "F", "G",
+    "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock",
+  ]
+
+  //GET MONTHLY OVERALL SUBWAY OTP RATES SINCE JAN 2015
+
+  const monthly_overall_subway_otp_rate_from_jan_2015_rows = {};
+
+  //for each subway line...
+  for (const subway_line of subway_line_list) {
+
+    //create a weekday and weekend series for each subway line
+    const weekday = monthly_weekday_subway_otp_rate_from_jan_2015_rows[subway_line];
+    const weekend = monthly_weekend_subway_otp_rate_from_jan_2015_rows[subway_line];
+
+    //build a lookup: month -> weekend entry for each series
+    const weekendByMonth = Object.fromEntries(
+      (weekend ?? []).map(entry => [entry.month, entry])
+    );
+
+    //now create combined on_time_trips and sched_trips from sum of weekend and weekday trips by subway line.
+    monthly_overall_subway_otp_rate_from_jan_2015_rows[subway_line] =
+      weekday
+        .map(weekdayEntry => {
+
+          const weekendEntry = weekendByMonth[weekdayEntry.month];
+
+          const on_time_trips =
+            weekdayEntry.on_time_trips + (weekendEntry?.on_time_trips ?? 0);
+
+          const sched_trips =
+            weekdayEntry.sched_trips + (weekendEntry?.sched_trips ?? 0);
+
+          //combine into overall database
+          return {
+            month: weekdayEntry.month,
+            on_time_trips,
+            sched_trips,
+            count: on_time_trips / sched_trips * 100
+          };
+        });
+  }
+
+  //function to create systemwide otp entry "line" (for each weekday, weekend, overall)
+  function createSystemwideOTP(dataset) {
+
+      const monthlyTotals = {};
+
+      //for each subway line...
+      for (const subway_line of Object.keys(dataset)) {
+          
+          //for each month in each subway line
+          for (const entry of dataset[subway_line]) {
+
+              //if there is yet to be a monthly value for the number of scheduled and on time trips, create a month element and fill it with 0 for now. 
+              if (!monthlyTotals[entry.month]) {
+                  monthlyTotals[entry.month] = {
+                      on_time_trips: 0,
+                      sched_trips: 0
+                  };
+              }
+
+              //add values to total
+              monthlyTotals[entry.month].on_time_trips += entry.on_time_trips;
+              monthlyTotals[entry.month].sched_trips += entry.sched_trips;
+          }
+      }
+
+      //create a new entry "line" for systemwide, add our values to it
+      return Object.entries(monthlyTotals).map(([month, totals]) => ({
+          month,
+          on_time_trips: totals.on_time_trips,
+          sched_trips: totals.sched_trips,
+          count: totals.on_time_trips / totals.sched_trips * 100
+      }));
+  }
+
+  //add systemwide to dataset for each of weekday, weekend, overall
+  monthly_weekday_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
+      createSystemwideOTP(monthly_weekday_subway_otp_rate_from_jan_2015_rows);
+    
+  monthly_weekend_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
+      createSystemwideOTP(monthly_weekend_subway_otp_rate_from_jan_2015_rows);
+
+  monthly_overall_subway_otp_rate_from_jan_2015_rows["Systemwide"] =
+      createSystemwideOTP(monthly_overall_subway_otp_rate_from_jan_2015_rows);
+
+  const monthly_subway_otp_rate_step_size_reference = Object.fromEntries(
+    [
+      "1", "2", "3", "4", "5", "6", "7",
+      "S 42nd", "A", "B", "C", "D", "E", "F", "G",
+      "JZ", "L", "M", "N", "Q", "R", "S Fkln", "S Rock", "Systemwide"
+    ].map(line => [line, 20])
+  );
+
+  //go through the selected choices btwn weekday, weekend, and overall
+  //depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
+  const subwayOTPDatasets = {
+      "Overall": monthly_overall_subway_otp_rate_from_jan_2015_rows,
+      "Weekday": monthly_weekday_subway_otp_rate_from_jan_2015_rows,
+      "Weekend": monthly_weekend_subway_otp_rate_from_jan_2015_rows
+  };
+}
+
+if (PAGE == "njt-path-panynj") {
+
+  //LIST OF PATH STATIONS
+  const path_stations = [
+    "Christopher Street",
+    "9th Street",
+    "14th Street",
+    "23rd Street",
+    "33rd Street",
+    "WTC",
+    "Newark",
+    "Harrison",
+    "Journal Square",
+    "Grove Street",
+    "Exchange Place",
+    "Newport",
+    "Hoboken",
+    "Systemwide"
+  ]
+
+  //GET MONTHLY WEEKDAY PATH RIDERSHIP SINCE JAN 2013
+
+  const monthly_weekday_path_ridership_from_jan_2013_rows =
+      await fetch("/src/json/monthly_weekday_path_ridership_from_jan_2013.json")
+          .then(res => res.json());
+
+  for (const path_station of path_stations) {
+      monthly_weekday_path_ridership_from_jan_2013_rows[path_station] =
+          monthly_weekday_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+              month: entry.month,
+              count: entry.count
+          }));
+  }
+
+  //GET MONTHLY SATURDAY PATH RIDERSHIP SINCE JAN 2013
+
+  const monthly_sat_path_ridership_from_jan_2013_rows =
+      await fetch("/src/json/monthly_sat_path_ridership_from_jan_2013.json")
+          .then(res => res.json());
+
+  for (const path_station of path_stations) {
+      monthly_sat_path_ridership_from_jan_2013_rows[path_station] =
+          monthly_sat_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+              month: entry.month,
+              count: entry.count
+          }));
+  }
+
+  //GET MONTHLY SUNDAY PATH RIDERSHIP SINCE JAN 2013
+
+  const monthly_sun_path_ridership_from_jan_2013_rows =
+      await fetch("/src/json/monthly_sun_path_ridership_from_jan_2013.json")
+          .then(res => res.json());
+
+  for (const path_station of path_stations) {
+      monthly_sun_path_ridership_from_jan_2013_rows[path_station] =
+          monthly_sun_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+              month: entry.month,
+              count: entry.count
+          }));
+  }
+
+  //GET MONTHLY HOLIDAY PATH RIDERSHIP SINCE JAN 2013
+
+  const monthly_holiday_path_ridership_from_jan_2013_rows =
+      await fetch("/src/json/monthly_holiday_path_ridership_from_jan_2013.json")
+          .then(res => res.json());
+
+  for (const path_station of path_stations) {
+      monthly_holiday_path_ridership_from_jan_2013_rows[path_station] =
+          monthly_holiday_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+              month: entry.month,
+              count: entry.count
+          }));
+  }
+
+  //GET MONTHLY OVERALL PATH RIDERSHIP SINCE JAN 2013
+
+  const monthly_overall_path_ridership_from_jan_2013_rows =
+      await fetch("/src/json/monthly_total_path_ridership_from_jan_2013.json")
+          .then(res => res.json());
+
+  for (const path_station of path_stations) {
+      monthly_overall_path_ridership_from_jan_2013_rows[path_station] =
+          monthly_overall_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
+              month: entry.month,
+              count: entry.count
+          }));
+  }
+
+  //go through the selected choices btwn weekday, weekend, and overall
+  //depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
+  const pathMonthlyRidershipDatasets = {
+      "Weekday": monthly_weekday_path_ridership_from_jan_2013_rows,
+      "Saturday": monthly_sat_path_ridership_from_jan_2013_rows,
+      "Sunday": monthly_sun_path_ridership_from_jan_2013_rows,
+      "Holiday": monthly_holiday_path_ridership_from_jan_2013_rows,
+      "Overall": monthly_overall_path_ridership_from_jan_2013_rows
+  };
+
+  //step size differs A LOT between day types here (weekday ridership dwarfs sunday/holiday
+  //ridership at the same station), so this is built per day type -- shaped like the superlist
+  //itself -- instead of one flat reference. See buildStepSizeReferenceFromSuperList above.
+  const monthly_path_ridership_from_jan_2013_step_size_reference =
+      buildStepSizeReferenceFromSuperList(pathMonthlyRidershipDatasets);
+
+
+  //LIST OF PANYNJ CROSSINGS
+  const panynj_crossings = [
+    "Bayonne Bridge",
+    "George Washington Bridge",
+    "Goethals Bridge",
+    "Holland Tunnel",
+    "Lincoln Tunnel",
+    "Outerbridge Crossing",
+    "Systemwide"
+  ]
+
+  const panynj_vehicle_types = [
+      "Automobiles",
+      "Buses",
+      "Trucks",
+      "Total Vehicles"
+  ];
+
+  const panynj_vehicle_type_filenames = {
+      "Automobiles": "monthly_automo_panynj_crossings_from_jan_2011.json",
+      "Buses": "monthly_buses_panynj_crossings_from_jan_2011.json",
+      "Trucks": "monthly_trucks_panynj_crossings_from_jan_2011.json",
+      "Total Vehicles": "monthly_total_vehicles_panynj_crossings_from_jan_2011.json"
+  };
+
+  //GET MONTHLY PANYNJ CROSSINGS SINCE JAN 2011
+
+  const panynjMonthlyCrossingDatasets = {};
+
+  for (const panynj_vehicle_type of panynj_vehicle_types) {
+
+      const data = await fetch(
+          `/src/json/${panynj_vehicle_type_filenames[panynj_vehicle_type]}`
+      ).then(res => res.json());
+
+      panynjMonthlyCrossingDatasets[panynj_vehicle_type] = {};
+
+      for (const panynj_crossing of panynj_crossings) {
+
+          panynjMonthlyCrossingDatasets[panynj_vehicle_type][panynj_crossing] =
+              data[panynj_crossing].map(entry => ({
+                  month: entry.month,
+                  count: entry.count
+              }));
       }
   }
 
-  //create systemwide entry, dividing weighted sums by total customers
-  return Object.entries(monthlyTotals).map(([month, totals]) => ({
-      month,
-      number_of_customers: totals.total_customers,
-      additional_bus_stop_time: totals.weighted_bus_stop_time / totals.total_customers,
-      additional_travel_time: totals.weighted_travel_time / totals.total_customers,
-      count: totals.weighted_journey_pct / totals.total_customers
-  }));
+  //step size differs A LOT between day types here (weekday ridership dwarfs sunday/holiday
+  //ridership at the same station), so this is built per day type -- shaped like the superlist
+  //itself -- instead of one flat reference. See buildStepSizeReferenceFromSuperList above.
+  const monthly_panynj_crossings_from_jan_2011_step_size_reference =
+      buildStepSizeReferenceFromSuperList(panynjMonthlyCrossingDatasets);
 
+
+  //GET MONTHLY NJT RIDERSHIP SINCE JAN 2002
+
+  const monthly_njt_ridership_from_jan_2002_rows =
+      await fetch("/src/json/monthly_njt_ridership_from_jan_2002.json")
+          .then(res => res.json());
+
+  const monthly_njt_ridership_step_size_reference = {
+    "Bus Ridership": 2_000_000,
+    "Commuter Rail Ridership": 1_000_000,
+    "Light Rail Ridership": 500_000,
+    "AccessLink Ridership": 25_000,
+  };
 }
-
-//add systemwide to dataset for each of weekday, weekend, overall
-monthly_peak_bus_otp_from_aug_2017_rows["Systemwide"] =
-    createSystemwideBusOTP(monthly_peak_bus_otp_from_aug_2017_rows);
-  
-monthly_offpeak_bus_otp_from_aug_2017_rows["Systemwide"] =
-    createSystemwideBusOTP(monthly_offpeak_bus_otp_from_aug_2017_rows);
-
-monthly_overall_bus_otp_from_aug_2017_rows["Systemwide"] =
-    createSystemwideBusOTP(monthly_overall_bus_otp_from_aug_2017_rows);
-
-const monthly_bus_otp_step_size_reference = Object.fromEntries(
-    Object.keys(monthly_overall_bus_otp_from_aug_2017_rows)
-          .map(line => [line, 15])
-);
-
-//go through the selected choices btwn weekday, weekend, and overall
-//depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
-const busOTPDatasets = {
-    "All-Day": monthly_overall_bus_otp_from_aug_2017_rows,
-    "Peak": monthly_peak_bus_otp_from_aug_2017_rows,
-    "Off-Peak": monthly_offpeak_bus_otp_from_aug_2017_rows
-};
-
-//LIST OF PATH STATIONS
-const path_stations = [
-  "Christopher Street",
-  "9th Street",
-  "14th Street",
-  "23rd Street",
-  "33rd Street",
-  "WTC",
-  "Newark",
-  "Harrison",
-  "Journal Square",
-  "Grove Street",
-  "Exchange Place",
-  "Newport",
-  "Hoboken",
-  "Systemwide"
-]
-
-//GET MONTHLY WEEKDAY PATH RIDERSHIP SINCE JAN 2013
-
-const monthly_weekday_path_ridership_from_jan_2013_rows =
-    await fetch("/src/json/monthly_weekday_path_ridership_from_jan_2013.json")
-        .then(res => res.json());
-
-for (const path_station of path_stations) {
-    monthly_weekday_path_ridership_from_jan_2013_rows[path_station] =
-        monthly_weekday_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
-            month: entry.month,
-            count: entry.count
-        }));
-}
-
-//GET MONTHLY SATURDAY PATH RIDERSHIP SINCE JAN 2013
-
-const monthly_sat_path_ridership_from_jan_2013_rows =
-    await fetch("/src/json/monthly_sat_path_ridership_from_jan_2013.json")
-        .then(res => res.json());
-
-for (const path_station of path_stations) {
-    monthly_sat_path_ridership_from_jan_2013_rows[path_station] =
-        monthly_sat_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
-            month: entry.month,
-            count: entry.count
-        }));
-}
-
-//GET MONTHLY SUNDAY PATH RIDERSHIP SINCE JAN 2013
-
-const monthly_sun_path_ridership_from_jan_2013_rows =
-    await fetch("/src/json/monthly_sun_path_ridership_from_jan_2013.json")
-        .then(res => res.json());
-
-for (const path_station of path_stations) {
-    monthly_sun_path_ridership_from_jan_2013_rows[path_station] =
-        monthly_sun_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
-            month: entry.month,
-            count: entry.count
-        }));
-}
-
-//GET MONTHLY HOLIDAY PATH RIDERSHIP SINCE JAN 2013
-
-const monthly_holiday_path_ridership_from_jan_2013_rows =
-    await fetch("/src/json/monthly_holiday_path_ridership_from_jan_2013.json")
-        .then(res => res.json());
-
-for (const path_station of path_stations) {
-    monthly_holiday_path_ridership_from_jan_2013_rows[path_station] =
-        monthly_holiday_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
-            month: entry.month,
-            count: entry.count
-        }));
-}
-
-//GET MONTHLY OVERALL PATH RIDERSHIP SINCE JAN 2013
-
-const monthly_overall_path_ridership_from_jan_2013_rows =
-    await fetch("/src/json/monthly_total_path_ridership_from_jan_2013.json")
-        .then(res => res.json());
-
-for (const path_station of path_stations) {
-    monthly_overall_path_ridership_from_jan_2013_rows[path_station] =
-        monthly_overall_path_ridership_from_jan_2013_rows[path_station].map(entry => ({
-            month: entry.month,
-            count: entry.count
-        }));
-}
-
-//go through the selected choices btwn weekday, weekend, and overall
-//depending on which one is chosen, change out the dataset list in the clickselectmultiplelinechart
-const pathMonthlyRidershipDatasets = {
-    "Weekday": monthly_weekday_path_ridership_from_jan_2013_rows,
-    "Saturday": monthly_sat_path_ridership_from_jan_2013_rows,
-    "Sunday": monthly_sun_path_ridership_from_jan_2013_rows,
-    "Holiday": monthly_holiday_path_ridership_from_jan_2013_rows,
-    "Overall": monthly_overall_path_ridership_from_jan_2013_rows
-};
-
-//step size differs A LOT between day types here (weekday ridership dwarfs sunday/holiday
-//ridership at the same station), so this is built per day type -- shaped like the superlist
-//itself -- instead of one flat reference. See buildStepSizeReferenceFromSuperList above.
-const monthly_path_ridership_from_jan_2013_step_size_reference =
-    buildStepSizeReferenceFromSuperList(pathMonthlyRidershipDatasets);
-
-
-//LIST OF PANYNJ CROSSINGS
-const panynj_crossings = [
-  "Bayonne Bridge",
-  "George Washington Bridge",
-  "Goethals Bridge",
-  "Holland Tunnel",
-  "Lincoln Tunnel",
-  "Outerbridge Crossing",
-  "Systemwide"
-]
-
-const panynj_vehicle_types = [
-    "Automobiles",
-    "Buses",
-    "Trucks",
-    "Total Vehicles"
-];
-
-const panynj_vehicle_type_filenames = {
-    "Automobiles": "monthly_automo_panynj_crossings_from_jan_2011.json",
-    "Buses": "monthly_buses_panynj_crossings_from_jan_2011.json",
-    "Trucks": "monthly_trucks_panynj_crossings_from_jan_2011.json",
-    "Total Vehicles": "monthly_total_vehicles_panynj_crossings_from_jan_2011.json"
-};
-
-//GET MONTHLY PANYNJ CROSSINGS SINCE JAN 2011
-
-const panynjMonthlyCrossingDatasets = {};
-
-for (const panynj_vehicle_type of panynj_vehicle_types) {
-
-    const data = await fetch(
-        `/src/json/${panynj_vehicle_type_filenames[panynj_vehicle_type]}`
-    ).then(res => res.json());
-
-    panynjMonthlyCrossingDatasets[panynj_vehicle_type] = {};
-
-    for (const panynj_crossing of panynj_crossings) {
-
-        panynjMonthlyCrossingDatasets[panynj_vehicle_type][panynj_crossing] =
-            data[panynj_crossing].map(entry => ({
-                month: entry.month,
-                count: entry.count
-            }));
-    }
-}
-
-//step size differs A LOT between day types here (weekday ridership dwarfs sunday/holiday
-//ridership at the same station), so this is built per day type -- shaped like the superlist
-//itself -- instead of one flat reference. See buildStepSizeReferenceFromSuperList above.
-const monthly_panynj_crossings_from_jan_2011_step_size_reference =
-    buildStepSizeReferenceFromSuperList(panynjMonthlyCrossingDatasets);
-
-
-//GET MONTHLY NJT RIDERSHIP SINCE JAN 2002
-
-const monthly_njt_ridership_from_jan_2002_rows =
-    await fetch("/src/json/monthly_njt_ridership_from_jan_2002.json")
-        .then(res => res.json());
-
-const monthly_njt_ridership_step_size_reference = {
-  "Bus Ridership": 2_000_000,
-  "Commuter Rail Ridership": 1_000_000,
-  "Light Rail Ridership": 500_000,
-  "AccessLink Ridership": 25_000,
-};
-
-	
-
 
 
 //number to letter grade conversion
@@ -4461,573 +4470,579 @@ const OTPCheckedDatasets = {};
 const busSpeedsCheckedDatasets = {};
 const busOTPCheckedDatasets = {};
 
+if (PAGE == "njt-path-panynj") {
 
-function whichChartsToUpdateNJTRidership(startDate, endDate) {
+  function whichChartsToUpdateNJTRidership(startDate, endDate) {
 
-  //go through all charts which are to be updated, clear them before making new ones
-  for (const oldContainerId of [
-    "monthly_njt_ridership_select_box_line_date_range",
-  ]) {
+    //go through all charts which are to be updated, clear them before making new ones
+    for (const oldContainerId of [
+      "monthly_njt_ridership_select_box_line_date_range",
+    ]) {
 
-    const container = document.getElementById(oldContainerId);
-    if (container) container.innerHTML = "";  // remove old chart
+      const container = document.getElementById(oldContainerId);
+      if (container) container.innerHTML = "";  // remove old chart
 
-  }
+    }
 
-  //make new charts.
-  clickSelectMultipleLineChart({
-    datasetList: monthly_njt_ridership_from_jan_2002_rows,
-    datasetListStepSizeReference: monthly_njt_ridership_step_size_reference,
+    //make new charts.
+    clickSelectMultipleLineChart({
+      datasetList: monthly_njt_ridership_from_jan_2002_rows,
+      datasetListStepSizeReference: monthly_njt_ridership_step_size_reference,
 
-    originalDatasetList: monthly_njt_ridership_from_jan_2002_rows, //originalsuperlist keeps full unfiltered dataset handy down all levels
-                                          //will be needed for scorecard making
+      originalDatasetList: monthly_njt_ridership_from_jan_2002_rows, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                            //will be needed for scorecard making
 
-    containerId: "monthly_njt_ridership_select_box_line_date_range",
+      containerId: "monthly_njt_ridership_select_box_line_date_range",
+      
+      interpretationBoxId: "monthly_njt_ridership_select_box_line_date_range_interpretation",
+      scorecardMode: "Ridership",
+
+      checkBoxGroupId: "njt-ridership-checkboxes_date_range", //lower level, checkboxes
+
+      //no systemwideContainerId here ridership's dataset has no "Systemwide" entry,
+      clearAllButtonId: "njt-ridership-clear-all_date_range",
+
+      persistenceOfCheckedDatasets: true,
+
+      checkedDatasets: njtRidershipCheckedDatasets,
+
+      timeOfInterest: "month",
+      aspectRatio: 2,
+
+      importedDateRange: [new Date(startDate),
+                          new Date(endDate)]
+    });
     
-    interpretationBoxId: "monthly_njt_ridership_select_box_line_date_range_interpretation",
-    scorecardMode: "Ridership",
-
-    checkBoxGroupId: "njt-ridership-checkboxes_date_range", //lower level, checkboxes
-
-    //no systemwideContainerId here ridership's dataset has no "Systemwide" entry,
-    clearAllButtonId: "njt-ridership-clear-all_date_range",
-
-    persistenceOfCheckedDatasets: true,
-
-    checkedDatasets: njtRidershipCheckedDatasets,
-
-    timeOfInterest: "month",
-    aspectRatio: 2,
-
-    importedDateRange: [new Date(startDate),
-                        new Date(endDate)]
-  });
-  
-}
-
-sliderMakerMultipleChart({
-  fromSliderId: '#fromSlider_NJT_ridership',
-  toSliderId: '#toSlider_NJT_ridership',
-  fromLabelId: '#fromLabel_NJT_ridership',
-  toLabelId: '#toLabel_NJT_ridership',
-  startDate: new Date(2002, 0, 1), //Jan 2002
-  endDate: getLatestDateAnyDataLevel({dataLevel: "datasetList", dataItem: monthly_njt_ridership_from_jan_2002_rows}),
-  updateChartsFunction: (startDate, endDate) => {
-    whichChartsToUpdateNJTRidership(startDate, endDate);
-  }
-})
-
-
-function whichChartsToUpdatePathMonthlyRidership(startDate, endDate) {
-
-  //go through all charts which are to be updated, clear them before making new ones
-  for (const oldContainerId of [
-    "monthly_path_ridership_from_jan_2013_select_box_line_date_range",
-  ]) {
-
-    const container = document.getElementById(oldContainerId);
-    if (container) container.innerHTML = "";  // remove old chart
-
   }
 
-  //make new charts.
-  nestedTwoCategorySelectLineChart({
-    datasetSuperList: pathMonthlyRidershipDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
-    datasetListStepSizeReference: monthly_path_ridership_from_jan_2013_step_size_reference,
+  sliderMakerMultipleChart({
+    fromSliderId: '#fromSlider_NJT_ridership',
+    toSliderId: '#toSlider_NJT_ridership',
+    fromLabelId: '#fromLabel_NJT_ridership',
+    toLabelId: '#toLabel_NJT_ridership',
+    startDate: new Date(2002, 0, 1), //Jan 2002
+    endDate: getLatestDateAnyDataLevel({dataLevel: "datasetList", dataItem: monthly_njt_ridership_from_jan_2002_rows}),
+    updateChartsFunction: (startDate, endDate) => {
+      whichChartsToUpdateNJTRidership(startDate, endDate);
+    }
+  })
 
-    originalSuperList: pathMonthlyRidershipDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
-                                          //will be needed for scorecard making
 
-    containerId: "monthly_path_ridership_from_jan_2013_select_box_line_date_range",
-    
-    interpretationBoxId: "monthly_path_ridership_from_jan_2013_select_box_line_date_range_interpretation",
-    scorecardMode: "Ridership",
+  function whichChartsToUpdatePathMonthlyRidership(startDate, endDate) {
 
-    checkboxSuperGroupId: "pathMonthlyRidershipDaySelect_date_range", //upper level, selector
-    checkBoxSubGroupId: "path-monthly-ridership-checkboxes_date_range", //lower level, checkboxes
+    //go through all charts which are to be updated, clear them before making new ones
+    for (const oldContainerId of [
+      "monthly_path_ridership_from_jan_2013_select_box_line_date_range",
+    ]) {
 
-    //systemwide entry exists for path ridership -- gets its own container to the side of the grid
-    systemwideContainerId: "path-monthly-ridership-systemwide_date_range",
-    clearAllButtonId: "path-monthly-ridership-clear-all_date_range",
+      const container = document.getElementById(oldContainerId);
+      if (container) container.innerHTML = "";  // remove old chart
 
-    persistenceOfCheckedDatasets: true,
-    listCheckedDatasets: pathRidershipCheckedDatasets,
+    }
 
-    timeOfInterest: "month",
-    aspectRatio: 2,
-    lineColors: [
-      //Christopher Street
-      "#636EFA",
+    //make new charts.
+    nestedTwoCategorySelectLineChart({
+      datasetSuperList: pathMonthlyRidershipDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+      datasetListStepSizeReference: monthly_path_ridership_from_jan_2013_step_size_reference,
 
-      //9th Street
-      "#E45756",
+      originalSuperList: pathMonthlyRidershipDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                            //will be needed for scorecard making
 
-      //14th Street
-      "#00CC96",
+      containerId: "monthly_path_ridership_from_jan_2013_select_box_line_date_range",
+      
+      interpretationBoxId: "monthly_path_ridership_from_jan_2013_select_box_line_date_range_interpretation",
+      scorecardMode: "Ridership",
 
-      //23rd Street
-      "#AB63FA",
+      checkboxSuperGroupId: "pathMonthlyRidershipDaySelect_date_range", //upper level, selector
+      checkBoxSubGroupId: "path-monthly-ridership-checkboxes_date_range", //lower level, checkboxes
 
-      //33rd Street
-      "#FFA15A",
+      //systemwide entry exists for path ridership -- gets its own container to the side of the grid
+      systemwideContainerId: "path-monthly-ridership-systemwide_date_range",
+      clearAllButtonId: "path-monthly-ridership-clear-all_date_range",
 
-      //WTC
-      "#19D3F3",
+      persistenceOfCheckedDatasets: true,
+      listCheckedDatasets: pathRidershipCheckedDatasets,
 
-      //Newark
-      "#FF6692",
-
-      //Harrison
-      "#B6E880",
-
-      //Journal Square
-      "#FF97FF",
-
-      //Grove Street
-      "#FECB52",
-
-      //Exchange Place
-      "#EF553B",
-
-      //Newport
-      "#7F7F7F",
-
-      //Hoboken
-      "#17BECF",
-
-      //systemwide
-      "#00aaff"
-    ],
-
-    importedDateRange: [new Date(startDate),
-                        new Date(endDate)]
-  });
-  
-}
-
-sliderMakerMultipleChart({
-  fromSliderId: '#fromSlider_path_monthly_ridership',
-  toSliderId: '#toSlider_path_monthly_ridership',
-  fromLabelId: '#fromLabel_path_monthly_ridership',
-  toLabelId: '#toLabel_path_monthly_ridership',
-  startDate: new Date(2013, 0, 1), //Jan 2013
-  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: pathMonthlyRidershipDatasets}),
-  updateChartsFunction: (startDate, endDate) => {
-    whichChartsToUpdatePathMonthlyRidership(startDate, endDate);
-  }
-})
-
-function whichChartsToUpdatePanynjMonthlyCrossings(startDate, endDate) {
-
-  //go through all charts which are to be updated, clear them before making new ones
-  for (const oldContainerId of [
-    "monthly_panynj_crossings_from_jan_2011_select_box_line_date_range",
-  ]) {
-
-    const container = document.getElementById(oldContainerId);
-    if (container) container.innerHTML = "";  // remove old chart
-
-  }
-
-  //make new charts.
-  nestedTwoCategorySelectLineChart({
-    datasetSuperList: panynjMonthlyCrossingDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
-    datasetListStepSizeReference: monthly_panynj_crossings_from_jan_2011_step_size_reference,
-
-    originalSuperList: panynjMonthlyCrossingDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
-                                          //will be needed for scorecard making
-
-    containerId: "monthly_panynj_crossings_from_jan_2011_select_box_line_date_range",
-    
-    interpretationBoxId: "monthly_panynj_monthly_crossings_from_jan_2011_select_box_line_date_range_interpretation",
-    scorecardMode: "Traffic Count",
-
-    checkboxSuperGroupId: "panynjMonthlyCrossingsVehicleSelect_date_range", //upper level, selector
-    checkBoxSubGroupId: "panynj-monthly-crossings-checkboxes_date_range", //lower level, checkboxes
-
-    //systemwide entry exists for path ridership -- gets its own container to the side of the grid
-    systemwideContainerId: "panynj-monthly-crossings-systemwide_date_range",
-    clearAllButtonId: "panynj-monthly-crossings-clear-all_date_range",
-
-    persistenceOfCheckedDatasets: true,
-    listCheckedDatasets: panynjCrossingCheckedDatasets,
-
-    timeOfInterest: "month",
-    aspectRatio: 2,
-    lineColors: [
-        // Bayonne Bridge
-        "#AB63FA",
-
-        // George Washington Bridge
-        "#FFA15A",
-
-        // Goethals Bridge
-        "#EF553B",
-
-        // Holland Tunnel
-        "#FECB52",
-
-        // Lincoln Tunnel
+      timeOfInterest: "month",
+      aspectRatio: 2,
+      lineColors: [
+        //Christopher Street
         "#636EFA",
 
-        // Outerbridge Crossing
+        //9th Street
+        "#E45756",
+
+        //14th Street
         "#00CC96",
 
-        // Systemwide
+        //23rd Street
+        "#AB63FA",
+
+        //33rd Street
+        "#FFA15A",
+
+        //WTC
+        "#19D3F3",
+
+        //Newark
+        "#FF6692",
+
+        //Harrison
+        "#B6E880",
+
+        //Journal Square
+        "#FF97FF",
+
+        //Grove Street
+        "#FECB52",
+
+        //Exchange Place
+        "#EF553B",
+
+        //Newport
+        "#7F7F7F",
+
+        //Hoboken
+        "#17BECF",
+
+        //systemwide
         "#00aaff"
-    ],
+      ],
 
-    importedDateRange: [new Date(startDate),
-                        new Date(endDate)]
-  });
-  
-}
-
-sliderMakerMultipleChart({
-  fromSliderId: '#fromSlider_panynj_monthly_crossings',
-  toSliderId: '#toSlider_panynj_monthly_crossings',
-  fromLabelId: '#fromLabel_panynj_monthly_crossings',
-  toLabelId: '#toLabel_panynj_monthly_crossings',
-  startDate: new Date(2011, 0, 1), //Jan 2011
-  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: panynjMonthlyCrossingDatasets}),
-  updateChartsFunction: (startDate, endDate) => {
-    whichChartsToUpdatePanynjMonthlyCrossings(startDate, endDate);
-  }
-})
-
-function whichChartsToUpdateOTP(startDate, endDate) {
-
-  //go through all charts which are to be updated, clear them before making new ones
-  for (const oldContainerId of [
-    "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
-  ]) {
-
-    const container = document.getElementById(oldContainerId);
-    if (container) container.innerHTML = "";  // remove old chart
-
-  }
-
-  //make new charts.
-  nestedTwoCategorySelectLineChart({
-    datasetSuperList: subwayOTPDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
-    datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
-
-    originalSuperList: subwayOTPDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
-                                          //will be needed for scorecard making
-
-    containerId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
+      importedDateRange: [new Date(startDate),
+                          new Date(endDate)]
+    });
     
-    interpretationBoxId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range_interpretation",
-    scorecardMode: "OTP",
-
-    checkboxSuperGroupId: "subwayOTPDaySelect_date_range", //upper level, selector
-    checkBoxSubGroupId: "subway-otp-checkboxes_date_range", //lower level, checkboxes
-
-    //systemwide entry exists for OTP -- gets its own container to the side of the grid
-    systemwideContainerId: "subway-otp-systemwide_date_range",
-    clearAllButtonId: "subway-otp-clear-all_date_range",
-
-    persistenceOfCheckedDatasets: true,
-    listCheckedDatasets: OTPCheckedDatasets,
-
-    timeOfInterest: "month",
-    aspectRatio: 2,
-    lineColors: [
-      //1, 2, 3
-      "#EE352E",
-      "#EE352E",
-      "#EE352E",
-
-      //4, 5, 6
-      "#00933C",
-      "#00933C",
-      "#00933C",
-
-      //7
-      "#B933AD",
-
-      //S 42nd
-      "#808183",
-
-      //A, B, C, D, E, F
-      "#0039A6",
-      "#FF6319",
-      "#0039A6",
-      "#FF6319",
-      "#0039A6",
-      "#FF6319",
-
-      //G
-      "#75c84e",
-
-      //J, Z
-      "#996633",
-
-      //L
-      "#A7A9AC",
-
-      //M
-      "#FF6319",
-
-      //N, Q, R
-      "#FCCC0A",
-      "#FCCC0A",
-      "#FCCC0A",
-
-      //S Franklin, S Rockaway,
-      "#808183",
-      "#808183",
-
-      //systemwide
-      "#00aaff"
-    ],
-
-    importedDateRange: [new Date(startDate),
-                        new Date(endDate)]
-  });
-  
-}
-
-sliderMakerMultipleChart({
-  fromSliderId: '#fromSlider',
-  toSliderId: '#toSlider',
-  fromLabelId: '#fromLabel',
-  toLabelId: '#toLabel',
-  startDate: new Date(2015, 0, 1), //Jan 2015
-  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: subwayOTPDatasets}),
-  updateChartsFunction: (startDate, endDate) => {
-    whichChartsToUpdateOTP(startDate, endDate);
-  }
-})
-
-
-//////////////////////
-
-function whichChartsToUpdateRidership(startDate, endDate) {
-
-  //go through all charts which are to be updated, clear them before making new ones
-  for (const oldContainerId of [
-    "monthly_ridership_select_box_line_date_range",
-  ]) {
-
-    const container = document.getElementById(oldContainerId);
-    if (container) container.innerHTML = "";  // remove old chart
-
   }
 
-  //make new charts.
-  clickSelectMultipleLineChart({
-    datasetList: monthly_multimodal_total_rows,
-    datasetListStepSizeReference: monthly_multimodal_step_size_reference,
+  sliderMakerMultipleChart({
+    fromSliderId: '#fromSlider_path_monthly_ridership',
+    toSliderId: '#toSlider_path_monthly_ridership',
+    fromLabelId: '#fromLabel_path_monthly_ridership',
+    toLabelId: '#toLabel_path_monthly_ridership',
+    startDate: new Date(2013, 0, 1), //Jan 2013
+    endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: pathMonthlyRidershipDatasets}),
+    updateChartsFunction: (startDate, endDate) => {
+      whichChartsToUpdatePathMonthlyRidership(startDate, endDate);
+    }
+  })
 
-    originalDatasetList: monthly_multimodal_total_rows, //originalsuperlist keeps full unfiltered dataset handy down all levels
-                                          //will be needed for scorecard making
+  function whichChartsToUpdatePanynjMonthlyCrossings(startDate, endDate) {
 
-    containerId: "monthly_ridership_select_box_line_date_range",
+    //go through all charts which are to be updated, clear them before making new ones
+    for (const oldContainerId of [
+      "monthly_panynj_crossings_from_jan_2011_select_box_line_date_range",
+    ]) {
+
+      const container = document.getElementById(oldContainerId);
+      if (container) container.innerHTML = "";  // remove old chart
+
+    }
+
+    //make new charts.
+    nestedTwoCategorySelectLineChart({
+      datasetSuperList: panynjMonthlyCrossingDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+      datasetListStepSizeReference: monthly_panynj_crossings_from_jan_2011_step_size_reference,
+
+      originalSuperList: panynjMonthlyCrossingDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                            //will be needed for scorecard making
+
+      containerId: "monthly_panynj_crossings_from_jan_2011_select_box_line_date_range",
+      
+      interpretationBoxId: "monthly_panynj_monthly_crossings_from_jan_2011_select_box_line_date_range_interpretation",
+      scorecardMode: "Traffic Count",
+
+      checkboxSuperGroupId: "panynjMonthlyCrossingsVehicleSelect_date_range", //upper level, selector
+      checkBoxSubGroupId: "panynj-monthly-crossings-checkboxes_date_range", //lower level, checkboxes
+
+      //systemwide entry exists for path ridership -- gets its own container to the side of the grid
+      systemwideContainerId: "panynj-monthly-crossings-systemwide_date_range",
+      clearAllButtonId: "panynj-monthly-crossings-clear-all_date_range",
+
+      persistenceOfCheckedDatasets: true,
+      listCheckedDatasets: panynjCrossingCheckedDatasets,
+
+      timeOfInterest: "month",
+      aspectRatio: 2,
+      lineColors: [
+          // Bayonne Bridge
+          "#AB63FA",
+
+          // George Washington Bridge
+          "#FFA15A",
+
+          // Goethals Bridge
+          "#EF553B",
+
+          // Holland Tunnel
+          "#FECB52",
+
+          // Lincoln Tunnel
+          "#636EFA",
+
+          // Outerbridge Crossing
+          "#00CC96",
+
+          // Systemwide
+          "#00aaff"
+      ],
+
+      importedDateRange: [new Date(startDate),
+                          new Date(endDate)]
+    });
     
-    interpretationBoxId: "monthly_ridership_select_box_line_date_range_interpretation",
-    scorecardMode: "Ridership",
+  }
 
-    checkBoxGroupId: "subway-ridership-checkboxes_date_range", //lower level, checkboxes
-
-    //no systemwideContainerId here ridership's dataset has no "Systemwide" entry,
-    clearAllButtonId: "ridership-clear-all_date_range",
-
-    persistenceOfCheckedDatasets: true,
-
-    checkedDatasets: ridershipCheckedDatasets,
-
-    timeOfInterest: "month",
-    aspectRatio: 2,
-
-    importedDateRange: [new Date(startDate),
-                        new Date(endDate)]
-  });
-  
+  sliderMakerMultipleChart({
+    fromSliderId: '#fromSlider_panynj_monthly_crossings',
+    toSliderId: '#toSlider_panynj_monthly_crossings',
+    fromLabelId: '#fromLabel_panynj_monthly_crossings',
+    toLabelId: '#toLabel_panynj_monthly_crossings',
+    startDate: new Date(2011, 0, 1), //Jan 2011
+    endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: panynjMonthlyCrossingDatasets}),
+    updateChartsFunction: (startDate, endDate) => {
+      whichChartsToUpdatePanynjMonthlyCrossings(startDate, endDate);
+    }
+  })
 }
 
-sliderMakerMultipleChart({
-  fromSliderId: '#fromSlider_ridership',
-  toSliderId: '#toSlider_ridership',
-  fromLabelId: '#fromLabel_ridership',
-  toLabelId: '#toLabel_ridership',
-  startDate: new Date(2019, 0, 1), //Jan 2019
-  endDate: getLatestDateAnyDataLevel({dataLevel: "datasetList", dataItem: monthly_multimodal_total_rows}),
-  updateChartsFunction: (startDate, endDate) => {
-    whichChartsToUpdateRidership(startDate, endDate);
-  }
-})
+if (PAGE == "mta-subway") {
+  function whichChartsToUpdateOTP(startDate, endDate) {
 
-function whichChartsToUpdateBusSpeeds(startDate, endDate) {
+    //go through all charts which are to be updated, clear them before making new ones
+    for (const oldContainerId of [
+      "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
+    ]) {
 
-  //go through all charts which are to be updated, clear them before making new ones
-  for (const oldContainerId of [
-    "monthly_bus_speeds_from_jan_2015_select_box_line_date_range",
-  ]) {
+      const container = document.getElementById(oldContainerId);
+      if (container) container.innerHTML = "";  // remove old chart
 
-    const container = document.getElementById(oldContainerId);
-    if (container) container.innerHTML = "";  // remove old chart
+    }
 
-  }
+    //make new charts.
+    nestedTwoCategorySelectLineChart({
+      datasetSuperList: subwayOTPDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+      datasetListStepSizeReference: monthly_subway_otp_rate_step_size_reference,
 
-  //make new charts.
-  nestedTwoCategorySelectLineChart({
-    datasetSuperList: busSpeedsDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
-    datasetListStepSizeReference: monthly_bus_speeds_step_size_reference,
+      originalSuperList: subwayOTPDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                            //will be needed for scorecard making
 
-    originalSuperList: busSpeedsDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
-                                          //will be needed for scorecard making
+      containerId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range",
+      
+      interpretationBoxId: "monthly_subway_otp_from_jan_2015_select_box_line_date_range_interpretation",
+      scorecardMode: "OTP",
 
-    containerId: "monthly_bus_speeds_from_jan_2015_select_box_line_date_range",
+      checkboxSuperGroupId: "subwayOTPDaySelect_date_range", //upper level, selector
+      checkBoxSubGroupId: "subway-otp-checkboxes_date_range", //lower level, checkboxes
+
+      //systemwide entry exists for OTP -- gets its own container to the side of the grid
+      systemwideContainerId: "subway-otp-systemwide_date_range",
+      clearAllButtonId: "subway-otp-clear-all_date_range",
+
+      persistenceOfCheckedDatasets: true,
+      listCheckedDatasets: OTPCheckedDatasets,
+
+      timeOfInterest: "month",
+      aspectRatio: 2,
+      lineColors: [
+        //1, 2, 3
+        "#EE352E",
+        "#EE352E",
+        "#EE352E",
+
+        //4, 5, 6
+        "#00933C",
+        "#00933C",
+        "#00933C",
+
+        //7
+        "#B933AD",
+
+        //S 42nd
+        "#808183",
+
+        //A, B, C, D, E, F
+        "#0039A6",
+        "#FF6319",
+        "#0039A6",
+        "#FF6319",
+        "#0039A6",
+        "#FF6319",
+
+        //G
+        "#75c84e",
+
+        //J, Z
+        "#996633",
+
+        //L
+        "#A7A9AC",
+
+        //M
+        "#FF6319",
+
+        //N, Q, R
+        "#FCCC0A",
+        "#FCCC0A",
+        "#FCCC0A",
+
+        //S Franklin, S Rockaway,
+        "#808183",
+        "#808183",
+
+        //systemwide
+        "#00aaff"
+      ],
+
+      importedDateRange: [new Date(startDate),
+                          new Date(endDate)]
+    });
     
-    interpretationBoxId: "monthly_bus_speeds_from_jan_2015_select_box_line_date_range_interpretation",
-    scorecardMode: "Speed",
+  }
 
-    checkboxSuperGroupId: "busSpeedDaySelect_date_range", //upper level, selector
-    checkBoxSubGroupId: "bus_speed_checkboxes_date_range", //lower level, checkboxes
-
-    persistenceOfCheckedDatasets: true,
-    listCheckedDatasets: busSpeedsCheckedDatasets,
-
-    useDropdown: true,
-    dropdownToggleId: "bus_speed_dropdown_toggle_date_range",
-    dropdownFilterId: "bus_speed_route_filter_date_range",
-
-    //systemwide entry exists for bus speeds -- gets its own container to the side of the grid
-    systemwideContainerId: "bus-speed-systemwide_date_range",
-    clearAllButtonId: "bus-speed-clear-all_date_range",
-
-
-    timeOfInterest: "month",
-    aspectRatio: 2,
-
-    lineColors: [
-      "#990000",
-      "#E81416",
-      "#FF2D00",
-      "#FF4500",
-      "#FF6600",
-      "#FF7F00",
-      "#FFA500",
-      "#FFC000",
-      "#79C314",
-      "#008000",
-      "#00A86B",
-      "#008080",
-      "#487DE7",
-      "#0000FF",
-      "#002FA7",
-      "#000080",
-      "#4B369D",
-      "#70369D",
-      "#8B00FF",
-      "#BA55D3",
-      "#DA70D6",
-    ],
-
-    importedDateRange: [new Date(startDate),
-                        new Date(endDate)]
-  });
-  
+  sliderMakerMultipleChart({
+    fromSliderId: '#fromSlider',
+    toSliderId: '#toSlider',
+    fromLabelId: '#fromLabel',
+    toLabelId: '#toLabel',
+    startDate: new Date(2015, 0, 1), //Jan 2015
+    endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: subwayOTPDatasets}),
+    updateChartsFunction: (startDate, endDate) => {
+      whichChartsToUpdateOTP(startDate, endDate);
+    }
+  })
 }
 
-sliderMakerMultipleChart({
-  fromSliderId: '#fromSlider_bus_speed',
-  toSliderId: '#toSlider_bus_speed',
-  fromLabelId: '#fromLabel_bus_speed',
-  toLabelId: '#toLabel_bus_speed',
-  startDate: new Date(2015, 0, 1), //Jan 2015
-  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: busSpeedsDatasets}),
-  updateChartsFunction: (startDate, endDate) => {
-    whichChartsToUpdateBusSpeeds(startDate, endDate);
-  }
-})
+if (PAGE == "mta-ridership") {
 
+  function whichChartsToUpdateRidership(startDate, endDate) {
 
-function whichChartsToUpdateBusOTP(startDate, endDate) {
+    //go through all charts which are to be updated, clear them before making new ones
+    for (const oldContainerId of [
+      "monthly_ridership_select_box_line_date_range",
+    ]) {
 
-  //go through all charts which are to be updated, clear them before making new ones
-  for (const oldContainerId of [
-    "monthly_bus_otp_from_aug_2017_select_box_line_date_range",
-  ]) {
+      const container = document.getElementById(oldContainerId);
+      if (container) container.innerHTML = "";  // remove old chart
 
-    const container = document.getElementById(oldContainerId);
-    if (container) container.innerHTML = "";  // remove old chart
+    }
 
-  }
+    //make new charts.
+    clickSelectMultipleLineChart({
+      datasetList: monthly_multimodal_total_rows,
+      datasetListStepSizeReference: monthly_multimodal_step_size_reference,
 
-  //make new charts.
-  nestedTwoCategorySelectLineChart({
-    datasetSuperList: busOTPDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
-    datasetListStepSizeReference: monthly_bus_otp_step_size_reference,
+      originalDatasetList: monthly_multimodal_total_rows, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                            //will be needed for scorecard making
 
-    originalSuperList: busOTPDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
-                                          //will be needed for scorecard making
+      containerId: "monthly_ridership_select_box_line_date_range",
+      
+      interpretationBoxId: "monthly_ridership_select_box_line_date_range_interpretation",
+      scorecardMode: "Ridership",
 
-    containerId: "monthly_bus_otp_from_aug_2017_select_box_line_date_range",
+      checkBoxGroupId: "subway-ridership-checkboxes_date_range", //lower level, checkboxes
+
+      //no systemwideContainerId here ridership's dataset has no "Systemwide" entry,
+      clearAllButtonId: "ridership-clear-all_date_range",
+
+      persistenceOfCheckedDatasets: true,
+
+      checkedDatasets: ridershipCheckedDatasets,
+
+      timeOfInterest: "month",
+      aspectRatio: 2,
+
+      importedDateRange: [new Date(startDate),
+                          new Date(endDate)]
+    });
     
-    interpretationBoxId: "monthly_bus_otp_from_aug_2017_select_box_line_date_range_interpretation",
-    scorecardMode: "OTP",
+  }
 
-    checkboxSuperGroupId: "busOTPTimeSelect_date_range", //upper level, selector
-    checkBoxSubGroupId: "bus_otp_checkboxes_date_range", //lower level, checkboxes
-
-    persistenceOfCheckedDatasets: true,
-    listCheckedDatasets: busOTPCheckedDatasets,
-
-    useDropdown: true,
-    dropdownToggleId: "bus_otp_dropdown_toggle_date_range",
-    dropdownFilterId: "bus_otp_route_filter_date_range",
-
-    //systemwide entry exists for bus speeds -- gets its own container to the side of the grid
-    systemwideContainerId: "bus-otp-systemwide_date_range",
-    clearAllButtonId: "bus-otp-clear-all_date_range",
-
-
-    timeOfInterest: "month",
-    aspectRatio: 2,
-
-    lineColors: [
-      "#990000",
-      "#E81416",
-      "#FF2D00",
-      "#FF4500",
-      "#FF6600",
-      "#FF7F00",
-      "#FFA500",
-      "#FFC000",
-      "#79C314",
-      "#008000",
-      "#00A86B",
-      "#008080",
-      "#487DE7",
-      "#0000FF",
-      "#002FA7",
-      "#000080",
-      "#4B369D",
-      "#70369D",
-      "#8B00FF",
-      "#BA55D3",
-      "#DA70D6",
-    ],
-
-    importedDateRange: [new Date(startDate),
-                        new Date(endDate)]
-  });
-  
+  sliderMakerMultipleChart({
+    fromSliderId: '#fromSlider_ridership',
+    toSliderId: '#toSlider_ridership',
+    fromLabelId: '#fromLabel_ridership',
+    toLabelId: '#toLabel_ridership',
+    startDate: new Date(2019, 0, 1), //Jan 2019
+    endDate: getLatestDateAnyDataLevel({dataLevel: "datasetList", dataItem: monthly_multimodal_total_rows}),
+    updateChartsFunction: (startDate, endDate) => {
+      whichChartsToUpdateRidership(startDate, endDate);
+    }
+  })
 }
 
-sliderMakerMultipleChart({
-  fromSliderId: '#fromSlider_bus_otp',
-  toSliderId: '#toSlider_bus_otp',
-  fromLabelId: '#fromLabel_bus_otp',
-  toLabelId: '#toLabel_bus_otp',
-  startDate: new Date(2017, 7, 1), //Aug 2015
-  endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: busOTPDatasets}),
-  updateChartsFunction: (startDate, endDate) => {
-    whichChartsToUpdateBusOTP(startDate, endDate);
+if (PAGE == "mta-bus") {
+  function whichChartsToUpdateBusSpeeds(startDate, endDate) {
+
+    //go through all charts which are to be updated, clear them before making new ones
+    for (const oldContainerId of [
+      "monthly_bus_speeds_from_jan_2015_select_box_line_date_range",
+    ]) {
+
+      const container = document.getElementById(oldContainerId);
+      if (container) container.innerHTML = "";  // remove old chart
+
+    }
+
+    //make new charts.
+    nestedTwoCategorySelectLineChart({
+      datasetSuperList: busSpeedsDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+      datasetListStepSizeReference: monthly_bus_speeds_step_size_reference,
+
+      originalSuperList: busSpeedsDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                            //will be needed for scorecard making
+
+      containerId: "monthly_bus_speeds_from_jan_2015_select_box_line_date_range",
+      
+      interpretationBoxId: "monthly_bus_speeds_from_jan_2015_select_box_line_date_range_interpretation",
+      scorecardMode: "Speed",
+
+      checkboxSuperGroupId: "busSpeedDaySelect_date_range", //upper level, selector
+      checkBoxSubGroupId: "bus_speed_checkboxes_date_range", //lower level, checkboxes
+
+      persistenceOfCheckedDatasets: true,
+      listCheckedDatasets: busSpeedsCheckedDatasets,
+
+      useDropdown: true,
+      dropdownToggleId: "bus_speed_dropdown_toggle_date_range",
+      dropdownFilterId: "bus_speed_route_filter_date_range",
+
+      //systemwide entry exists for bus speeds -- gets its own container to the side of the grid
+      systemwideContainerId: "bus-speed-systemwide_date_range",
+      clearAllButtonId: "bus-speed-clear-all_date_range",
+
+
+      timeOfInterest: "month",
+      aspectRatio: 2,
+
+      lineColors: [
+        "#990000",
+        "#E81416",
+        "#FF2D00",
+        "#FF4500",
+        "#FF6600",
+        "#FF7F00",
+        "#FFA500",
+        "#FFC000",
+        "#79C314",
+        "#008000",
+        "#00A86B",
+        "#008080",
+        "#487DE7",
+        "#0000FF",
+        "#002FA7",
+        "#000080",
+        "#4B369D",
+        "#70369D",
+        "#8B00FF",
+        "#BA55D3",
+        "#DA70D6",
+      ],
+
+      importedDateRange: [new Date(startDate),
+                          new Date(endDate)]
+    });
+    
   }
-})
+
+  sliderMakerMultipleChart({
+    fromSliderId: '#fromSlider_bus_speed',
+    toSliderId: '#toSlider_bus_speed',
+    fromLabelId: '#fromLabel_bus_speed',
+    toLabelId: '#toLabel_bus_speed',
+    startDate: new Date(2015, 0, 1), //Jan 2015
+    endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: busSpeedsDatasets}),
+    updateChartsFunction: (startDate, endDate) => {
+      whichChartsToUpdateBusSpeeds(startDate, endDate);
+    }
+  })
+
+
+  function whichChartsToUpdateBusOTP(startDate, endDate) {
+
+    //go through all charts which are to be updated, clear them before making new ones
+    for (const oldContainerId of [
+      "monthly_bus_otp_from_aug_2017_select_box_line_date_range",
+    ]) {
+
+      const container = document.getElementById(oldContainerId);
+      if (container) container.innerHTML = "";  // remove old chart
+
+    }
+
+    //make new charts.
+    nestedTwoCategorySelectLineChart({
+      datasetSuperList: busOTPDatasets, //superlist is a list of lists (ie: superlist[value] = a list)
+      datasetListStepSizeReference: monthly_bus_otp_step_size_reference,
+
+      originalSuperList: busOTPDatasets, //originalsuperlist keeps full unfiltered dataset handy down all levels
+                                            //will be needed for scorecard making
+
+      containerId: "monthly_bus_otp_from_aug_2017_select_box_line_date_range",
+      
+      interpretationBoxId: "monthly_bus_otp_from_aug_2017_select_box_line_date_range_interpretation",
+      scorecardMode: "OTP",
+
+      checkboxSuperGroupId: "busOTPTimeSelect_date_range", //upper level, selector
+      checkBoxSubGroupId: "bus_otp_checkboxes_date_range", //lower level, checkboxes
+
+      persistenceOfCheckedDatasets: true,
+      listCheckedDatasets: busOTPCheckedDatasets,
+
+      useDropdown: true,
+      dropdownToggleId: "bus_otp_dropdown_toggle_date_range",
+      dropdownFilterId: "bus_otp_route_filter_date_range",
+
+      //systemwide entry exists for bus speeds -- gets its own container to the side of the grid
+      systemwideContainerId: "bus-otp-systemwide_date_range",
+      clearAllButtonId: "bus-otp-clear-all_date_range",
+
+
+      timeOfInterest: "month",
+      aspectRatio: 2,
+
+      lineColors: [
+        "#990000",
+        "#E81416",
+        "#FF2D00",
+        "#FF4500",
+        "#FF6600",
+        "#FF7F00",
+        "#FFA500",
+        "#FFC000",
+        "#79C314",
+        "#008000",
+        "#00A86B",
+        "#008080",
+        "#487DE7",
+        "#0000FF",
+        "#002FA7",
+        "#000080",
+        "#4B369D",
+        "#70369D",
+        "#8B00FF",
+        "#BA55D3",
+        "#DA70D6",
+      ],
+
+      importedDateRange: [new Date(startDate),
+                          new Date(endDate)]
+    });
+    
+  }
+
+  sliderMakerMultipleChart({
+    fromSliderId: '#fromSlider_bus_otp',
+    toSliderId: '#toSlider_bus_otp',
+    fromLabelId: '#fromLabel_bus_otp',
+    toLabelId: '#toLabel_bus_otp',
+    startDate: new Date(2017, 7, 1), //Aug 2015
+    endDate: getLatestDateAnyDataLevel({dataLevel: "superList", dataItem: busOTPDatasets}),
+    updateChartsFunction: (startDate, endDate) => {
+      whichChartsToUpdateBusOTP(startDate, endDate);
+    }
+  })
+}
 
 //RE-ENABLE SITE VISIBILITY
 const reportCardContentElEnd = document.getElementById("report-card-content");
