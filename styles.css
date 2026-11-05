@@ -372,14 +372,23 @@ input[type="range"] {
   min-height: 90px;
   padding: 1.25rem 1.5rem;
   border-radius: 14px;
-  background: var(--btn, #0077b6); /*can also set to any other color via var if needed*/
-  color: #fff;
+
+  background: var(--btn, #0077b6);
+  color: #fff; /* fallback for older browsers */
+
   font-size: 1.35rem;
   font-weight: 600;
   text-align: center;
   text-decoration: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+/* text color flips based on the button's background lightness */
+@supports (color: oklch(from red l c h)) {
+  .sublink-button-grid a {
+    color: oklch(from var(--btn, #0077b6) clamp(0, calc((l - 0.75) * -1000), 1) 0 0);
+  }
 }
 
 .sublink-button-grid a:hover,
