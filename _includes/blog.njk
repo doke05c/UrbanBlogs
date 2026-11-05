@@ -2,6 +2,12 @@
 layout: layout.html
 ---
 
+{% if not hideBackLink %}
 <h4><a href="/">Why don't you go back?</a></h4>
+{% endif %}
+
 {{ content | safe }}
+
+{% if not hideBackLink %}
 <h4><a href="/">Why don't you go back?</a></h4>
+{% endif %}
