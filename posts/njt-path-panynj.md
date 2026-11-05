@@ -1,6 +1,7 @@
 ---
 title: 'SSTRP Transportation Report Card: NJT, PATH & PANYNJ'
-description: "Ridership and crossing statistics for NJ TRANSIT, PATH, and Port Authority bridges and tunnels."
+description: "Ridership and crossing statistics for NJ TRANSIT, PATH, and Port Authority Bridges and Tunnels."
+hideBackLink: true
 ---
 
 # NJT, PATH & PANYNJ

@@ -1,6 +1,7 @@
 ---
 title: 'SSTRP Transportation Report Card: MTA Overall Ridership'
 description: "Monthly ridership statistics across MTA divisions."
+hideBackLink: true
 ---
 
 # MTA Overall Ridership

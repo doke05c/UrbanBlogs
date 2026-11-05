@@ -1,6 +1,7 @@
 ---
 title: 'SSTRP Transportation Report Card: MTA Bus'
 description: "Bus speed and on-time performance statistics for MTA buses."
+hideBackLink: true
 ---
 
 # MTA Bus
