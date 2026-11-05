@@ -15,6 +15,7 @@ description: "Monthly ridership statistics across MTA divisions."
   <!-- grab dev state from package.json npm loader -->
   <script>
     window.NODE_ENV = "{{ env }}";
+    window.REPORT_CARD_PAGE = "mta-ridership";
   </script>
 
   <!-- run database json -->

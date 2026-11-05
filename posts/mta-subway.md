@@ -15,6 +15,7 @@ description: "On-time performance statistics for the MTA subway."
   <!-- grab dev state from package.json npm loader -->
   <script>
     window.NODE_ENV = "{{ env }}";
+    window.REPORT_CARD_PAGE = "mta-subway";
   </script>
 
   <!-- run database json -->

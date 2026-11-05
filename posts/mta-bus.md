@@ -14,7 +14,8 @@ description: "Bus speed and on-time performance statistics for MTA buses."
 
   <!-- grab dev state from package.json npm loader -->
   <script>
-    window.NODE_ENV = "{{ env }}";
+    window.NODE_ENV = "{{ env }}"
+    window.REPORT_CARD_PAGE = "mta-bus";
   </script>
 
   <!-- run database json -->
