@@ -11,6 +11,8 @@ if (loading && reportCardContentEl && getComputedStyle(reportCardContentEl).visi
     loading.style.color = "#888";
 }
 
+
+
 //GET MONTHLY SUBWAY ENTRIES SINCE MAR 2020
 const monthly_entries_subway_from_mar_2020_rows = await fetch("/src/json/monthly_subway_entries_from_mar_2020.json")
     .then(res => res.json());
