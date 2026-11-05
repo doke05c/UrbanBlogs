@@ -5,7 +5,7 @@ description: "Monthly ridership statistics across MTA divisions."
 
 # MTA Overall Ridership
 
-[← Back to Transportation Report Card](/reportcard/)
+[← Back to Transportation Report Card](/posts/reportcard/)
 
 <div id ="loading-page">
 </div>
@@ -78,3 +78,5 @@ description: "Monthly ridership statistics across MTA divisions."
 
 <!-- end report card content -->
 </div>
+
+[← Back to Transportation Report Card](/posts/reportcard/)

@@ -5,7 +5,7 @@ description: "Ridership and crossing statistics for NJ TRANSIT, PATH, and Port A
 
 # NJT, PATH & PANYNJ
 
-[← Back to Transportation Report Card](/reportcard/)
+[← Back to Transportation Report Card](/posts/reportcard/)
 
 <div id ="loading-page">
 </div>
@@ -215,3 +215,5 @@ description: "Ridership and crossing statistics for NJ TRANSIT, PATH, and Port A
 
 <!-- end report card content -->
 </div>
+
+[← Back to Transportation Report Card](/posts/reportcard/)

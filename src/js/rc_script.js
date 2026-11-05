@@ -1,6 +1,7 @@
 //PAGE LOADER
 let loading = document.getElementById("loading-page");
-if (getComputedStyle(document.getElementById("report-card-content")).visibility === "hidden") {
+const reportCardContentEl = document.getElementById("report-card-content");
+if (loading && reportCardContentEl && getComputedStyle(reportCardContentEl).visibility === "hidden") {
     loading.textContent = "Loading page... please be patient...";
     loading.style.display = "flex";
     loading.style.alignItems = "center";
@@ -2195,7 +2196,7 @@ function makeMultipleLineChart ({
   //throw error if no counts for a dataset
   if (rows_max_val === undefined || rows_max_val === 0 || Number.isNaN(rows_max_val)) {
 
-      const container = document.getElementById(containerId);
+      const container = document.getElementById(containerId) || document.createElement("div"); //detached fallback if missing
 
       container.innerHTML = "";
       container.textContent = "Dataset contains undefined or missing values, try something else";
@@ -2234,8 +2235,10 @@ function makeMultipleLineChart ({
     );
   }
   
-  console.log("hi from console :3");
   console.log(datasetList);
+
+  //SAFETY NET: skip if this chart's container isn't on the current page
+  if (!document.getElementById(containerId)) return;
 
   //make chart loader
   const multi_line = document.createElement(containerId); //<- Chart element
@@ -2924,7 +2927,8 @@ function makeMultipleLineChart ({
 
   //SCORES
 
-  const score_box = document.getElementById(interpretationBoxId);
+  //(detached fallback div if this chart has no interpretation box on the page, so scores just render nowhere)
+  const score_box = document.getElementById(interpretationBoxId) || document.createElement("div");
 
   //wipe previous score
   score_box.innerHTML = "";
@@ -3315,6 +3319,9 @@ function makeBarChart({
   ]
 }) {
 
+  //SAFETY NET: skip if this chart's container isn't on the current page
+  if (!document.getElementById(containerId)) return;
+
   //create container for bar chart
   const container = document.createElement(containerId);
 
@@ -3559,8 +3566,10 @@ function typeSelectMultipleLineChart({
   }
 
   //upon receiving a click of input function...
-  document.getElementById(buttonId).onclick = function(){
-    datasetText = document.getElementById(inputTextId).value;
+  const typeSelectButton = document.getElementById(buttonId);
+  if (typeSelectButton) typeSelectButton.onclick = function(){
+    const typeSelectInput = document.getElementById(inputTextId);
+    datasetText = typeSelectInput ? typeSelectInput.value : undefined;
 
     //if not empty text,
     if (datasetText != undefined) {
@@ -3586,7 +3595,7 @@ function typeSelectMultipleLineChart({
 
         //remove old chart, prep for replacement with new one
         const container = document.getElementById(containerId);
-        container.innerHTML = "";  // remove old chart
+        if (container) container.innerHTML = "";  // remove old chart
 
         //step size is determined by the maximum step size of the datasets we have present, 
         //checked with step_size_reference list
@@ -3689,20 +3698,25 @@ function clickSelectMultipleLineChart({
 }) 
 
 {
+  //SAFETY NET: skip this chart if its chart container or checkbox group isn't on the current page
+  if (!document.getElementById(containerId) || !document.getElementById(checkBoxGroupId)) {
+    return;
+  }
+
   //refresh render to run the graphing process again in the function as needed, either after date range or checkbox change
   function refreshRender() {
 
     if (useDropdown) {
       const toggleButton = document.getElementById(dropdownToggleId);
       const count = Object.keys(checkedDatasets).length;
-      toggleButton.textContent = count > 0 ? `${count} selected ▾` : `Select routes ▾`;
+      if (toggleButton) toggleButton.textContent = count > 0 ? `${count} selected ▾` : `Select routes ▾`;
     }
 
     if (Object.entries(checkedDatasets).length > 0) { //if we have received anything to plot, then remove the old plot and put in the new one
 
       //remove old chart, prep for replacement with new one
       const container = document.getElementById(containerId);
-      container.innerHTML = "";  // remove old chart
+      if (container) container.innerHTML = "";  // remove old chart
 
       for (const [name, dataset] of Object.entries(datasetList)) {
 
@@ -3735,13 +3749,13 @@ function clickSelectMultipleLineChart({
     } else {
       //remove chart, no data
       const container = document.getElementById(containerId);
-      container.innerHTML = ""; //remove old chart
+      if (container) container.innerHTML = ""; //remove old chart
 
       const interpretationbox = document.getElementById(interpretationBoxId);
-      interpretationbox.innerHTML = ""; //remove old scorebox
+      if (interpretationbox) interpretationbox.innerHTML = ""; //remove old scorebox
 
 
-      container.textContent = "Select a dataset to start the chart.";
+      if (container) container.textContent = "Select a dataset to start the chart.";
     }
   }
 
@@ -3851,9 +3865,9 @@ function clickSelectMultipleLineChart({
 
       //property-assignment, not addEventListener, reassigning just overwrites
       //the previous handler instead of stacking a new one on every rebuild
-      toggleButton.onclick = () => checkboxContainer.classList.toggle("open");
+      if (toggleButton) toggleButton.onclick = () => checkboxContainer.classList.toggle("open");
 
-      filterInput.oninput = () => {
+      if (filterInput) filterInput.oninput = () => {
         const query = filterInput.value.toLowerCase();
         checkboxContainer.querySelectorAll("label").forEach(label => {
           const match = label.textContent.toLowerCase().includes(query);
@@ -3893,7 +3907,7 @@ function clickSelectMultipleLineChart({
 
   //create chart container, set it to clicking prompt for now
   const container = document.getElementById(containerId);
-  container.textContent = "Select a dataset to start the chart.";
+  if (container) container.textContent = "Select a dataset to start the chart.";
 
   refreshRender();
 
@@ -3973,7 +3987,7 @@ function clickSelectMultipleLineChart({
     //property assignment, not addEventListener, same reasoning as toggleButton.onclick
     //above: this whole function re-runs on every slider tick, so reassigning here just
     //overwrites the previous handler instead of stacking a new one each time
-    clearAllButton.onclick = () => {
+    if (clearAllButton) clearAllButton.onclick = () => {
 
       document.querySelectorAll(checkboxSelector).forEach(checkbox => {
         checkbox.checked = false;
@@ -4067,6 +4081,9 @@ function nestedTwoCategorySelectLineChart({
 
   const select = document.getElementById(checkboxSuperGroupId); //get supergroup selector
 
+  //SAFETY NET: skip if this chart's day/vehicle-type <select> isn't on the current page
+  if (!select) return;
+
   clickSelectMultipleLineChart({
     //initial display of checkbox options before user does anything 
 
@@ -4107,16 +4124,16 @@ function nestedTwoCategorySelectLineChart({
       //forget previous checkbox state when switching day type
 
       const container = document.getElementById(containerId);
-      container.innerHTML = ""; //remove old chart
+      if (container) container.innerHTML = ""; //remove old chart
 
       const checkboxset = document.getElementById(checkBoxSubGroupId);
-      checkboxset.innerHTML = ""; //remove old checkbox set
+      if (checkboxset) checkboxset.innerHTML = ""; //remove old checkbox set
 
       //also clear the systemwide container, if this chart has one, so it gets rebuilt
       //fresh instead of leaving the previous day-type's systemwide checkbox in place
       if (systemwideContainerId) {
         const systemwideContainer = document.getElementById(systemwideContainerId);
-        systemwideContainer.innerHTML = "";
+        if (systemwideContainer) systemwideContainer.innerHTML = "";
       }
 
     clickSelectMultipleLineChart({
@@ -4222,6 +4239,7 @@ function sliderMakerMultipleChart({
 
   function setToggleAccessible(currentTarget) {
     const toSlider = document.querySelector(toSliderId);
+    if (!toSlider) return;
     if (Number(currentTarget.value) <= 0 ) {
       toSlider.style.zIndex = 2;
     } else {
@@ -4235,6 +4253,13 @@ function sliderMakerMultipleChart({
 
   const fromLabel = document.querySelector(fromLabelId);
   const toLabel = document.querySelector(toLabelId);
+
+  //SAFETY NET: this report card is split across several pages, and each page only has
+  //some of the charts. if this chart's sliders/labels aren't on the current page, skip
+  //it entirely (no chart setup, no updateChartsFunction call).
+  if (!fromSlider || !toSlider || !fromLabel || !toLabel) {
+    return;
+  }
 
   //set start month and end month to make labels list
   const start = startDate;
@@ -4443,7 +4468,7 @@ function whichChartsToUpdateNJTRidership(startDate, endDate) {
   ]) {
 
     const container = document.getElementById(oldContainerId);
-    container.innerHTML = "";  // remove old chart
+    if (container) container.innerHTML = "";  // remove old chart
 
   }
 
@@ -4499,7 +4524,7 @@ function whichChartsToUpdatePathMonthlyRidership(startDate, endDate) {
   ]) {
 
     const container = document.getElementById(oldContainerId);
-    container.innerHTML = "";  // remove old chart
+    if (container) container.innerHTML = "";  // remove old chart
 
   }
 
@@ -4598,7 +4623,7 @@ function whichChartsToUpdatePanynjMonthlyCrossings(startDate, endDate) {
   ]) {
 
     const container = document.getElementById(oldContainerId);
-    container.innerHTML = "";  // remove old chart
+    if (container) container.innerHTML = "";  // remove old chart
 
   }
 
@@ -4676,7 +4701,7 @@ function whichChartsToUpdateOTP(startDate, endDate) {
   ]) {
 
     const container = document.getElementById(oldContainerId);
-    container.innerHTML = "";  // remove old chart
+    if (container) container.innerHTML = "";  // remove old chart
 
   }
 
@@ -4784,7 +4809,7 @@ function whichChartsToUpdateRidership(startDate, endDate) {
   ]) {
 
     const container = document.getElementById(oldContainerId);
-    container.innerHTML = "";  // remove old chart
+    if (container) container.innerHTML = "";  // remove old chart
 
   }
 
@@ -4839,7 +4864,7 @@ function whichChartsToUpdateBusSpeeds(startDate, endDate) {
   ]) {
 
     const container = document.getElementById(oldContainerId);
-    container.innerHTML = "";  // remove old chart
+    if (container) container.innerHTML = "";  // remove old chart
 
   }
 
@@ -4925,7 +4950,7 @@ function whichChartsToUpdateBusOTP(startDate, endDate) {
   ]) {
 
     const container = document.getElementById(oldContainerId);
-    container.innerHTML = "";  // remove old chart
+    if (container) container.innerHTML = "";  // remove old chart
 
   }
 
@@ -5003,5 +5028,6 @@ sliderMakerMultipleChart({
 })
 
 //RE-ENABLE SITE VISIBILITY
-document.getElementById("report-card-content").style.visibility = "visible";
-loading.remove();
+const reportCardContentElEnd = document.getElementById("report-card-content");
+if (reportCardContentElEnd) reportCardContentElEnd.style.visibility = "visible";
+if (loading) loading.remove();

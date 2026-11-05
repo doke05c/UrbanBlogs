@@ -5,7 +5,7 @@ description: "Bus speed and on-time performance statistics for MTA buses."
 
 # MTA Bus
 
-[← Back to Transportation Report Card](/reportcard/)
+[← Back to Transportation Report Card](/posts/reportcard/)
 
 <div id ="loading-page">
 </div>
@@ -225,3 +225,5 @@ description: "Bus speed and on-time performance statistics for MTA buses."
 
 <!-- end report card content -->
 </div>
+
+[← Back to Transportation Report Card](/posts/reportcard/)

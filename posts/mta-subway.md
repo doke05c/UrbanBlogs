@@ -5,7 +5,7 @@ description: "On-time performance statistics for the MTA subway."
 
 # MTA Subway
 
-[← Back to Transportation Report Card](/reportcard/)
+[← Back to Transportation Report Card](/posts/reportcard/)
 
 <div id ="loading-page">
 </div>
@@ -155,3 +155,5 @@ description: "On-time performance statistics for the MTA subway."
 
 <!-- end report card content -->
 </div>
+
+[← Back to Transportation Report Card](/posts/reportcard/)
