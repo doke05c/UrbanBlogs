@@ -10,3 +10,7 @@ _site/
 src/report_card.duckdb
 
 *.parquet
+
+# staging dirs Bike_Network_Expander uses while it rewrites src/bike_network/
+.bike_network.tmp/
+.bike_network.old/
