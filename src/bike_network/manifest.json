@@ -1,8 +1,8 @@
 {
   "generator": "Bike_Network_Expander",
-  "commit": "ae354f080f05ce23b42ff5d6004d17692bb35bbc",
+  "commit": "34e22576d008e38d13caa56924d6f72985edc398",
   "source": "NYC_Bike_Lanes_in_Full_LION_Network_edited_for_URBP7873D_Nov_23_2026.gpkg",
-  "generated_at": "2026-11-26T20:46:42+00:00",
+  "generated_at": "2026-11-26T23:19:47+00:00",
   "format_version": 1,
   "segments": 179913,
   "tile_lines": 23809,
