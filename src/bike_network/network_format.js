@@ -1,12 +1,16 @@
-// Binary format for the NYC directed bike network (posts/nyc_directed_network.html).
+// Binary format for the NYC directed bike network (UrbanBlogs posts/nyc_directed_network.html).
 //
 // The network used to be inlined in the page as a ~14 MB JS object literal (`const D = {...}`). Parsing that literal and
 // materializing ~180k little arrays cost several seconds of main-thread time and hundreds of MB of memory on phones.
 // This file is the compact replacement: one gzipped binary that decodes straight into typed arrays.
-// It is written by scripts/pack_nyc_directed_network.mjs, which also round-trips every value through this decoder.
+//
+// Source of truth: Bike_Network_Expander/web_export/network_format.js. web_export copies it next to network.bin.gz in
+// UrbanBlogs/src/bike_network/, so the decoder and the data it reads always come from the same run.
+// network.bin.gz is written by web_export/pack.py, which round-trips every value through a Python copy of this decoder.
+// Changing the layout means changing both, and bumping VERSION.
 //
 // Layout (little-endian), after gunzip:
-//   "NYCN"  u8 version (=1)  u32 nSeg  u32 metaLen  meta JSON (utf-8: multipliers, subs, sub_colors, sub_widths, names)
+//   "NYCN"  u8 version (=1)  u32 nSeg  u32 metaLen  meta JSON (utf-8: multipliers, subs, sub_colors, sub_widths, names, legend)
 //   then one LEB128 varint stream, column by column, nSeg entries each:
 //     nf      zigzag(nf[i] - nf[i-1])
 //     nt      zigzag(nt[i] - nf[i])
@@ -17,8 +21,8 @@
 //   then coordinates as round(deg * 1e5) (the source has 5 decimals), zigzag-delta encoded: each point relative to the
 //   previous point of the same segment, and each segment's first point relative to the previous segment's first point.
 //
-// Decoded values are bit-identical to the old literal: k / 10 and k / 1e5 are the same doubles that parsing the original
-// one- and five-decimal literals produced (the pack script checks this for every value).
+// Decoded values are bit-identical to the export: k / 10 and k / 1e5 are the same doubles as the one- and five-decimal
+// values route_test.py writes (pack.py checks this for every value).
 //
 // Decodes to: { ...meta, nf, nt: Int32Array, wf, wr: Float64Array (Infinity = null), name: Uint16Array, sub: Uint8Array,
 //               coff: Uint32Array(nSeg + 1) (segment i owns xy[coff[i] .. coff[i+1])), xy: Float64Array (lon,lat,lon,lat,...) }
