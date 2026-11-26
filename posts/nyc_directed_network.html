@@ -347,7 +347,12 @@ mapLoaded.then(() => {   //(the map was created above, before the network finish
   //one MultiLineString per bike class: the whole network is only a handful of features
   const feats = D.subs.map((_, k) => ({ type: 'Feature', properties: { k }, geometry: { type: 'MultiLineString', coordinates: [] } }));
   for (const i of drawable) feats[D.sub[i]].geometry.coordinates.push(segPath(i));
-  map.addSource('net', { type: 'geojson', data: { type: 'FeatureCollection', features: feats.filter(f => f.geometry.coordinates.length) }, maxzoom: 15, tolerance: 0.5 });
+  //buffer: MapLibre's default (128 px per tile side) makes every tile also process a 2.25x-area margin of its neighbours'
+  //geometry, which for this network was ~40% of all line vertices and ~85 MB of worker memory. tiles are stencil-clipped,
+  //so the margin only has to cover half the widest line (~3 px at z15; tiles are overzoomed past that), and 32 px leaves 10x.
+  //(lines crossing a tile edge get cut at a different, grid-rounded point, so their anti-aliased edges can shift by a
+  //sub-pixel amount: at most a few /255 on <0.2% of pixels, not visible)
+  map.addSource('net', { type: 'geojson', data: { type: 'FeatureCollection', features: feats.filter(f => f.geometry.coordinates.length) }, maxzoom: 15, tolerance: 0.5, buffer: 32 });
   for (const id of ['lit', 'hover', 'snap']) map.addSource(id, { type: 'geojson', data: EMPTY, maxzoom: 15, tolerance: 0.5 });
 
   const addLine = (id, source, paint, filter) => {
