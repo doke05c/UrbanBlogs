@@ -191,26 +191,68 @@ class MinHeap {
   }
 }
 
+//spatial grid over every piece (pair of consecutive points) of every segment, in the same squashed coordinates snap() uses,
+//so snap() only looks at pieces near the query instead of all ~224k of them (it runs on every click, drag frame and hover).
+//a piece is listed in every cell its bounding box touches. built on first use, or when the browser is idle after load
+let GRID = null;
+function buildGrid() {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (let k = 0; k < XY.length; k += 2) {
+    const x = XY[k] * COS_LAT, y = XY[k + 1];
+    if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+  }
+  const CS = Math.max(x1 - x0, y1 - y0, 1e-9) / 512;   //~90 m cells over NYC
+  const NX = Math.floor((x1 - x0) / CS) + 1, NY = Math.floor((y1 - y0) / CS) + 1;
+  const START = new Uint32Array(NX * NY + 1);
+  const eachCell = (ax, ay, bx, by, f) => {
+    const cx0 = Math.floor((Math.min(ax, bx) - x0) / CS), cx1 = Math.floor((Math.max(ax, bx) - x0) / CS);
+    const cy0 = Math.floor((Math.min(ay, by) - y0) / CS), cy1 = Math.floor((Math.max(ay, by) - y0) / CS);
+    for (let cy = cy0; cy <= cy1; cy++) for (let cx = cx0; cx <= cx1; cx++) f(cy * NX + cx);
+  };
+  const eachPiece = f => {
+    for (let i = 0; i < N_SEG; i++) for (let j = COFF[i] + 2; j < COFF[i + 1]; j += 2)
+      f(i, j, XY[j - 2] * COS_LAT, XY[j - 1], XY[j] * COS_LAT, XY[j + 1]);
+  };
+  eachPiece((i, j, ax, ay, bx, by) => eachCell(ax, ay, bx, by, c => START[c + 1]++));
+  for (let c = 0; c < NX * NY; c++) START[c + 1] += START[c];
+  const PI = new Uint32Array(START[NX * NY]), PJ = new Uint32Array(START[NX * NY]), cur = START.slice(0, NX * NY);
+  eachPiece((i, j, ax, ay, bx, by) => eachCell(ax, ay, bx, by, c => { PI[cur[c]] = i; PJ[cur[c]++] = j; }));
+  return { x0, y0, CS, NX, NY, START, PI, PJ };
+}
+(window.requestIdleCallback || (f => setTimeout(f, 500)))(() => { if (!GRID) GRID = buildGrid(); });
+
 //nearest point on any segment to (lon, lat). returns segment, t (0..1 along it), snapped lon/lat, distance in ft
+//(same result as scanning every piece in order: identical arithmetic per piece, and ties go to the lowest segment, then piece)
 function snap(lon, lat) {
+  if (!GRID) GRID = buildGrid();
+  const { x0, y0, CS, NX, NY, START, PI, PJ } = GRID;
   const px = lon * COS_LAT, py = lat;
-  let bestD2 = Infinity, bi = -1, bk = 0, bu = 0, bqx = 0, bqy = 0;
-  for (let i = 0; i < N_SEG; i++) {
-    const s = COFF[i], e = COFF[i + 1];
-    if (e - s < 4) continue;
-    let ax = XY[s] * COS_LAT, ay = XY[s + 1];
-    for (let j = s + 2; j < e; j += 2) {
-      const bx = XY[j] * COS_LAT, by = XY[j + 1];
+  let bestD2 = Infinity, bi = -1, bj = 0, bu = 0, bqx = 0, bqy = 0;
+  const visit = c => {
+    for (let e = START[c]; e < START[c + 1]; e++) {
+      const i = PI[e], j = PJ[e];
+      const ax = XY[j - 2] * COS_LAT, ay = XY[j - 1], bx = XY[j] * COS_LAT, by = XY[j + 1];
       const abx = bx - ax, aby = by - ay, len2 = abx * abx + aby * aby;
       let u = len2 > 0 ? ((px - ax) * abx + (py - ay) * aby) / len2 : 0;
       u = u < 0 ? 0 : (u > 1 ? 1 : u);
       const qx = ax + u * abx, qy = ay + u * aby;
       const d2 = (px - qx) * (px - qx) + (py - qy) * (py - qy);
-      if (d2 < bestD2) { bestD2 = d2; bi = i; bk = (j - s) >> 1; bu = u; bqx = qx; bqy = qy; }
-      ax = bx; ay = by;
+      if (d2 < bestD2 || (d2 === bestD2 && (i < bi || (i === bi && j < bj)))) { bestD2 = d2; bi = i; bj = j; bu = u; bqx = qx; bqy = qy; }
     }
+  };
+  //search square rings of cells around the query's cell. everything not searched yet lies outside the square, so once the
+  //best match is closer than the square's nearest side (with a small safety margin for rounding) nothing else can win
+  const cx = Math.floor((px - x0) / CS), cy = Math.floor((py - y0) / CS);
+  for (let R = 0; ; R++) {
+    const xa = cx - R, xb = cx + R, ya = cy - R, yb = cy + R;
+    for (const y of R ? [ya, yb] : [ya]) if (y >= 0 && y < NY) for (let x = Math.max(xa, 0); x <= Math.min(xb, NX - 1); x++) visit(y * NX + x);
+    if (R) for (const x of [xa, xb]) if (x >= 0 && x < NX) for (let y = Math.max(ya + 1, 0); y <= Math.min(yb - 1, NY - 1); y++) visit(y * NX + x);
+    if (xa <= 0 && ya <= 0 && xb >= NX - 1 && yb >= NY - 1) break;   //covered the whole grid
+    const side = Math.min(px - (x0 + xa * CS), x0 + (xb + 1) * CS - px, py - (y0 + ya * CS), y0 + (yb + 1) * CS - py) - 1e-12;
+    if (side > 0 && bestD2 < side * side * (1 - 1e-9)) break;
   }
   if (bi < 0) return null;
+  const bk = (bj - COFF[bi]) >> 1;
   const cum = segCum(bi), L = cum[cum.length - 1];
   const t = L > 0 ? (cum[bk - 1] + bu * (cum[bk] - cum[bk - 1])) / L : 0;
   return { seg: bi, t, lon: bqx / COS_LAT, lat: bqy, distFt: Math.sqrt(bestD2) * FT_PER_DEG_LAT };
@@ -251,9 +293,16 @@ function mergeIntervals(iv) {
 }
 
 //which stretches of which segments are within budget B. returns [{i, a, b}] with a,b = fractions along the segment (0 = NodeIDFrom end)
+//only a segment touching a node inside the radius, or the pin's own segment, can be lit, so mark just those and walk them in
+//index order (same output, without building an interval list for every one of the ~180k segments on each update)
+const LIT_MARK = new Uint8Array(N_SEG);
 function litSegments(dist, B, start) {
   const out = [];
+  for (let n = 0; n < N_NODE; n++) if (dist[n] < B) for (let a = HEAD[n]; a < HEAD[n + 1]; a++) LIT_MARK[ARCS[a] >> 1] = 1;
+  if (start) LIT_MARK[start.seg] = 1;
   for (let i = 0; i < N_SEG; i++) {
+    if (!LIT_MARK[i]) continue;
+    LIT_MARK[i] = 0;
     const iv = [];
     const wf = WF[i], wr = WR[i];
     if (wf !== Infinity) { const d = dist[NF[i]]; if (d < B) iv.push(0, Math.min(1, wf > 0 ? (B - d) / wf : 1)); }
