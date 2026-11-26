@@ -20,7 +20,8 @@
 <link rel="preconnect" href="https://tiles.basemaps.cartocdn.com" crossorigin>
 <!-- pinned to the exact version @3 resolves to, so jsDelivr serves it as immutable (cached for a year instead of 7 days) -->
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+<!-- deferred so the page paints without waiting for MapLibre; the page script starts on DOMContentLoaded, after it has run -->
+<script defer src="https://cdn.jsdelivr.net/npm/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 <style>
   html, body { margin: 0; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
   #topbar { position: fixed; top: 0; left: 0; right: 0; height: 40px; z-index: 2000; box-sizing: border-box;
@@ -100,23 +101,27 @@
 
 </div>
 
-<script src="/src/js/nyc_network_format.js"></script>
+<script defer src="/src/js/nyc_network_format.js"></script>
 <script>
 window.onerror = (msg, src, line) => { const h = document.getElementById('hint'); if (h) h.textContent = 'Error: ' + msg + ' (line ' + line + ')'; };
 
 //the network used to be inlined here as a ~14 MB object literal, which took seconds to parse and hundreds of MB of memory
 //on phones. it is now a compact binary that decodes straight into typed arrays (src/js/nyc_network_format.js), and
 //everything below runs once it has arrived. (main() is deliberately not re-indented, to keep the diff readable)
-loadNycNetwork('/src/data/nyc_directed_network.bin.gz').then(main).catch(e => { console.error(e); window.onerror(e.message, '', e.lineNumber); });
+//MapLibre and the decoder are deferred scripts, so start once they've run (the network itself is already downloading: see the preload)
+let map, mapLoaded;
+document.addEventListener('DOMContentLoaded', () => {
+  loadNycNetwork('/src/data/nyc_directed_network.bin.gz').then(main).catch(e => { console.error(e); window.onerror(e.message, '', e.lineNumber); });
 
-//the basemap doesn't need the network, so start loading it while the network downloads
-const map = new maplibregl.Map({
-  container: 'map', style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-  center: [-73.96, 40.7128], zoom: 11
+  //the basemap doesn't need the network, so start loading it while the network downloads
+  map = new maplibregl.Map({
+    container: 'map', style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+    center: [-73.96, 40.7128], zoom: 11
+  });
+  map.addControl(new maplibregl.NavigationControl(), 'top-right');
+  new ResizeObserver(() => map.resize()).observe(document.getElementById('stage'));
+  mapLoaded = new Promise(resolve => map.once('load', resolve));
 });
-map.addControl(new maplibregl.NavigationControl(), 'top-right');
-new ResizeObserver(() => map.resize()).observe(document.getElementById('stage'));
-const mapLoaded = new Promise(resolve => map.once('load', resolve));
 
 function main(D) {
 // ==== CORE START (pure logic, no DOM / no deck.gl) ====
