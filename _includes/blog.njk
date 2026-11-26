@@ -2,12 +2,14 @@
 layout: layout.html
 ---
 
-{% if not hideBackLink %}
+{% set showBackLink = page.inputPath.endsWith('.md') and not hideBackLink %}
+
+{% if showBackLink %}
 <h4><a href="/">Why don't you go back?</a></h4>
 {% endif %}
 
 {{ content | safe }}
 
-{% if not hideBackLink %}
+{% if showBackLink %}
 <h4><a href="/">Why don't you go back?</a></h4>
 {% endif %}
