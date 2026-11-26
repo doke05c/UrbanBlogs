@@ -432,11 +432,35 @@ function updateReach() {   //unit helper: shown as a hover tip on the "Weight ra
   $('radiusLabel').title = `${fmt(B)} pts buys a straight run of about ${fmt(B / m[0] / 5280, 2)} mi on Class I, ${fmt(B / m[1] / 5280, 2)} mi Class II, ${fmt(B / m[2] / 5280, 2)} mi Class III, or ${fmt(B / m[3] / 5280, 2)} mi unmarked street`;
 }
 
+//MapLibre 3 doesn't coalesce setData(): every call stringifies the GeoJSON on the main thread and queues a full re-tile in
+//its worker. dragging the pin at a big radius makes updates faster than a phone can tile them, so the lit area fell further
+//and further behind. keep at most one lit update in flight and, when it finishes, draw only the newest one (the final
+//picture is the same; frames nobody would have seen are skipped, including their clipping work)
+let litBusy = false, litQueued;   //litQueued: undefined = nothing waiting, null = clear, array = lit pieces
+function drawLit(lit) {
+  if (litBusy) { litQueued = lit; return; }
+  litBusy = true; litQueued = undefined;
+  if (!lit) { map.getSource('lit').setData(EMPTY); return; }
+  const byClass = D.subs.map(() => []);
+  for (const { i, a, b } of lit) {
+    const p = clipPath(i, a, b);
+    if (p && p.length >= 2) byClass[D.sub[i]].push(p);
+  }
+  map.getSource('lit').setData({ type: 'FeatureCollection',
+    features: byClass.map((coords, k) => ({ type: 'Feature', properties: { k }, geometry: { type: 'MultiLineString', coordinates: coords } })).filter(f => f.geometry.coordinates.length) });
+}
+function litSettled(e) {
+  if (e.sourceId !== 'lit' || (e.type === 'sourcedata' && e.sourceDataType !== 'content')) return;
+  litBusy = false;
+  if (litQueued !== undefined) drawLit(litQueued);
+}
+map.on('sourcedata', litSettled); map.on('sourcedataabort', litSettled); map.on('error', litSettled);
+
 function update() {
   updateReach();
   if (!ready) return;
   if (!pin) {
-    map.getSource('lit').setData(EMPTY); map.getSource('snap').setData(EMPTY);
+    drawLit(null); map.getSource('snap').setData(EMPTY);
     $('stats').textContent = ''; $('classes').innerHTML = ''; return;
   }
   const t0 = performance.now();
@@ -447,17 +471,10 @@ function update() {
   const lit = litSegments(dist, B, sn);
 
   const miles = new Float64Array(D.subs.length);
-  const byClass = D.subs.map(() => []);
-  for (const { i, a, b } of lit) {
-    const k = D.sub[i];
-    miles[k] += (b - a) * SEG_LEN[i] * FT_PER_DEG_LAT / 5280;
-    const p = clipPath(i, a, b);
-    if (p && p.length >= 2) byClass[k].push(p);
-  }
+  for (const { i, a, b } of lit) miles[D.sub[i]] += (b - a) * SEG_LEN[i] * FT_PER_DEG_LAT / 5280;
   let nodes = 0; for (let n = 0; n < N_NODE; n++) if (dist[n] !== Infinity) nodes++;
 
-  map.getSource('lit').setData({ type: 'FeatureCollection',
-    features: byClass.map((coords, k) => ({ type: 'Feature', properties: { k }, geometry: { type: 'MultiLineString', coordinates: coords } })).filter(f => f.geometry.coordinates.length) });
+  drawLit(lit);
   map.getSource('snap').setData({ type: 'FeatureCollection', features: [
     { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[pin.lng, pin.lat], [sn.lon, sn.lat]] } },
     { type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: [sn.lon, sn.lat] } } ] });
