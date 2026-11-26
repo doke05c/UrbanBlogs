@@ -19,10 +19,9 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.25); font-size: 12px; color: #222; line-height: 1.4;
   }
   #panel h3 { margin: 0 0 6px; font-size: 13px; }
-  #panel .row { display: flex; align-items: center; justify-content: space-between; margin: 8px 0; gap: 8px; }
+  #panel .row { display: flex; align-items: center; justify-content: space-between; margin: 22px 0; gap: 15px; }
   #panel input[type=number] { width: 90px; padding: 3px 5px; font-size: 12px; }
-  #panel input[type=range] { width: 100%; margin: 0; }
-  #panel button { font-size: 12px; padding: 4px 10px; cursor: pointer; }
+  #panel input[type=range] { display: block; box-sizing: border-box; width: calc(100% - 40px); margin: -15px 8px; }  #panel button { font-size: 12px; padding: 4px 10px; cursor: pointer; }
   #panel .muted { color: #666; }
   #panel .sw { display: inline-block; width: 14px; height: 4px; margin-right: 6px; border-radius: 1px; vertical-align: middle; }
   #classes table { width: 100%; border-collapse: collapse; margin-top: 6px; }
@@ -50,17 +49,6 @@
     </div>
     <input type="range" id="radiusRange" min="0" max="100000" step="250" value="10000">
 
-    <div class="row">
-      <label><input type="checkbox" id="oneway" checked> Obey one-way directions</label>
-    </div>
-    <div class="row">
-      <label for="coreMode">Lit line color</label>
-      <select id="coreMode"><option value="class">Class colors</option><option value="solid">Highlight color</option></select>
-    </div>
-    <div class="row">
-      <label for="color">Halo / highlight color</label>
-      <input type="color" id="color" value="#e6007a">
-    </div>
     <div class="row">
       <button id="clear">Remove pin</button>
     </div>
@@ -328,7 +316,7 @@ map.on('load', () => {
   const sym = styleLayers.slice(lastGeometry + 1).find(l => l.type === 'symbol');
   const before = sym ? sym.id : undefined;
   console.log('bike layers inserted below basemap layer:', before || '(top of stack)');
-  const hl = $('color').value;
+  const hl = '#e6007a';
 
   //one MultiLineString per bike class: the whole network is only a handful of features
   const feats = D.subs.map((_, k) => ({ type: 'Feature', properties: { k }, geometry: { type: 'MultiLineString', coordinates: [] } }));
@@ -356,15 +344,6 @@ map.on('load', () => {
   update();
 });
 
-//halo color / lit-line color mode (cheap: no re-search)
-function applyColors() {
-  if (!ready) return;
-  const hl = $('color').value, solid = $('coreMode').value === 'solid';
-  map.setPaintProperty('glow-outer', 'line-color', hl);
-  map.setPaintProperty('glow-mid', 'line-color', hl);
-  map.setPaintProperty('snap-pt', 'circle-stroke-color', hl);
-  for (const k of CLASS_ORDER) map.setPaintProperty(`lit-${k}`, 'line-color', solid ? hl : rgbStr(D.sub_colors[k]));
-}
 
 function updateReach() {   //unit helper: shown as a hover tip on the "Weight radius" label
   const B = budget(), m = D.multipliers;
@@ -458,9 +437,7 @@ map.on('click', e => {
 
 $('radiusNum').addEventListener('input', () => { $('radiusRange').value = Math.min(budget(), +$('radiusRange').max); schedule(); });
 $('radiusRange').addEventListener('input', () => { $('radiusNum').value = $('radiusRange').value; schedule(); });
-$('oneway').addEventListener('change', () => { setOneWay($('oneway').checked); schedule(); });
-$('color').addEventListener('input', applyColors);
-$('coreMode').addEventListener('change', applyColors);
+
 $('clear').addEventListener('click', () => { if (marker) marker.remove(); marker = null; pin = null; schedule(); });
 updateReach();
 </script>
