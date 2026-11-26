@@ -19,7 +19,9 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.25); font-size: 12px; color: #222; line-height: 1.4;
   }
   #panel h3 { margin: 0 0 6px; font-size: 13px; }
-  #panel .row { display: flex; align-items: center; justify-content: space-between; margin: 22px 0; gap: 15px; }
+  #panel p, #panel #intro, #panel #hint { font-size: 11px; line-height: 1.4; margin: 0 0 8px; }
+  #panel a { font-size: inherit; }
+  #panel .row { display: flex; align-items: center; justify-content: space-between; margin: 18px 0; gap: 15px; }
   #panel input[type=number] { width: 90px; padding: 3px 5px; font-size: 12px; }
   #panel input[type=range] { display: block; box-sizing: border-box; width: calc(100% - 40px); margin: -15px 8px; }  #panel button { font-size: 12px; padding: 4px 10px; cursor: pointer; }
   #panel .muted { color: #666; }
@@ -40,9 +42,15 @@
   <div id="tip"></div>
 
   <div id="panel">
-    <h3>Weight-radius explorer</h3>
-    <div class="muted" id="hint">Loading network...</div>
+    <h3>The Bikeable Radius Explorer</h3>
+    <div class="muted" id="intro">
+      <p>Not every street is built the same. Not even every bike lane is built the same!</p>
+      <p>Literature <a href="https://nap.nationalacademies.org/resource/29333/9780309602396_508.pdf" target="_blank" rel="noopener">(Dill and Von Stroh 2022)</a> shows that protected bike lanes are the most effective way to ensure safety and confidence for new riders. Without protected bike lanes, riders feel less safe.</p>
+      <p>I developed a weighted network system using NYC Department of City Planning LION data, and assigning heavier weights to unprotected infrastructure. Protected lanes have the lowest weight, painted lanes have higher weights, then sharrows, then finally mixed traffic have the highest weights.</p>
+    </div>
 
+    <div id="hint"><b>Loading network...</b></div>
+    
     <div class="row">
       <label for="radiusNum" id="radiusLabel"><b>Weight radius</b></label>
       <span><input type="number" id="radiusNum" min="0" step="250" value="10000"> pts</span>
@@ -340,7 +348,7 @@ map.on('load', () => {
     paint: { 'circle-radius': 7, 'circle-color': '#ffffff', 'circle-stroke-width': 3, 'circle-stroke-color': hl } }, before);
 
   ready = true;
-  $('hint').textContent = 'Click the map to drop a pin. Drag the pin, or click somewhere else, to move it.';
+  $('hint').innerHTML = '<b>Click the map to drop a pin</b> and see how far you can go before feeling uncomfortably low protection from traffic. Drag the pin, or click somewhere else, to move it.';
   update();
 });
 
@@ -381,9 +389,16 @@ function update() {
     { type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: [sn.lon, sn.lat] } } ] });
 
   //per-class mileage inside the radius (fixed order, thickest class first, so rows stay put between pin drops)
-  const order = [...CLASS_ORDER].reverse();
+  const MERGE = { 'Combo II + I': 'Combo I + II', 'Combo III + I': 'Combo I + III', 'Combo III + II': 'Combo II + III' };
+  const groups = new Map();   //label -> { color, miles }, kept in thickest-class-first order
+  for (const k of [...CLASS_ORDER].reverse()) {
+    const name = MERGE[D.subs[k]] || D.subs[k];
+    const g = groups.get(name) || { color: D.sub_colors[k], miles: 0 };
+    g.miles += miles[k];
+    groups.set(name, g);
+  }
   let total = 0; for (const m of miles) total += m;
-  const rows = order.map(k => `<tr style="opacity:${miles[k] > 0.005 ? 1 : 0.4}"><td><span class="sw" style="background:${rgbStr(D.sub_colors[k])}"></span>${esc(D.subs[k])}</td><td style="text-align:right">${fmt(miles[k], 2)} mi</td></tr>`).join('');
+  const rows = [...groups].map(([name, g]) => `<tr style="opacity:${g.miles > 0.005 ? 1 : 0.4}"><td><span class="sw" style="background:${rgbStr(g.color)}"></span>${esc(name)}</td><td style="text-align:right">${fmt(g.miles, 2)} mi</td></tr>`).join('');  
   $('classes').innerHTML = `<table>${rows}<tr style="border-top:1px solid #ddd"><td><b>Total in radius</b></td><td style="text-align:right"><b>${fmt(total, 2)} mi</b></td></tr></table>`;
   $('stats').innerHTML =
     `Pin snapped <b>${fmt(sn.distFt)} ft</b> onto <b>${esc(D.names[D.name[sn.seg]])}</b> (${esc(D.subs[D.sub[sn.seg]])})<br>` +
