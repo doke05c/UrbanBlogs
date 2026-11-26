@@ -135,7 +135,7 @@
   
 <div id="map-legend">
     <button type="button" id="legendToggle" aria-expanded="false" aria-controls="legendBody">NYC Bike Network Classes</button>
-    <div id="legendBody"><div style="display:flex;align-items:center;margin-bottom:5px;"><span style="display:inline-block;width:16px;height:4px;background:#006d2c;margin-right:8px;border-radius:1px;"></span><span>Class I (Protected)</span></div><div style="display:flex;align-items:center;margin-bottom:5px;"><span style="display:inline-block;width:16px;height:4px;background:#2d8421;margin-right:8px;border-radius:1px;"></span><span>Combo I + III (Bike Boulevard)</span></div><div style="display:flex;align-items:center;margin-bottom:5px;"><span style="display:inline-block;width:16px;height:4px;background:#2ca25f;margin-right:8px;border-radius:1px;"></span><span>Combo I + II (Protected w/ Painted Sections)</span></div><div style="display:flex;align-items:center;margin-bottom:5px;"><span style="display:inline-block;width:16px;height:4px;background:#00ee5f;margin-right:8px;border-radius:1px;"></span><span>Class II (Painted / Ped Bridge)</span></div><div style="display:flex;align-items:center;margin-bottom:5px;"><span style="display:inline-block;width:16px;height:4px;background:#6feea1;margin-right:8px;border-radius:1px;"></span><span>Combo II + III (Painted w/ Sharrow Sections)</span></div><div style="display:flex;align-items:center;margin-bottom:5px;"><span style="display:inline-block;width:16px;height:4px;background:#d95f02;margin-right:8px;border-radius:1px;"></span><span>Class III (Sharrow)</span></div><div style="display:flex;align-items:center;margin-bottom:5px;"><span style="display:inline-block;width:16px;height:4px;background:#969696;margin-right:8px;border-radius:1px;"></span><span>Mixed Traffic (Class IV)</span></div></div>
+    <div id="legendBody"></div>   <!-- rows come from the network data (legend_items in Bike_Network_Expander route_test.py) -->
 </div>
 
 </div>
@@ -407,6 +407,10 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 const fmt = (x, d = 0) => x.toLocaleString(undefined, { maximumFractionDigits: d });
 const rgbStr = c => `rgb(${c[0]},${c[1]},${c[2]})`;
 const EMPTY = { type: 'FeatureCollection', features: [] };
+
+//legend rows (color, label) come with the network data, so they're set in Bike_Network_Expander next to the class colors
+$('legendBody').innerHTML = (D.legend || []).map(([color, label]) =>
+  `<div style="display:flex;align-items:center;margin-bottom:5px;"><span style="display:inline-block;width:16px;height:4px;background:${esc(color)};margin-right:8px;border-radius:1px;"></span><span>${esc(label)}</span></div>`).join('');
 
 //line widths in pixels by zoom. class I is the thickest; the other classes are scaled down from it but never thinner than PX_MIN
 const ZOOMS  = [9, 12, 14, 16, 18];
